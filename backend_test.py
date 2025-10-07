@@ -88,7 +88,7 @@ class APITester:
                     businesses = data["businesses"]
                     if isinstance(businesses, list) and len(businesses) > 0:
                         # Store business IDs for later tests
-                        self.business_ids = [b["id"] for b in businesses if "id" in b]
+                        self.business_ids = [b["_id"] for b in businesses if "_id" in b]
                         
                         # Check if businesses are sorted by rating (descending)
                         ratings = [b.get("rating", 0) for b in businesses]
