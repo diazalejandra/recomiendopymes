@@ -155,5 +155,9 @@ export const cities = [
   'All Cities',
   'San Francisco',
   'Los Angeles', 
-  'Austin'
+  'Austin',
+  'New York',
+  'Seattle',
+  'Denver',
+  'Miami'
 ];
