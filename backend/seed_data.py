@@ -185,6 +185,86 @@ businesses_data = [
         "location": "Waterfront",
         "city": "Seattle",
         "established": "2018"
+    },
+    {
+        "name": "Digital Marketing Pro",
+        "category": "Technology",
+        "description": "Expert digital marketing services helping small businesses grow their online presence through strategic social media and content marketing.",
+        "rating": 0.0,
+        "reviews": 0,
+        "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop",
+        "gallery": [
+            "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop",
+            "https://images.unsplash.com/photo-1551434678-e076c223a692?w=600&h=400&fit=crop"
+        ],
+        "socialLinks": {
+            "website": "https://digitalmarketingpro.com",
+            "instagram": "https://instagram.com/digitalmarketingpro",
+            "tiktok": "https://tiktok.com/@digitalmarketingpro"
+        },
+        "owner": "Sarah Kim",
+        "city": "Miami",
+        "established": ""
+    },
+    {
+        "name": "Local Handyman Services",
+        "category": "Professional Services",
+        "description": "Reliable handyman services for all your home repair and maintenance needs. From plumbing to electrical work, we've got you covered.",
+        "rating": 4.2,
+        "reviews": 28,
+        "image": "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&h=300&fit=crop",
+        "gallery": [
+            "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&h=400&fit=crop",
+            "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop"
+        ],
+        "socialLinks": {
+            "facebook": "https://facebook.com/localhandyman"
+        },
+        "owner": "Mike Rodriguez",
+        "location": "Service Area",
+        "city": "Denver",
+        "established": "2022"
+    },
+    {
+        "name": "Creative Photo Studio",
+        "category": "Arts & Crafts", 
+        "description": "Professional photography studio specializing in portraits, events, and commercial photography. Bringing your vision to life with artistic excellence.",
+        "rating": 4.9,
+        "reviews": 64,
+        "image": "https://images.unsplash.com/photo-1554048612-b6a482b224d1?w=400&h=300&fit=crop",
+        "gallery": [
+            "https://images.unsplash.com/photo-1554048612-b6a482b224d1?w=600&h=400&fit=crop",
+            "https://images.unsplash.com/photo-1542038784456-1ea8e732a1d?w=600&h=400&fit=crop",
+            "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&h=400&fit=crop"
+        ],
+        "socialLinks": {
+            "website": "https://creativephotostudio.com",
+            "instagram": "https://instagram.com/creativephotostudio",
+            "facebook": "https://facebook.com/creativephotostudio",
+            "tiktok": "https://tiktok.com/@creativephotostudio",
+            "youtube": "https://youtube.com/creativephotostudio"
+        },
+        "owner": "Emily Chen",
+        "established": "2019"
+    },
+    {
+        "name": "Eco-Friendly Cleaning",
+        "category": "Professional Services",
+        "description": "Green cleaning services using only eco-friendly products. Safe for your family, pets, and the environment while delivering spotless results.",
+        "rating": 4.7,
+        "reviews": 112,
+        "image": "https://images.unsplash.com/photo-1563453392212-326f5e854473?w=400&h=300&fit=crop",
+        "gallery": [
+            "https://images.unsplash.com/photo-1563453392212-326f5e854473?w=600&h=400&fit=crop",
+            "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop"
+        ],
+        "socialLinks": {
+            "instagram": "https://instagram.com/ecofriendlycleaning",
+            "tiktok": "https://tiktok.com/@ecofriendlycleaning"
+        },
+        "owner": "Maria Santos", 
+        "location": "Residential & Commercial",
+        "city": "Seattle"
     }
 ]
 
