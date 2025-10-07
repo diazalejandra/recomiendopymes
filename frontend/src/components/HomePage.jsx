@@ -14,21 +14,92 @@ const HomePage = () => {
   const [viewMode, setViewMode] = useState('grid');
   const [showAllCategories, setShowAllCategories] = useState(false);
   const [showAllCities, setShowAllCities] = useState(false);
+  
+  // API data state
+  const [businesses, setBusinesses] = useState([]);
+  const [categories, setCategories] = useState(['All']);
+  const [cities, setCities] = useState(['All Cities']);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [totalResults, setTotalResults] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  
+  const { toast } = useToast();
 
-  const filteredBusinesses = useMemo(() => {
-    return mockBusinesses
-      .filter(business => {
-        const matchesSearch = business.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            business.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            business.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            business.city.toLowerCase().includes(searchTerm.toLowerCase());
+  // Fetch categories and cities on component mount
+  useEffect(() => {
+    const fetchMetaData = async () => {
+      try {
+        const [categoriesData, citiesData] = await Promise.all([
+          metaAPI.getCategories(),
+          metaAPI.getCities()
+        ]);
+        setCategories(categoriesData);
+        setCities(citiesData);
+      } catch (error) {
+        const errorInfo = handleApiError(error, 'Failed to load categories and cities');
+        toast({
+          title: "Error",
+          description: errorInfo.message,
+          variant: "destructive",
+        });
+      }
+    };
+    
+    fetchMetaData();
+  }, [toast]);
+
+  // Fetch businesses when filters change
+  useEffect(() => {
+    const fetchBusinesses = async () => {
+      setLoading(true);
+      setError(null);
+      
+      try {
+        const params = {
+          page: currentPage,
+          limit: 12,
+        };
         
-        const matchesCategory = selectedCategory === 'All' || business.category === selectedCategory;
-        const matchesCity = selectedCity === 'All Cities' || business.city === selectedCity;
+        if (selectedCategory !== 'All') {
+          params.category = selectedCategory;
+        }
         
-        return matchesSearch && matchesCategory && matchesCity;
-      })
-      .sort((a, b) => b.rating - a.rating); // Sort by rating (best first)
+        if (selectedCity !== 'All Cities') {
+          params.city = selectedCity;
+        }
+        
+        if (searchTerm.trim()) {
+          params.search = searchTerm.trim();
+        }
+        
+        const response = await businessAPI.getBusinesses(params);
+        setBusinesses(response.businesses);
+        setTotalResults(response.total);
+        setTotalPages(response.total_pages);
+      } catch (error) {
+        const errorInfo = handleApiError(error, 'Failed to load businesses');
+        setError(errorInfo.message);
+        toast({
+          title: "Error",
+          description: errorInfo.message,
+          variant: "destructive",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    // Debounce search to avoid too many API calls
+    const timeoutId = setTimeout(fetchBusinesses, searchTerm ? 500 : 0);
+    
+    return () => clearTimeout(timeoutId);
+  }, [searchTerm, selectedCategory, selectedCity, currentPage, toast]);
+
+  // Reset page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
   }, [searchTerm, selectedCategory, selectedCity]);
 
   return (
