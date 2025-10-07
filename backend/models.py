@@ -50,9 +50,9 @@ class BusinessBase(BaseModel):
     gallery: List[str] = Field(default_factory=list, max_items=10)
     social_links: SocialLinks = Field(default_factory=SocialLinks, alias="socialLinks")
     owner: str = Field(..., min_length=1, max_length=100)
-    location: str = Field(..., min_length=1, max_length=100)
-    city: str = Field(..., min_length=1, max_length=50)
-    established: str = Field(..., min_length=4, max_length=4)
+    location: Optional[str] = Field(None, min_length=1, max_length=100)
+    city: Optional[str] = Field(None, min_length=1, max_length=50)
+    established: Optional[str] = Field(None, min_length=4, max_length=4)
 
 class BusinessCreate(BusinessBase):
     pass
