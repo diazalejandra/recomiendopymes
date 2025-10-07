@@ -111,58 +111,7 @@ const HomePage = () => {
   // Reset page when filters change
   useEffect(() => {
     setCurrentPage(1);
-    setBusinesses([]);
-    setHasMore(true);
   }, [searchTerm, selectedCategory, selectedCity]);
-
-  // Infinite scroll callback
-  const loadMoreBusinesses = useCallback(async () => {
-    if (loadingMore || !hasMore) return;
-    
-    setLoadingMore(true);
-    
-    try {
-      const params = {
-        page: currentPage + 1,
-        limit: 12,
-      };
-      
-      if (selectedCategory !== 'All') {
-        params.category = selectedCategory;
-      }
-      
-      if (selectedCity !== 'All Cities') {
-        params.city = selectedCity;
-      }
-      
-      if (searchTerm.trim()) {
-        params.search = searchTerm.trim();
-      }
-      
-      const response = await businessAPI.getBusinesses(params);
-      
-      if (response.businesses.length > 0) {
-        setBusinesses(prev => [...prev, ...response.businesses]);
-        setCurrentPage(prev => prev + 1);
-        setHasMore(response.page < response.total_pages);
-      } else {
-        setHasMore(false);
-      }
-    } catch (error) {
-      const errorInfo = handleApiError(error, 'Failed to load more businesses');
-      toast({
-        title: "Error",
-        description: errorInfo.message,
-        variant: "destructive",
-      });
-      setHasMore(false);
-    } finally {
-      setLoadingMore(false);
-    }
-  }, [currentPage, selectedCategory, selectedCity, searchTerm, loadingMore, hasMore, toast]);
-
-  // Setup infinite scroll
-  const [isFetchingMore] = useInfiniteScroll(loadMoreBusinesses, hasMore);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
