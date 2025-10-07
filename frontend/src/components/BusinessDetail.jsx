@@ -31,6 +31,11 @@ const BusinessDetail = () => {
   const [isFavorited, setIsFavorited] = useState(false);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [newReviews, setNewReviews] = useState([]);
+
+  const handleReviewSubmit = (review) => {
+    setNewReviews([review, ...newReviews]);
+    setShowReviewForm(false);
+  };
   
   const business = mockBusinesses.find(b => b.id === id);
   
