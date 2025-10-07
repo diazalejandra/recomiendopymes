@@ -13,6 +13,7 @@ const ReviewForm = ({ businessName, onReviewSubmit, isSubmitting: externalSubmit
   const [reviewText, setReviewText] = useState('');
   const [reviewerName, setReviewerName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const submitting = isSubmitting || externalSubmitting;
   const { toast } = useToast();
 
   const handleStarClick = (starRating) => {
