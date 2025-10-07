@@ -91,11 +91,13 @@ const BusinessCard = ({ business, viewMode = 'grid' }) => {
                   <div className="flex items-center space-x-1">
                     {renderStars(business.rating)}
                   </div>
-                  <span className="text-sm font-semibold text-gray-700">
-                    {business.rating}
-                  </span>
+                  {business.rating > 0 && (
+                    <span className="text-sm font-semibold text-gray-700">
+                      {business.rating}
+                    </span>
+                  )}
                   <span className="text-xs sm:text-sm text-gray-500">
-                    ({business.reviews})
+                    ({business.reviews} reviews)
                   </span>
                 </div>
                 
