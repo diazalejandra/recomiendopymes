@@ -3,6 +3,7 @@ import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Star, Instagram, Facebook, Twitter, Linkedin, Github, Youtube, Globe, MapPin, Calendar } from 'lucide-react';
+import TikTokIcon from './icons/TikTokIcon';
 import { useNavigate } from 'react-router-dom';
 
 const BusinessCard = ({ business, viewMode = 'grid' }) => {
