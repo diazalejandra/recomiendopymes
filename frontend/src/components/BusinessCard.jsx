@@ -59,9 +59,10 @@ const BusinessCard = ({ business, viewMode = 'grid' }) => {
     return (
       <Card className="group overflow-hidden hover:shadow-lg transition-all duration-300 bg-white border border-gray-200 rounded-xl">
         <CardContent className="p-0">
-          <div className="flex">
+          {/* Mobile: Stack vertically, Desktop: Side by side */}
+          <div className="flex flex-col sm:flex-row">
             {/* Image */}
-            <div className="relative w-48 h-32 flex-shrink-0 overflow-hidden">
+            <div className="relative w-full sm:w-40 h-32 sm:h-24 flex-shrink-0 overflow-hidden">
               <img
                 src={business.image}
                 alt={business.name}
@@ -79,10 +80,10 @@ const BusinessCard = ({ business, viewMode = 'grid' }) => {
             </div>
             
             {/* Content */}
-            <div className="flex-1 p-4 flex flex-col justify-between">
+            <div className="flex-1 p-3 sm:p-4 flex flex-col justify-between min-w-0">
               <div className="space-y-2">
                 <h3 
-                  className="font-bold text-lg text-gray-900 cursor-pointer hover:text-blue-600 transition-colors duration-200"
+                  className="font-bold text-base sm:text-lg text-gray-900 cursor-pointer hover:text-blue-600 transition-colors duration-200 truncate"
                   onClick={handleImageClick}
                 >
                   {business.name}
@@ -95,35 +96,31 @@ const BusinessCard = ({ business, viewMode = 'grid' }) => {
                   <span className="text-sm font-semibold text-gray-700">
                     {business.rating}
                   </span>
-                  <span className="text-sm text-gray-500">
-                    ({business.reviews} reviews)
+                  <span className="text-xs sm:text-sm text-gray-500">
+                    ({business.reviews})
                   </span>
                 </div>
                 
-                <div className="flex items-center text-sm text-gray-600 space-x-4">
-                  <div className="flex items-center space-x-1">
-                    <MapPin className="w-4 h-4" />
-                    <span>{business.location}, {business.city}</span>
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    <Calendar className="w-4 h-4" />
-                    <span>Est. {business.established}</span>
-                  </div>
+                {/* Location - hide on very small screens, show abbreviated version */}
+                <div className="hidden xs:flex sm:flex items-center text-sm text-gray-600">
+                  <MapPin className="w-4 h-4 mr-1 flex-shrink-0" />
+                  <span className="truncate">{business.city}</span>
                 </div>
                 
-                <p className="text-gray-600 text-sm line-clamp-2 leading-relaxed">
+                {/* Description - hide on mobile to save space */}
+                <p className="hidden sm:block text-gray-600 text-sm line-clamp-1 leading-relaxed">
                   {business.description}
                 </p>
               </div>
               
-              <div className="flex items-center justify-between pt-3 mt-3 border-t border-gray-100">
-                <div className="flex space-x-2">
-                  {Object.entries(business.socialLinks).slice(0, 3).map(([platform, url]) => (
+              <div className="flex items-center justify-between pt-2 mt-2 border-t border-gray-100">
+                <div className="flex space-x-1 sm:space-x-2">
+                  {Object.entries(business.socialLinks).slice(0, 2).map(([platform, url]) => (
                     <Button
                       key={platform}
                       variant="outline"
                       size="sm"
-                      className="p-2 hover:bg-gray-50 hover:border-gray-300 transition-colors duration-200"
+                      className="p-1.5 sm:p-2 hover:bg-gray-50 hover:border-gray-300 transition-colors duration-200"
                       onClick={() => window.open(url, '_blank')}
                     >
                       {getSocialIcon(platform)}
@@ -135,9 +132,9 @@ const BusinessCard = ({ business, viewMode = 'grid' }) => {
                   variant="default"
                   size="sm"
                   onClick={handleImageClick}
-                  className="bg-gray-900 hover:bg-gray-800 text-white transition-colors duration-200"
+                  className="bg-gray-900 hover:bg-gray-800 text-white transition-colors duration-200 text-xs sm:text-sm px-2 sm:px-3"
                 >
-                  View Details
+                  View
                 </Button>
               </div>
             </div>
