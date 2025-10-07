@@ -426,11 +426,13 @@ const BusinessDetail = () => {
               
               {/* Review Form */}
               {showReviewForm && (
-                <ReviewForm 
-                  businessName={business.name}
-                  onReviewSubmit={handleReviewSubmit}
-                  isSubmitting={reviewsLoading}
-                />
+                <div id="review-form-section">
+                  <ReviewForm 
+                    businessName={business.name}
+                    onReviewSubmit={handleReviewSubmit}
+                    isSubmitting={reviewsLoading}
+                  />
+                </div>
               )}
             </div>
           </div>
