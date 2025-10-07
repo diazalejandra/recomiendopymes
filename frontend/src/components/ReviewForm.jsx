@@ -163,7 +163,7 @@ const ReviewForm = ({ businessName, onReviewSubmit, isSubmitting: externalSubmit
           {/* Submit Button */}
           <Button
             type="submit"
-            disabled={!rating || !reviewText.trim() || !reviewerName.trim() || isSubmitting}
+            disabled={!rating || !reviewText.trim() || !reviewerName.trim() || submitting}
             className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSubmitting ? (
