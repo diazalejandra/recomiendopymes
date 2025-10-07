@@ -191,19 +191,19 @@ const HomePage = () => {
           </p>
         </div>
 
-        {/* Business Grid */}
+        {/* Business Grid/List */}
         {filteredBusinesses.length > 0 ? (
-          <div className={`grid gap-6 ${
+          <div className={`${
             viewMode === 'grid'
-              ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
-              : 'grid-cols-1 lg:grid-cols-2'
+              ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
+              : 'space-y-4'
           }`}>
             {filteredBusinesses.map((business) => (
               <div
                 key={business.id}
-                className="transform hover:scale-102 transition-transform duration-200"
+                className={viewMode === 'grid' ? "transform hover:scale-102 transition-transform duration-200" : ""}
               >
-                <BusinessCard business={business} />
+                <BusinessCard business={business} viewMode={viewMode} />
               </div>
             ))}
           </div>
