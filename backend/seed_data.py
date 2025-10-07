@@ -246,6 +246,7 @@ businesses_data = [
         },
         "owner": "Emily Chen",
         "established": "2019"
+        # No location/city provided - completely missing
     },
     {
         "name": "Eco-Friendly Cleaning",
