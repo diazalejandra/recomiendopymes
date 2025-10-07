@@ -11,6 +11,7 @@ import { useWindowSize, getFilterLimits } from '../hooks/useWindowSize';
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
 
 const HomePage = () => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedCity, setSelectedCity] = useState('All Cities');
