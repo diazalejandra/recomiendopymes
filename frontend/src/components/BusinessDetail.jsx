@@ -303,29 +303,32 @@ const BusinessDetail = () => {
             </Card>
 
             {/* Description */}
-            <div className="space-y-3">
+            <div className="space-y-4">
               <h3 className="text-xl font-bold text-gray-900">About</h3>
               <p className="text-gray-600 leading-relaxed text-lg">{business.description}</p>
-            </div>
-
-            <Separator />
-
-            {/* Social Links */}
-            <div className="space-y-4">
-              <h3 className="text-xl font-bold text-gray-900">Connect</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {Object.entries(business.socialLinks).map(([platform, url]) => (
-                  <Button
-                    key={platform}
-                    variant="outline"
-                    className="justify-start space-x-3 py-6 hover:bg-gray-50 transition-colors duration-200"
-                    onClick={() => window.open(url, '_blank')}
-                  >
-                    {getSocialIcon(platform)}
-                    <span className="capitalize font-medium">{platform}</span>
-                    <ExternalLink className="w-4 h-4 ml-auto" />
-                  </Button>
-                ))}
+              
+              {/* Social Links - Integrated with About */}
+              <div className="pt-4">
+                <h4 className="text-lg font-semibold text-gray-900 mb-3">Connect with us</h4>
+                <div className="flex flex-wrap gap-3">
+                  {Object.entries(business.socialLinks)
+                    .filter(([platform, url]) => url && url.trim() !== '' && 
+                      ['website', 'instagram', 'facebook', 'tiktok', 'twitter', 'youtube'].includes(platform))
+                    .map(([platform, url]) => (
+                    <Button
+                      key={platform}
+                      variant="outline"
+                      size="sm"
+                      className="p-3 hover:bg-gray-50 hover:border-gray-300 transition-colors duration-200 flex items-center space-x-2"
+                      onClick={() => window.open(url, '_blank')}
+                      title={`Visit our ${platform}`}
+                    >
+                      {getSocialIcon(platform)}
+                      <span className="capitalize text-sm font-medium">{platform === 'website' ? 'Website' : platform}</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </Button>
+                  ))}
+                </div>
               </div>
             </div>
 
