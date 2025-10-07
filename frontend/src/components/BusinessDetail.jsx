@@ -248,25 +248,23 @@ const BusinessDetail = () => {
           {/* Business Info */}
           <div className="space-y-6">
             <div className="flex items-start justify-between">
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <Badge 
                   variant="secondary" 
                   className="bg-blue-100 text-blue-800 font-medium"
                 >
                   {business.category}
                 </Badge>
-                <div className="flex items-center space-x-4">
-                  <h1 className="text-3xl font-bold text-gray-900">{business.name}</h1>
-                  {/* Stars near title */}
-                  <div className="flex items-center space-x-2">
-                    <div className="flex items-center space-x-1">
-                      {renderStars(business.rating)}
-                    </div>
-                    {business.rating > 0 && (
-                      <span className="text-xl font-bold text-gray-900">{business.rating}</span>
-                    )}
-                    <span className="text-gray-600">({business.reviews || 0} reviews)</span>
+                <h1 className="text-3xl font-bold text-gray-900">{business.name}</h1>
+                {/* Stars under title */}
+                <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-1">
+                    {renderStars(business.rating)}
                   </div>
+                  {business.rating > 0 && (
+                    <span className="text-xl font-bold text-gray-900">{business.rating}</span>
+                  )}
+                  <span className="text-gray-600">({business.reviews || 0} reviews)</span>
                 </div>
               </div>
               <div className="flex space-x-2">
