@@ -339,7 +339,20 @@ const BusinessDetail = () => {
               <div className="flex items-center justify-between">
                 <h3 className="text-xl font-bold text-gray-900">Reviews & Ratings</h3>
                 <Button 
-                  onClick={() => setShowReviewForm(!showReviewForm)}
+                  onClick={() => {
+                    if (!showReviewForm) {
+                      setShowReviewForm(true);
+                      // Scroll to review form after it renders
+                      setTimeout(() => {
+                        document.getElementById('review-form-section')?.scrollIntoView({ 
+                          behavior: 'smooth',
+                          block: 'start'
+                        });
+                      }, 100);
+                    } else {
+                      setShowReviewForm(false);
+                    }
+                  }}
                   className="bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-200"
                 >
                   {showReviewForm ? 'Cancel Review' : 'Write a Review'}
