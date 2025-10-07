@@ -1,10 +1,11 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
-import { Search, Filter, Grid, List, ChevronDown, ChevronUp } from 'lucide-react';
+import { Search, Filter, Grid, List, ChevronDown, ChevronUp, Loader2 } from 'lucide-react';
 import BusinessCard from './BusinessCard';
-import { mockBusinesses, categories, cities } from '../mock';
+import { businessAPI, metaAPI, handleApiError } from '../utils/api';
+import { useToast } from '../hooks/use-toast';
 
 const HomePage = () => {
   const [searchTerm, setSearchTerm] = useState('');
