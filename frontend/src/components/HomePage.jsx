@@ -374,52 +374,18 @@ const HomePage = () => {
               ))}
             </div>
             
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="flex justify-center items-center space-x-2 mt-12">
-                <Button
-                  variant="outline"
-                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                  disabled={currentPage === 1}
-                  className="px-4"
-                >
-                  Previous
-                </Button>
-                
-                <div className="flex space-x-2">
-                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                    let pageNum;
-                    if (totalPages <= 5) {
-                      pageNum = i + 1;
-                    } else if (currentPage <= 3) {
-                      pageNum = i + 1;
-                    } else if (currentPage >= totalPages - 2) {
-                      pageNum = totalPages - 4 + i;
-                    } else {
-                      pageNum = currentPage - 2 + i;
-                    }
-                    
-                    return (
-                      <Button
-                        key={pageNum}
-                        variant={currentPage === pageNum ? "default" : "outline"}
-                        onClick={() => setCurrentPage(pageNum)}
-                        className="w-10 h-10 p-0"
-                      >
-                        {pageNum}
-                      </Button>
-                    );
-                  })}
-                </div>
-                
-                <Button
-                  variant="outline"
-                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                  disabled={currentPage === totalPages}
-                  className="px-4"
-                >
-                  Next
-                </Button>
+            {/* Infinite Scroll Loading Indicator */}
+            {(loadingMore || isFetchingMore) && hasMore && (
+              <div className="flex justify-center items-center py-8">
+                <Loader2 className="w-6 h-6 animate-spin text-blue-600 mr-3" />
+                <span className="text-gray-600">Loading more businesses...</span>
+              </div>
+            )}
+            
+            {/* End of Results Indicator */}
+            {!hasMore && businesses.length > 0 && (
+              <div className="text-center py-8">
+                <p className="text-gray-500">You've reached the end of the results</p>
               </div>
             )}
           </>
