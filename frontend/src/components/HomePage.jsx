@@ -62,68 +62,118 @@ const HomePage = () => {
               />
             </div>
             
-            <div className="flex flex-col lg:flex-row gap-6 items-center">
+            <div className="flex flex-col gap-4">
               {/* Category Filter */}
-              <div className="flex items-center space-x-2 flex-1">
-                <Filter className="w-5 h-5 text-gray-600" />
-                <span className="text-sm font-medium text-gray-700 whitespace-nowrap">Category:</span>
-                <div className="flex flex-wrap gap-2">
-                  {categories.map((category) => (
-                    <Badge
-                      key={category}
-                      variant={selectedCategory === category ? "default" : "outline"}
-                      className={`cursor-pointer px-3 py-1 transition-all duration-200 ${
-                        selectedCategory === category
-                          ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                          : 'hover:bg-gray-100 text-gray-700 border-gray-300'
-                      }`}
-                      onClick={() => setSelectedCategory(category)}
-                    >
-                      {category}
-                    </Badge>
-                  ))}
+              <div className="flex items-start space-x-2">
+                <Filter className="w-5 h-5 text-gray-600 mt-1" />
+                <div className="flex-1">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-gray-700">Category:</span>
+                    {categories.length > 4 && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setShowAllCategories(!showAllCategories)}
+                        className="text-blue-600 hover:text-blue-700 px-2 py-1 h-auto"
+                      >
+                        {showAllCategories ? (
+                          <>
+                            <ChevronUp className="w-4 h-4 mr-1" />
+                            Show Less
+                          </>
+                        ) : (
+                          <>
+                            <ChevronDown className="w-4 h-4 mr-1" />
+                            Show All ({categories.length - 3} more)
+                          </>
+                        )}
+                      </Button>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {(showAllCategories ? categories : categories.slice(0, 4)).map((category) => (
+                      <Badge
+                        key={category}
+                        variant={selectedCategory === category ? "default" : "outline"}
+                        className={`cursor-pointer px-3 py-1 transition-all duration-200 ${
+                          selectedCategory === category
+                            ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                            : 'hover:bg-gray-100 text-gray-700 border-gray-300'
+                        }`}
+                        onClick={() => setSelectedCategory(category)}
+                      >
+                        {category}
+                      </Badge>
+                    ))}
+                  </div>
                 </div>
               </div>
 
               {/* Location Filter */}
-              <div className="flex items-center space-x-2 flex-1">
-                <span className="text-sm font-medium text-gray-700 whitespace-nowrap">City:</span>
-                <div className="flex flex-wrap gap-2">
-                  {cities.map((city) => (
-                    <Badge
-                      key={city}
-                      variant={selectedCity === city ? "default" : "outline"}
-                      className={`cursor-pointer px-3 py-1 transition-all duration-200 ${
-                        selectedCity === city
-                          ? 'bg-green-600 hover:bg-green-700 text-white'
-                          : 'hover:bg-gray-100 text-gray-700 border-gray-300'
-                      }`}
-                      onClick={() => setSelectedCity(city)}
-                    >
-                      {city}
-                    </Badge>
-                  ))}
+              <div className="flex items-start space-x-2">
+                <div className="flex-1">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-gray-700">City:</span>
+                    {cities.length > 3 && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setShowAllCities(!showAllCities)}
+                        className="text-green-600 hover:text-green-700 px-2 py-1 h-auto"
+                      >
+                        {showAllCities ? (
+                          <>
+                            <ChevronUp className="w-4 h-4 mr-1" />
+                            Show Less
+                          </>
+                        ) : (
+                          <>
+                            <ChevronDown className="w-4 h-4 mr-1" />
+                            Show All ({cities.length - 2} more)
+                          </>
+                        )}
+                      </Button>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {(showAllCities ? cities : cities.slice(0, 3)).map((city) => (
+                      <Badge
+                        key={city}
+                        variant={selectedCity === city ? "default" : "outline"}
+                        className={`cursor-pointer px-3 py-1 transition-all duration-200 ${
+                          selectedCity === city
+                            ? 'bg-green-600 hover:bg-green-700 text-white'
+                            : 'hover:bg-gray-100 text-gray-700 border-gray-300'
+                        }`}
+                        onClick={() => setSelectedCity(city)}
+                      >
+                        {city}
+                      </Badge>
+                    ))}
+                  </div>
                 </div>
               </div>
-              
+
               {/* View Toggle */}
-              <div className="flex items-center space-x-2 bg-gray-100 rounded-lg p-1">
-                <Button
-                  variant={viewMode === 'grid' ? 'default' : 'ghost'}
-                  size="sm"
-                  onClick={() => setViewMode('grid')}
-                  className={viewMode === 'grid' ? 'bg-white shadow-sm' : ''}
-                >
-                  <Grid className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant={viewMode === 'list' ? 'default' : 'ghost'}
-                  size="sm"
-                  onClick={() => setViewMode('list')}
-                  className={viewMode === 'list' ? 'bg-white shadow-sm' : ''}
-                >
-                  <List className="w-4 h-4" />
-                </Button>
+              <div className="flex justify-end">
+                <div className="flex items-center space-x-2 bg-gray-100 rounded-lg p-1">
+                  <Button
+                    variant={viewMode === 'grid' ? 'default' : 'ghost'}
+                    size="sm"
+                    onClick={() => setViewMode('grid')}
+                    className={viewMode === 'grid' ? 'bg-white shadow-sm' : ''}
+                  >
+                    <Grid className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant={viewMode === 'list' ? 'default' : 'ghost'}
+                    size="sm"
+                    onClick={() => setViewMode('list')}
+                    className={viewMode === 'list' ? 'bg-white shadow-sm' : ''}
+                  >
+                    <List className="w-4 h-4" />
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
