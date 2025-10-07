@@ -210,7 +210,7 @@ const HomePage = () => {
                     )}
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    {(showAllCities ? cities : cities.slice(0, window.innerWidth < 768 ? 2 : window.innerWidth < 1024 ? 4 : 6)).map((city) => (
+                    {(showAllCities ? cities : cities.slice(0, filterLimits.cities)).map((city) => (
                       <Badge
                         key={city}
                         variant={selectedCity === city ? "default" : "outline"}
