@@ -137,6 +137,52 @@ export const mockBusinesses = [
     location: 'Mobile Service',
     city: 'Austin',
     established: '2020'
+  },
+  {
+    id: '7',
+    name: 'Urban Fitness Studio',
+    category: 'Health & Wellness',
+    description: 'Modern fitness studio offering personal training, group classes, and wellness coaching. State-of-the-art equipment and certified trainers.',
+    rating: 4.7,
+    reviews: 189,
+    image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&h=300&fit=crop',
+    gallery: [
+      'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?w=600&h=400&fit=crop'
+    ],
+    socialLinks: {
+      instagram: 'https://instagram.com/urbanfitnessstudio',
+      facebook: 'https://facebook.com/urbanfitness',
+      website: 'https://urbanfitnessstudio.com'
+    },
+    owner: 'Mike Johnson',
+    location: 'Fitness District',
+    city: 'New York',
+    established: '2019'
+  },
+  {
+    id: '8',
+    name: 'Coastal Bakery',
+    category: 'Food & Beverage',
+    description: 'Artisanal bakery specializing in fresh bread, pastries, and custom cakes. Using organic ingredients and traditional baking methods.',
+    rating: 4.8,
+    reviews: 231,
+    image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&h=300&fit=crop',
+    gallery: [
+      'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=600&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=600&h=400&fit=crop'
+    ],
+    socialLinks: {
+      instagram: 'https://instagram.com/coastalbakery',
+      facebook: 'https://facebook.com/coastalbakery',
+      website: 'https://coastalbakery.com'
+    },
+    owner: 'Jessica Lee',
+    location: 'Waterfront',
+    city: 'Seattle',
+    established: '2018'
   }
 ];
 
