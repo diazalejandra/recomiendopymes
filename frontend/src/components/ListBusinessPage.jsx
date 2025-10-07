@@ -23,6 +23,7 @@ import {
   Users,
   TrendingUp
 } from 'lucide-react';
+import TikTokIcon from './icons/TikTokIcon';
 import { useToast } from '../hooks/use-toast';
 
 const ListBusinessPage = () => {
