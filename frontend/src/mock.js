@@ -66,6 +66,7 @@ export const mockBusinesses = [
     },
     owner: 'David Park',
     location: 'Garden District',
+    city: 'San Francisco',
     established: '2018'
   },
   {
@@ -88,6 +89,7 @@ export const mockBusinesses = [
     },
     owner: 'Alex Thompson',
     location: 'Tech Hub',
+    city: 'Austin',
     established: '2021'
   },
   {
@@ -110,6 +112,7 @@ export const mockBusinesses = [
     },
     owner: 'Emma Wilson',
     location: 'Fashion District',
+    city: 'Los Angeles',
     established: '2017'
   },
   {
@@ -132,6 +135,7 @@ export const mockBusinesses = [
     },
     owner: 'Carlos Martinez',
     location: 'Mobile Service',
+    city: 'Austin',
     established: '2020'
   }
 ];
