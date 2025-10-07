@@ -32,14 +32,73 @@ const BusinessDetail = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [isFavorited, setIsFavorited] = useState(false);
   const [showReviewForm, setShowReviewForm] = useState(false);
-  const [newReviews, setNewReviews] = useState([]);
-
-  const handleReviewSubmit = (review) => {
-    setNewReviews([review, ...newReviews]);
-    setShowReviewForm(false);
-  };
   
-  const business = mockBusinesses.find(b => b.id === id);
+  // API data state
+  const [business, setBusiness] = useState(null);
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [reviewsLoading, setReviewsLoading] = useState(false);
+  
+  const { toast } = useToast();
+
+  // Fetch business data and reviews
+  useEffect(() => {
+    const fetchBusinessData = async () => {
+      if (!id) return;
+      
+      setLoading(true);
+      setError(null);
+      
+      try {
+        const response = await businessAPI.getBusinessById(id);
+        setBusiness(response.business);
+        setReviews(response.reviews || []);
+      } catch (error) {
+        const errorInfo = handleApiError(error, 'Failed to load business details');
+        setError(errorInfo.message);
+        
+        if (errorInfo.status === 404) {
+          toast({
+            title: "Business Not Found",
+            description: "The business you're looking for doesn't exist.",
+            variant: "destructive",
+          });
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchBusinessData();
+  }, [id, toast]);
+
+  const handleReviewSubmit = async (reviewData) => {
+    try {
+      setReviewsLoading(true);
+      await reviewAPI.createReview(id, reviewData);
+      
+      // Refresh business data to get updated rating
+      const response = await businessAPI.getBusinessById(id);
+      setBusiness(response.business);
+      setReviews(response.reviews || []);
+      
+      setShowReviewForm(false);
+      toast({
+        title: "Review Submitted! 🌟",
+        description: "Thank you for your feedback! Your review helps other customers.",
+      });
+    } catch (error) {
+      const errorInfo = handleApiError(error, 'Failed to submit review');
+      toast({
+        title: "Submission Failed",
+        description: errorInfo.message,
+        variant: "destructive",
+      });
+    } finally {
+      setReviewsLoading(false);
+    }
+  };
   
   if (!business) {
     return (
