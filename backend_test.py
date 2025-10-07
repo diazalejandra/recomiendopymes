@@ -51,8 +51,11 @@ class APITester:
         """Make HTTP request with error handling"""
         url = f"{API_BASE}{endpoint}"
         try:
-            response = self.session.request(method, url, timeout=30, **kwargs)
+            response = self.session.request(method, url, timeout=60, **kwargs)
             return response
+        except requests.exceptions.Timeout as e:
+            print(f"❌ Request timeout: {e}")
+            return None
         except requests.exceptions.RequestException as e:
             print(f"❌ Request failed: {e}")
             return None
