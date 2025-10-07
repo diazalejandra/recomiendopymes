@@ -52,7 +52,7 @@ class BusinessBase(BaseModel):
     owner: str = Field(..., min_length=1, max_length=100)
     location: Optional[str] = Field(None, min_length=1, max_length=100)
     city: Optional[str] = Field(None, min_length=1, max_length=50)
-    established: Optional[str] = Field(None, min_length=4, max_length=4)
+    established: Optional[str] = Field(None, min_length=1, max_length=10)
 
 class BusinessCreate(BusinessBase):
     pass
@@ -67,7 +67,7 @@ class BusinessUpdate(BaseModel):
     owner: Optional[str] = Field(None, min_length=1, max_length=100)
     location: Optional[str] = Field(None, min_length=1, max_length=100)
     city: Optional[str] = Field(None, min_length=1, max_length=50)
-    established: Optional[str] = Field(None, min_length=4, max_length=4)
+    established: Optional[str] = Field(None, min_length=1, max_length=10)
 
 class Business(BusinessBase):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
