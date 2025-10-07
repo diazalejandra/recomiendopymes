@@ -13,16 +13,20 @@ const HomePage = () => {
   const [viewMode, setViewMode] = useState('grid');
 
   const filteredBusinesses = useMemo(() => {
-    return mockBusinesses.filter(business => {
-      const matchesSearch = business.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          business.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          business.category.toLowerCase().includes(searchTerm.toLowerCase());
-      
-      const matchesCategory = selectedCategory === 'All' || business.category === selectedCategory;
-      
-      return matchesSearch && matchesCategory;
-    });
-  }, [searchTerm, selectedCategory]);
+    return mockBusinesses
+      .filter(business => {
+        const matchesSearch = business.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            business.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            business.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            business.city.toLowerCase().includes(searchTerm.toLowerCase());
+        
+        const matchesCategory = selectedCategory === 'All' || business.category === selectedCategory;
+        const matchesCity = selectedCity === 'All Cities' || business.city === selectedCity;
+        
+        return matchesSearch && matchesCategory && matchesCity;
+      })
+      .sort((a, b) => b.rating - a.rating); // Sort by rating (best first)
+  }, [searchTerm, selectedCategory, selectedCity]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
