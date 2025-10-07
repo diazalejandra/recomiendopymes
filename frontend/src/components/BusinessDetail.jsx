@@ -388,11 +388,11 @@ const BusinessDetail = () => {
                 </div>
               </div>
 
-              {/* New Reviews Display */}
-              {newReviews.length > 0 && (
+              {/* Reviews Display */}
+              {reviews.length > 0 && (
                 <div className="space-y-3">
-                  <h4 className="text-lg font-semibold text-gray-900">Recent Reviews</h4>
-                  {newReviews.map((review) => (
+                  <h4 className="text-lg font-semibold text-gray-900">Customer Reviews</h4>
+                  {reviews.map((review) => (
                     <div key={review.id} className="bg-white border border-gray-200 rounded-lg p-4">
                       <div className="flex items-start justify-between mb-2">
                         <div className="flex items-center space-x-2">
@@ -408,7 +408,9 @@ const BusinessDetail = () => {
                           </div>
                           <span className="font-medium text-gray-900">{review.reviewer}</span>
                         </div>
-                        <span className="text-sm text-gray-500">{review.date}</span>
+                        <span className="text-sm text-gray-500">
+                          {new Date(review.date).toLocaleDateString()}
+                        </span>
                       </div>
                       <p className="text-gray-700">{review.text}</p>
                     </div>
