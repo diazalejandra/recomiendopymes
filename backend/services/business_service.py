@@ -242,4 +242,6 @@ class BusinessService:
     async def get_cities(self) -> List[str]:
         """Get all unique cities from businesses"""
         cities = await self.businesses.distinct("city")
-        return ["All Cities"] + sorted(cities)
+        # Filter out None values and empty strings
+        filtered_cities = [city for city in cities if city and city.strip()]
+        return ["All Cities"] + sorted(filtered_cities)
