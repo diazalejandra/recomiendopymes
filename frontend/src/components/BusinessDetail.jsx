@@ -188,7 +188,7 @@ const BusinessDetail = () => {
                     <MapPin className="w-5 h-5 text-gray-500" />
                     <div>
                       <p className="text-sm text-gray-500">Location</p>
-                      <p className="font-semibold text-gray-900">{business.location}</p>
+                      <p className="font-semibold text-gray-900">{business.location}, {business.city}</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-3">
