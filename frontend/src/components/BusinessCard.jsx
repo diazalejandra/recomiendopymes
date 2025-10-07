@@ -98,7 +98,7 @@ const BusinessCard = ({ business }) => {
           <div className="flex items-center text-sm text-gray-600 space-x-4">
             <div className="flex items-center space-x-1">
               <MapPin className="w-4 h-4" />
-              <span>{business.location}</span>
+              <span>{business.location}, {business.city}</span>
             </div>
             <div className="flex items-center space-x-1">
               <Calendar className="w-4 h-4" />
