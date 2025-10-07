@@ -11,6 +11,8 @@ const HomePage = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedCity, setSelectedCity] = useState('All Cities');
   const [viewMode, setViewMode] = useState('grid');
+  const [showAllCategories, setShowAllCategories] = useState(false);
+  const [showAllCities, setShowAllCities] = useState(false);
 
   const filteredBusinesses = useMemo(() => {
     return mockBusinesses
