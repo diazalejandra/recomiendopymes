@@ -266,6 +266,7 @@ businesses_data = [
         "owner": "Maria Santos", 
         "location": "Residential & Commercial",
         "city": "Seattle"
+        # No established date
     }
 ]
 
