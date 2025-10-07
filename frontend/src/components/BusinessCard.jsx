@@ -9,7 +9,7 @@ const BusinessCard = ({ business, viewMode = 'grid' }) => {
   const navigate = useNavigate();
 
   const handleImageClick = () => {
-    navigate(`/business/${business.id}`);
+    navigate(`/business/${business._id}`);
   };
 
   const renderStars = (rating) => {
