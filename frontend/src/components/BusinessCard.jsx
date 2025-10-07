@@ -44,7 +44,7 @@ const BusinessCard = ({ business, viewMode = 'grid' }) => {
       website: Globe,
       instagram: Instagram,
       facebook: Facebook,
-      tiktok: Globe, // Using Globe for TikTok as lucide doesn't have TikTok icon
+      tiktok: TikTokIcon,
       twitter: Twitter,
       youtube: Youtube
     };
