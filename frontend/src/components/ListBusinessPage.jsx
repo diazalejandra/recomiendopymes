@@ -123,12 +123,12 @@ const ListBusinessPage = () => {
         image: '',
         gallery: ['', '', ''],
         socialLinks: {
+          website: '',
           instagram: '',
           facebook: '',
+          tiktok: '',
           twitter: '',
-          linkedin: '',
-          youtube: '',
-          website: ''
+          youtube: ''
         }
       });
     } catch (error) {
