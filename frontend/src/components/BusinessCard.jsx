@@ -5,7 +5,7 @@ import { Button } from './ui/button';
 import { Star, Instagram, Facebook, Twitter, Linkedin, Github, Youtube, Globe, MapPin, Calendar } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-const BusinessCard = ({ business }) => {
+const BusinessCard = ({ business, viewMode = 'grid' }) => {
   const navigate = useNavigate();
 
   const handleImageClick = () => {
