@@ -267,6 +267,86 @@ businesses_data = [
         "location": "Residential & Commercial",
         "city": "Seattle"
         # No established date
+    },
+    {
+        "name": "Book Haven Cafe",
+        "category": "Food & Beverage",
+        "description": "Cozy bookstore cafe serving artisan coffee and homemade pastries. The perfect place to read, work, or meet friends.",
+        "rating": 4.5,
+        "reviews": 73,
+        "image": "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=300&fit=crop",
+        "gallery": [
+            "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=600&h=400&fit=crop",
+            "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop"
+        ],
+        "socialLinks": {
+            "website": "https://bookhavencafe.com",
+            "instagram": "https://instagram.com/bookhavencafe"
+        },
+        "owner": "Lisa Johnson",
+        "location": "Literary District",
+        "city": "Portland",
+        "established": "2020"
+    },
+    {
+        "name": "Pet Grooming Spa",
+        "category": "Professional Services", 
+        "description": "Premium pet grooming services with a gentle touch. We pamper your pets like family with organic products and loving care.",
+        "rating": 4.8,
+        "reviews": 156,
+        "image": "https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?w=400&h=300&fit=crop",
+        "gallery": [
+            "https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?w=600&h=400&fit=crop",
+            "https://images.unsplash.com/photo-1560807707-8cc77767d783?w=600&h=400&fit=crop"
+        ],
+        "socialLinks": {
+            "facebook": "https://facebook.com/petgroomingspa",
+            "instagram": "https://instagram.com/petgroomingspa"
+        },
+        "owner": "Tom Wilson",
+        "location": "Pet District",
+        "city": "San Diego",
+        "established": "2021"
+    },
+    {
+        "name": "Artisan Bakery",
+        "category": "Food & Beverage",
+        "description": "Traditional European-style bakery creating fresh breads, croissants, and pastries daily using time-honored recipes.",
+        "rating": 4.9,
+        "reviews": 298,
+        "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&h=300&fit=crop",
+        "gallery": [
+            "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&h=400&fit=crop",
+            "https://images.unsplash.com/photo-1555507036-ab794f0808c4?w=600&h=400&fit=crop"
+        ],
+        "socialLinks": {
+            "website": "https://artisanbakery.com",
+            "instagram": "https://instagram.com/artisanbakery",
+            "facebook": "https://facebook.com/artisanbakery"
+        },
+        "owner": "Pierre Dubois",
+        "location": "Baker Street",
+        "city": "Portland",
+        "established": "2016"
+    },
+    {
+        "name": "Mobile Bike Repair", 
+        "category": "Professional Services",
+        "description": "On-the-go bike repair and maintenance service. We come to you for convenient, professional bicycle repairs anywhere in the city.",
+        "rating": 4.6,
+        "reviews": 84,
+        "image": "https://images.unsplash.com/photo-1544191696-15693074e770?w=400&h=300&fit=crop",
+        "gallery": [
+            "https://images.unsplash.com/photo-1544191696-15693074e770?w=600&h=400&fit=crop",
+            "https://images.unsplash.com/photo-1571068316344-75bc76f77890?w=600&h=400&fit=crop"
+        ],
+        "socialLinks": {
+            "website": "https://mobilebikerepair.com",
+            "twitter": "https://twitter.com/mobilebikerepair"
+        },
+        "owner": "Jake Martinez",
+        "city": "San Diego", 
+        # No location/established date
     }
 ]
 
