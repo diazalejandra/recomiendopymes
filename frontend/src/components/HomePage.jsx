@@ -251,9 +251,9 @@ const HomePage = () => {
         </div>
 
         {/* Results Info */}
-        <div className="mb-6">
+        <div className="mb-6 flex items-center justify-between">
           <p className="text-gray-600 text-lg">
-            Found <span className="font-semibold text-gray-900">{filteredBusinesses.length}</span> businesses
+            Found <span className="font-semibold text-gray-900">{totalResults}</span> businesses
             {selectedCategory !== 'All' && (
               <span> in <span className="font-semibold text-blue-600">{selectedCategory}</span></span>
             )}
@@ -261,6 +261,11 @@ const HomePage = () => {
               <span> in <span className="font-semibold text-green-600">{selectedCity}</span></span>
             )}
           </p>
+          {totalPages > 1 && (
+            <p className="text-sm text-gray-500">
+              Page {currentPage} of {totalPages}
+            </p>
+          )}
         </div>
 
         {/* Business Grid/List */}
