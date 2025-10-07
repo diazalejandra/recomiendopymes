@@ -309,7 +309,7 @@ class APITester:
                 business = data["business"]
                 reviews = data["reviews"]
                 
-                if business.get("id") == business_id and isinstance(reviews, list):
+                if business.get("_id") == business_id and isinstance(reviews, list):
                     self.log_test("Get Business Detail (Valid)", True, 
                                 f"Got business details with {len(reviews)} reviews")
                     return True
