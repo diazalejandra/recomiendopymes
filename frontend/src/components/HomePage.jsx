@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
-import { Search, Filter, Grid, List, ChevronDown, ChevronUp, Loader2 } from 'lucide-react';
+import { Search, Filter, Grid, List, ChevronDown, ChevronUp, Loader2, Instagram, Facebook, Twitter } from 'lucide-react';
 import BusinessCard from './BusinessCard';
 import { businessAPI, metaAPI, handleApiError } from '../utils/api';
 import { useToast } from '../hooks/use-toast';
