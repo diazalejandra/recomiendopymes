@@ -283,14 +283,7 @@ const BusinessDetail = () => {
             {/* Business Details */}
             <Card className="border-gray-200">
               <CardContent className="p-6 space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="flex items-center space-x-3">
-                    <User className="w-5 h-5 text-gray-500" />
-                    <div>
-                      <p className="text-sm text-gray-500">Owner</p>
-                      <p className="font-semibold text-gray-900">{business.owner}</p>
-                    </div>
-                  </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div className="flex items-center space-x-3">
                     <MapPin className="w-5 h-5 text-gray-500" />
                     <div>
