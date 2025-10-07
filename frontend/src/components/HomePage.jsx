@@ -172,6 +172,7 @@ const HomePage = () => {
               onClick={() => {
                 setSearchTerm('');
                 setSelectedCategory('All');
+                setSelectedCity('All Cities');
               }}
               variant="outline"
               className="border-gray-300 text-gray-700 hover:bg-gray-50"
