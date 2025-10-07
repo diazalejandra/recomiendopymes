@@ -7,12 +7,12 @@ import os
 import logging
 from pathlib import Path
 from typing import Optional
-from .models import (
+from models import (
     Business, BusinessCreate, BusinessUpdate, BusinessResponse,
     BusinessDetailResponse, Review, ReviewCreate, ReviewResponse,
     CategoryResponse, CityResponse
 )
-from .services.business_service import BusinessService
+from services.business_service import BusinessService
 
 
 ROOT_DIR = Path(__file__).parent
