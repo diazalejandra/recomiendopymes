@@ -423,6 +423,7 @@ const BusinessDetail = () => {
                 <ReviewForm 
                   businessName={business.name}
                   onReviewSubmit={handleReviewSubmit}
+                  isSubmitting={reviewsLoading}
                 />
               )}
             </div>
