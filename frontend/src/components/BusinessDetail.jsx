@@ -277,31 +277,30 @@ const BusinessDetail = () => {
               <div className="flex items-center space-x-1">
                 {renderStars(business.rating)}
               </div>
-              <span className="text-xl font-bold text-gray-900">{business.rating}</span>
-              <span className="text-gray-600">({business.reviews} reviews)</span>
+              <span className="text-xl font-bold text-gray-900">{business.rating || 'No rating'}</span>
+              <span className="text-gray-600">({business.reviews || 0} reviews)</span>
             </div>
-
-            {/* Business Details */}
-            <Card className="border-gray-200">
-              <CardContent className="p-6 space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div className="flex items-center space-x-3">
-                    <MapPin className="w-5 h-5 text-gray-500" />
-                    <div>
-                      <p className="text-sm text-gray-500">Location</p>
-                      <p className="font-semibold text-gray-900">{business.location}, {business.city}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <Calendar className="w-5 h-5 text-gray-500" />
-                    <div>
-                      <p className="text-sm text-gray-500">Established</p>
-                      <p className="font-semibold text-gray-900">{business.established}</p>
-                    </div>
-                  </div>
+            
+            {/* Location and Established - Main View Style */}
+            <div className="flex items-center text-sm text-gray-600 space-x-6">
+              {(business.location || business.city) && (
+                <div className="flex items-center space-x-1">
+                  <MapPin className="w-4 h-4" />
+                  <span>
+                    {business.location && business.city 
+                      ? `${business.location}, ${business.city}`
+                      : business.location || business.city || 'Location not specified'
+                    }
+                  </span>
                 </div>
-              </CardContent>
-            </Card>
+              )}
+              {business.established && (
+                <div className="flex items-center space-x-1">
+                  <Calendar className="w-4 h-4" />
+                  <span>Est. {business.established}</span>
+                </div>
+              )}
+            </div>
 
             {/* Description */}
             <div className="space-y-4">
