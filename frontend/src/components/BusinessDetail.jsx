@@ -4,6 +4,7 @@ import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
+import ReviewForm from './ReviewForm';
 import { 
   ArrowLeft, 
   Star, 
