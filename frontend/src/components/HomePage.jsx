@@ -304,7 +304,7 @@ const HomePage = () => {
             }`}>
               {businesses.map((business) => (
                 <div
-                  key={business.id}
+                  key={business._id}
                   className={viewMode === 'grid' ? "transform hover:scale-102 transition-transform duration-200" : ""}
                 >
                   <BusinessCard business={business} viewMode={viewMode} />
