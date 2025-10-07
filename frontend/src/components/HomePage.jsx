@@ -47,58 +47,82 @@ const HomePage = () => {
       {/* Search and Filters */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 border border-gray-100">
-          <div className="flex flex-col lg:flex-row gap-6 items-center">
+          <div className="flex flex-col gap-6">
             {/* Search Bar */}
-            <div className="relative flex-1 w-full">
+            <div className="relative w-full">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <Input
                 type="text"
-                placeholder="Search businesses, categories, or descriptions..."
+                placeholder="Search businesses, categories, cities, or descriptions..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10 pr-4 py-3 text-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-xl"
               />
             </div>
             
-            {/* Category Filter */}
-            <div className="flex items-center space-x-2">
-              <Filter className="w-5 h-5 text-gray-600" />
-              <div className="flex flex-wrap gap-2">
-                {categories.map((category) => (
-                  <Badge
-                    key={category}
-                    variant={selectedCategory === category ? "default" : "outline"}
-                    className={`cursor-pointer px-4 py-2 transition-all duration-200 ${
-                      selectedCategory === category
-                        ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                        : 'hover:bg-gray-100 text-gray-700 border-gray-300'
-                    }`}
-                    onClick={() => setSelectedCategory(category)}
-                  >
-                    {category}
-                  </Badge>
-                ))}
+            <div className="flex flex-col lg:flex-row gap-6 items-center">
+              {/* Category Filter */}
+              <div className="flex items-center space-x-2 flex-1">
+                <Filter className="w-5 h-5 text-gray-600" />
+                <span className="text-sm font-medium text-gray-700 whitespace-nowrap">Category:</span>
+                <div className="flex flex-wrap gap-2">
+                  {categories.map((category) => (
+                    <Badge
+                      key={category}
+                      variant={selectedCategory === category ? "default" : "outline"}
+                      className={`cursor-pointer px-3 py-1 transition-all duration-200 ${
+                        selectedCategory === category
+                          ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                          : 'hover:bg-gray-100 text-gray-700 border-gray-300'
+                      }`}
+                      onClick={() => setSelectedCategory(category)}
+                    >
+                      {category}
+                    </Badge>
+                  ))}
+                </div>
               </div>
-            </div>
-            
-            {/* View Toggle */}
-            <div className="flex items-center space-x-2 bg-gray-100 rounded-lg p-1">
-              <Button
-                variant={viewMode === 'grid' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setViewMode('grid')}
-                className={viewMode === 'grid' ? 'bg-white shadow-sm' : ''}
-              >
-                <Grid className="w-4 h-4" />
-              </Button>
-              <Button
-                variant={viewMode === 'list' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setViewMode('list')}
-                className={viewMode === 'list' ? 'bg-white shadow-sm' : ''}
-              >
-                <List className="w-4 h-4" />
-              </Button>
+
+              {/* Location Filter */}
+              <div className="flex items-center space-x-2 flex-1">
+                <span className="text-sm font-medium text-gray-700 whitespace-nowrap">City:</span>
+                <div className="flex flex-wrap gap-2">
+                  {cities.map((city) => (
+                    <Badge
+                      key={city}
+                      variant={selectedCity === city ? "default" : "outline"}
+                      className={`cursor-pointer px-3 py-1 transition-all duration-200 ${
+                        selectedCity === city
+                          ? 'bg-green-600 hover:bg-green-700 text-white'
+                          : 'hover:bg-gray-100 text-gray-700 border-gray-300'
+                      }`}
+                      onClick={() => setSelectedCity(city)}
+                    >
+                      {city}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+              
+              {/* View Toggle */}
+              <div className="flex items-center space-x-2 bg-gray-100 rounded-lg p-1">
+                <Button
+                  variant={viewMode === 'grid' ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={() => setViewMode('grid')}
+                  className={viewMode === 'grid' ? 'bg-white shadow-sm' : ''}
+                >
+                  <Grid className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant={viewMode === 'list' ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={() => setViewMode('list')}
+                  className={viewMode === 'list' ? 'bg-white shadow-sm' : ''}
+                >
+                  <List className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
           </div>
         </div>
