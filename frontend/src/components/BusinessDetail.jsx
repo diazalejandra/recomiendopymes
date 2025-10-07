@@ -22,9 +22,9 @@ import {
   Globe,
   ExternalLink,
   Heart,
-  Share2
+  Share2,
+  Loader2
 } from 'lucide-react';
-import { mockBusinesses } from '../mock';
 
 const BusinessDetail = () => {
   const { id } = useParams();
