@@ -153,7 +153,7 @@ const ReviewForm = ({ businessName, onReviewSubmit, isSubmitting: externalSubmit
               value={reviewText}
               onChange={(e) => setReviewText(e.target.value)}
               className="min-h-[120px] border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg resize-none"
-              disabled={isSubmitting}
+              disabled={submitting}
             />
             <div className="text-sm text-gray-500 text-right">
               {reviewText.length}/500 characters
