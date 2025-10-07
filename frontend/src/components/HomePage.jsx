@@ -165,7 +165,7 @@ const HomePage = () => {
                     )}
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    {(showAllCategories ? categories : categories.slice(0, window.innerWidth < 768 ? 3 : window.innerWidth < 1024 ? 5 : 7)).map((category) => (
+                    {(showAllCategories ? categories : categories.slice(0, filterLimits.categories)).map((category) => (
                       <Badge
                         key={category}
                         variant={selectedCategory === category ? "default" : "outline"}
