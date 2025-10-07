@@ -100,15 +100,59 @@ const BusinessDetail = () => {
     }
   };
   
-  if (!business) {
+  // Loading state
+  if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Business Not Found</h2>
-          <Button onClick={() => navigate('/')} variant="outline">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Catalog
-          </Button>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
+        <header className="bg-white shadow-sm border-b border-gray-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <Button 
+              onClick={() => navigate('/')} 
+              variant="ghost"
+              className="hover:bg-gray-100 transition-colors duration-200"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Catalog
+            </Button>
+          </div>
+        </header>
+        <div className="flex justify-center items-center py-32">
+          <Loader2 className="w-8 h-8 animate-spin text-blue-600 mr-3" />
+          <span className="text-gray-600">Loading business details...</span>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error || !business) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
+        <header className="bg-white shadow-sm border-b border-gray-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <Button 
+              onClick={() => navigate('/')} 
+              variant="ghost"
+              className="hover:bg-gray-100 transition-colors duration-200"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Catalog
+            </Button>
+          </div>
+        </header>
+        <div className="flex items-center justify-center py-32">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              {error || 'Business Not Found'}
+            </h2>
+            <p className="text-gray-600 mb-6">
+              The business you're looking for doesn't exist or couldn't be loaded.
+            </p>
+            <Button onClick={() => navigate('/')} variant="outline">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Catalog
+            </Button>
+          </div>
         </div>
       </div>
     );
