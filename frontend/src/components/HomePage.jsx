@@ -143,7 +143,7 @@ const HomePage = () => {
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-medium text-gray-700">Category:</span>
-                    {categories.length > (window.innerWidth < 768 ? 3 : window.innerWidth < 1024 ? 5 : 7) && (
+                    {categories.length > filterLimits.categories && (
                       <Button
                         variant="ghost"
                         size="sm"
