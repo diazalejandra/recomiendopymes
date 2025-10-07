@@ -255,7 +255,19 @@ const BusinessDetail = () => {
                 >
                   {business.category}
                 </Badge>
-                <h1 className="text-3xl font-bold text-gray-900">{business.name}</h1>
+                <div className="flex items-center space-x-4">
+                  <h1 className="text-3xl font-bold text-gray-900">{business.name}</h1>
+                  {/* Stars near title */}
+                  <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-1">
+                      {renderStars(business.rating)}
+                    </div>
+                    {business.rating > 0 && (
+                      <span className="text-xl font-bold text-gray-900">{business.rating}</span>
+                    )}
+                    <span className="text-gray-600">({business.reviews || 0} reviews)</span>
+                  </div>
+                </div>
               </div>
               <div className="flex space-x-2">
                 <Button
@@ -270,15 +282,6 @@ const BusinessDetail = () => {
                   <Share2 className="w-4 h-4" />
                 </Button>
               </div>
-            </div>
-
-            {/* Rating */}
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-1">
-                {renderStars(business.rating)}
-              </div>
-              <span className="text-xl font-bold text-gray-900">{business.rating || 'No rating'}</span>
-              <span className="text-gray-600">({business.reviews || 0} reviews)</span>
             </div>
             
             {/* Location and Established - Main View Style */}
