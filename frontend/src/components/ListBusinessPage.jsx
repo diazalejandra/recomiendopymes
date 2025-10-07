@@ -412,7 +412,7 @@ const ListBusinessPage = () => {
                   
                   <div>
                     <Label className="text-base font-medium flex items-center space-x-2">
-                      <Globe className="w-4 h-4" />
+                      <TikTokIcon className="w-4 h-4" />
                       <span>TikTok</span>
                     </Label>
                     <Input
