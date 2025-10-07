@@ -193,7 +193,8 @@ export const categories = [
   'Arts & Crafts',
   'Home & Garden',
   'Technology',
-  'Fashion'
+  'Fashion',
+  'Health & Wellness'
 ];
 
 // Cities for location filtering
