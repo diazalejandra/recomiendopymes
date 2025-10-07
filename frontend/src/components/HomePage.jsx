@@ -128,12 +128,18 @@ const HomePage = () => {
         </div>
 
         {/* Results Info */}
-        <div className="mb-6">
+        <div className="mb-6 flex items-center justify-between">
           <p className="text-gray-600 text-lg">
             Found <span className="font-semibold text-gray-900">{filteredBusinesses.length}</span> businesses
             {selectedCategory !== 'All' && (
               <span> in <span className="font-semibold text-blue-600">{selectedCategory}</span></span>
             )}
+            {selectedCity !== 'All Cities' && (
+              <span> in <span className="font-semibold text-green-600">{selectedCity}</span></span>
+            )}
+          </p>
+          <p className="text-sm text-gray-500">
+            ⭐ Sorted by highest rated first
           </p>
         </div>
 
