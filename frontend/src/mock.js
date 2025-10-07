@@ -43,6 +43,7 @@ export const mockBusinesses = [
     },
     owner: 'Sarah Chen',
     location: 'Arts Quarter',
+    city: 'Los Angeles',
     established: '2020'
   },
   {
