@@ -137,7 +137,7 @@ const ReviewForm = ({ businessName, onReviewSubmit, isSubmitting: externalSubmit
                 value={reviewerName}
                 onChange={(e) => setReviewerName(e.target.value)}
                 className="pl-10 py-3 border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-lg"
-                disabled={isSubmitting}
+                disabled={submitting}
               />
             </div>
           </div>
