@@ -204,7 +204,10 @@ const BusinessCard = ({ business, viewMode = 'grid' }) => {
         
         <div className="flex items-center justify-between pt-2 border-t border-gray-100">
           <div className="flex space-x-2">
-            {Object.entries(business.socialLinks).map(([platform, url]) => (
+            {Object.entries(business.socialLinks)
+              .filter(([platform, url]) => url && url.trim() !== '' && 
+                ['website', 'instagram', 'facebook', 'tiktok', 'twitter', 'youtube'].includes(platform))
+              .map(([platform, url]) => (
               <Button
                 key={platform}
                 variant="outline"
