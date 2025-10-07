@@ -20,6 +20,7 @@ export const mockBusinesses = [
     },
     owner: 'Maria Rodriguez',
     location: 'Downtown District',
+    city: 'San Francisco',
     established: '2019'
   },
   {
