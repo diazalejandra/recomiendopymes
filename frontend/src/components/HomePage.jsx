@@ -27,6 +27,8 @@ const HomePage = () => {
   const [totalPages, setTotalPages] = useState(0);
   
   const { toast } = useToast();
+  const { width } = useWindowSize();
+  const filterLimits = getFilterLimits(width);
 
   // Fetch categories and cities on component mount
   useEffect(() => {
