@@ -203,8 +203,8 @@ businesses_data = [
             "tiktok": "https://tiktok.com/@digitalmarketingpro"
         },
         "owner": "Sarah Kim",
-        "city": "Miami",
-        "established": ""
+        "city": "Miami"
+        # No location and established date provided
     },
     {
         "name": "Local Handyman Services",
