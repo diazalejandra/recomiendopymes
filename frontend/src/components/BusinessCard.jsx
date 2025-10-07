@@ -60,11 +60,11 @@ const BusinessCard = ({ business, viewMode = 'grid' }) => {
           {/* Mobile: Stack vertically, Desktop: Side by side */}
           <div className="flex flex-col sm:flex-row">
             {/* Image */}
-            <div className="relative w-full sm:w-48 h-40 sm:h-32 flex-shrink-0 overflow-hidden rounded-t-xl sm:rounded-t-none sm:rounded-l-xl">
+            <div className="relative w-full sm:w-48 h-48 sm:h-full flex-shrink-0 overflow-hidden rounded-t-xl sm:rounded-t-none sm:rounded-l-xl">
               <img
                 src={business.image}
                 alt={business.name}
-                className="w-full h-full object-cover cursor-pointer group-hover:scale-105 transition-transform duration-300"
+                className="w-full h-full object-cover object-center cursor-pointer group-hover:scale-105 transition-transform duration-300"
                 onClick={handleImageClick}
               />
               <div className="absolute top-2 right-2">
