@@ -434,12 +434,7 @@ const HomePage = () => {
               </div>
             )}
             
-            {/* End of Results Indicator */}
-            {!hasMore && businesses.length > 0 && (
-              <div className="text-center py-8">
-                <p className="text-gray-500">You've reached the end of the results</p>
-              </div>
-            )}
+            {/* End of Results - Hidden */}
           </>
         )}
 
