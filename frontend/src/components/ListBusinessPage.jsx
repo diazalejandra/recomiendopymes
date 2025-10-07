@@ -411,6 +411,19 @@ const ListBusinessPage = () => {
                   
                   <div>
                     <Label className="text-base font-medium flex items-center space-x-2">
+                      <Globe className="w-4 h-4" />
+                      <span>TikTok</span>
+                    </Label>
+                    <Input
+                      value={formData.socialLinks.tiktok}
+                      onChange={(e) => handleInputChange('socialLinks.tiktok', e.target.value)}
+                      placeholder="https://tiktok.com/@yourbusiness"
+                      className="mt-1"
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label className="text-base font-medium flex items-center space-x-2">
                       <Twitter className="w-4 h-4" />
                       <span>Twitter</span>
                     </Label>
@@ -418,6 +431,19 @@ const ListBusinessPage = () => {
                       value={formData.socialLinks.twitter}
                       onChange={(e) => handleInputChange('socialLinks.twitter', e.target.value)}
                       placeholder="https://twitter.com/yourbusiness"
+                      className="mt-1"
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label className="text-base font-medium flex items-center space-x-2">
+                      <Youtube className="w-4 h-4" />
+                      <span>YouTube</span>
+                    </Label>
+                    <Input
+                      value={formData.socialLinks.youtube}
+                      onChange={(e) => handleInputChange('socialLinks.youtube', e.target.value)}
+                      placeholder="https://youtube.com/@yourbusiness"
                       className="mt-1"
                     />
                   </div>
