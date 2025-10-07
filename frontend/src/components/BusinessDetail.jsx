@@ -29,6 +29,8 @@ const BusinessDetail = () => {
   const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState(0);
   const [isFavorited, setIsFavorited] = useState(false);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [newReviews, setNewReviews] = useState([]);
   
   const business = mockBusinesses.find(b => b.id === id);
   
