@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
-import { Search, Filter, Grid, List } from 'lucide-react';
+import { Search, Filter, Grid, List, ChevronDown, ChevronUp } from 'lucide-react';
 import BusinessCard from './BusinessCard';
 import { mockBusinesses, categories, cities } from '../mock';
 
