@@ -366,34 +366,56 @@ const BusinessDetail = () => {
               <div className="bg-gray-50 rounded-lg p-4">
                 <div className="flex items-center space-x-4">
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-gray-900">{business.rating}</div>
-                    <div className="flex items-center justify-center space-x-1 mb-1">
-                      {renderStars(business.rating)}
-                    </div>
+                    {business.rating > 0 ? (
+                      <>
+                        <div className="text-3xl font-bold text-gray-900">{business.rating}</div>
+                        <div className="flex items-center justify-center space-x-1 mb-1">
+                          {renderStars(business.rating)}
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="text-lg font-medium text-gray-500 mb-2">No ratings yet</div>
+                        <div className="flex items-center justify-center space-x-1 mb-1">
+                          {Array.from({length: 5}).map((_, i) => (
+                            <Star key={i} className="w-4 h-4 text-gray-300" />
+                          ))}
+                        </div>
+                      </>
+                    )}
                     <div className="text-sm text-gray-600">{business.reviews} reviews</div>
                   </div>
-                  <div className="flex-1">
-                    <div className="text-sm text-gray-600 mb-2">Recent customer feedback:</div>
-                    <div className="space-y-1">
-                      <div className="flex items-center space-x-2">
-                        <div className="flex items-center space-x-1">
-                          {Array.from({length: 5}).map((_, i) => (
-                            <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
-                          ))}
+                  {business.rating > 0 && (
+                    <div className="flex-1">
+                      <div className="text-sm text-gray-600 mb-2">Recent customer feedback:</div>
+                      <div className="space-y-1">
+                        <div className="flex items-center space-x-2">
+                          <div className="flex items-center space-x-1">
+                            {Array.from({length: 5}).map((_, i) => (
+                              <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
+                            ))}
+                          </div>
+                          <div className="text-sm">Excellent service and quality!</div>
                         </div>
-                        <div className="text-sm">Excellent service and quality!</div>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <div className="flex items-center space-x-1">
-                          {Array.from({length: 4}).map((_, i) => (
-                            <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
-                          ))}
-                          <Star className="w-3 h-3 text-gray-300" />
+                        <div className="flex items-center space-x-2">
+                          <div className="flex items-center space-x-1">
+                            {Array.from({length: 4}).map((_, i) => (
+                              <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
+                            ))}
+                            <Star className="w-3 h-3 text-gray-300" />
+                          </div>
+                          <div className="text-sm">Great experience, highly recommend!</div>
                         </div>
-                        <div className="text-sm">Great experience, highly recommend!</div>
                       </div>
                     </div>
-                  </div>
+                  )}
+                  {business.rating === 0 && (
+                    <div className="flex-1">
+                      <div className="text-sm text-gray-600">
+                        Be the first to leave a review for this business!
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
