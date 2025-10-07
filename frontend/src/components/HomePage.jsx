@@ -203,7 +203,7 @@ const HomePage = () => {
                         ) : (
                           <>
                             <ChevronDown className="w-4 h-4 mr-1" />
-                            Show All ({cities.length - (window.innerWidth < 768 ? 1 : window.innerWidth < 1024 ? 3 : 5)} more)
+                            Show All ({cities.length - filterLimits.cities} more)
                           </>
                         )}
                       </Button>
