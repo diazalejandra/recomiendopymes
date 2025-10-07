@@ -3,7 +3,10 @@ from bson import ObjectId
 from typing import List, Optional, Dict, Any
 import re
 from datetime import datetime
-from ..models import Business, BusinessCreate, BusinessUpdate, Review, ReviewCreate
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from models import Business, BusinessCreate, BusinessUpdate, Review, ReviewCreate
 
 class BusinessService:
     def __init__(self, db: AsyncIOMotorDatabase):
