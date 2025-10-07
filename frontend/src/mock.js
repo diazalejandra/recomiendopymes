@@ -149,3 +149,11 @@ export const categories = [
   'Technology',
   'Fashion'
 ];
+
+// Cities for location filtering
+export const cities = [
+  'All Cities',
+  'San Francisco',
+  'Los Angeles', 
+  'Austin'
+];
