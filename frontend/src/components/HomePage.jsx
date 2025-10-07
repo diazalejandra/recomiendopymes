@@ -81,14 +81,9 @@ const HomePage = () => {
         }
         
         const response = await businessAPI.getBusinesses(params);
-        if (currentPage === 1) {
-          setBusinesses(response.businesses);
-        } else {
-          setBusinesses(prev => [...prev, ...response.businesses]);
-        }
+        setBusinesses(response.businesses);
         setTotalResults(response.total);
         setTotalPages(response.total_pages);
-        setHasMore(response.page < response.total_pages);
       } catch (error) {
         const errorInfo = handleApiError(error, 'Failed to load businesses');
         setError(errorInfo.message);
