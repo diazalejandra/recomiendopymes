@@ -166,7 +166,7 @@ const ReviewForm = ({ businessName, onReviewSubmit, isSubmitting: externalSubmit
             disabled={!rating || !reviewText.trim() || !reviewerName.trim() || submitting}
             className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isSubmitting ? (
+            {submitting ? (
               <div className="flex items-center justify-center space-x-2">
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                 <span>Submitting Review...</span>
