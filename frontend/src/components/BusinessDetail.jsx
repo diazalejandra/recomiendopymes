@@ -25,6 +25,7 @@ import {
   Share2,
   Loader2
 } from 'lucide-react';
+import TikTokIcon from './icons/TikTokIcon';
 
 const BusinessDetail = () => {
   const { id } = useParams();
