@@ -4,7 +4,7 @@ import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Search, Filter, Grid, List } from 'lucide-react';
 import BusinessCard from './BusinessCard';
-import { mockBusinesses, categories } from '../mock';
+import { mockBusinesses, categories, cities } from '../mock';
 
 const HomePage = () => {
   const [searchTerm, setSearchTerm] = useState('');
