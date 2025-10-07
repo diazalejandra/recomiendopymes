@@ -6,6 +6,7 @@ import { Search, Filter, Grid, List, ChevronDown, ChevronUp, Loader2 } from 'luc
 import BusinessCard from './BusinessCard';
 import { businessAPI, metaAPI, handleApiError } from '../utils/api';
 import { useToast } from '../hooks/use-toast';
+import { useWindowSize, getFilterLimits } from '../hooks/useWindowSize';
 
 const HomePage = () => {
   const [searchTerm, setSearchTerm] = useState('');
