@@ -167,15 +167,65 @@ const HomePage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="text-center space-y-4">
-            <h1 className="text-4xl font-bold text-gray-900">
-              Entrepreneur <span className="text-blue-600">Catalog</span>
+      <header className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800">
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20"
+          style={{
+            backgroundImage: "url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1200&h=600&fit=crop')"
+          }}
+        ></div>
+        
+        {/* Content */}
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          {/* Top Bar with Social Media */}
+          <div className="flex justify-between items-center mb-8">
+            <div className="text-white/80 text-sm">
+              Connect with entrepreneurs
+            </div>
+            <div className="flex space-x-4">
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" 
+                 className="text-white/80 hover:text-white transition-colors duration-200">
+                <Instagram className="w-5 h-5" />
+              </a>
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer"
+                 className="text-white/80 hover:text-white transition-colors duration-200">
+                <Facebook className="w-5 h-5" />
+              </a>
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer"
+                 className="text-white/80 hover:text-white transition-colors duration-200">
+                <Twitter className="w-5 h-5" />
+              </a>
+            </div>
+          </div>
+
+          <div className="text-center space-y-6">
+            <h1 className="text-5xl md:text-6xl font-bold text-white">
+              Entrepreneur <span className="text-yellow-400">Catalog</span>
             </h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Discover amazing local businesses and connect with passionate entrepreneurs in your community
+            <p className="text-xl text-white/90 max-w-3xl mx-auto leading-relaxed">
+              Discover amazing local businesses and connect with passionate entrepreneurs in your community. 
+              Support local, discover unique services, and build meaningful connections.
             </p>
+            
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6 pt-6">
+              <Button 
+                size="lg"
+                className="bg-yellow-500 hover:bg-yellow-400 text-black font-semibold px-8 py-4 text-lg transition-colors duration-200"
+                onClick={() => navigate('/list-business')}
+              >
+                List Your Business
+              </Button>
+              <Button 
+                size="lg"
+                variant="outline"
+                className="border-2 border-white text-white hover:bg-white hover:text-black font-semibold px-8 py-4 text-lg transition-colors duration-200"
+                onClick={() => document.getElementById('businesses-section').scrollIntoView({ behavior: 'smooth' })}
+              >
+                Explore Businesses
+              </Button>
+            </div>
           </div>
         </div>
       </header>
