@@ -38,35 +38,20 @@ const ReviewForm = ({ businessName, onReviewSubmit }) => {
     setIsSubmitting(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      const newReview = {
-        id: Date.now().toString(),
+      const reviewData = {
         rating,
         text: reviewText,
-        reviewer: reviewerName,
-        date: new Date().toLocaleDateString(),
-        businessName
+        reviewer: reviewerName
       };
       
-      onReviewSubmit(newReview);
+      await onReviewSubmit(reviewData);
       
-      // Reset form
+      // Reset form only if submission was successful
       setRating(0);
       setReviewText('');
       setReviewerName('');
-      
-      toast({
-        title: "Review Submitted! 🌟",
-        description: "Thank you for your feedback! Your review will help other customers.",
-      });
     } catch (error) {
-      toast({
-        title: "Submission Failed",
-        description: "There was an error submitting your review. Please try again.",
-        variant: "destructive",
-      });
+      // Error handling is done in parent component
     } finally {
       setIsSubmitting(false);
     }
