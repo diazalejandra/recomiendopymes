@@ -40,15 +40,12 @@ const BusinessCard = ({ business, viewMode = 'grid' }) => {
 
   const getSocialIcon = (platform) => {
     const iconMap = {
+      website: Globe,
       instagram: Instagram,
       facebook: Facebook,
+      tiktok: Globe, // Using Globe for TikTok as lucide doesn't have TikTok icon
       twitter: Twitter,
-      linkedin: Linkedin,
-      github: Github,
-      youtube: Youtube,
-      website: Globe,
-      etsy: Globe,
-      pinterest: Globe
+      youtube: Youtube
     };
     
     const Icon = iconMap[platform] || Globe;
