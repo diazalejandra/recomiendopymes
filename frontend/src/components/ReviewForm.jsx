@@ -7,7 +7,7 @@ import { Label } from './ui/label';
 import { Star, Send, User } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 
-const ReviewForm = ({ businessName, onReviewSubmit }) => {
+const ReviewForm = ({ businessName, onReviewSubmit, isSubmitting: externalSubmitting }) => {
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [reviewText, setReviewText] = useState('');
