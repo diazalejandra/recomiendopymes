@@ -228,6 +228,95 @@ const BusinessDetail = () => {
                 ))}
               </div>
             </div>
+
+            <Separator />
+
+            {/* Review Section */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xl font-bold text-gray-900">Reviews & Ratings</h3>
+                <Button 
+                  onClick={() => setShowReviewForm(!showReviewForm)}
+                  className="bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-200"
+                >
+                  {showReviewForm ? 'Cancel Review' : 'Write a Review'}
+                </Button>
+              </div>
+              
+              {/* Current Rating Summary */}
+              <div className="bg-gray-50 rounded-lg p-4">
+                <div className="flex items-center space-x-4">
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-gray-900">{business.rating}</div>
+                    <div className="flex items-center justify-center space-x-1 mb-1">
+                      {renderStars(business.rating)}
+                    </div>
+                    <div className="text-sm text-gray-600">{business.reviews} reviews</div>
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-sm text-gray-600 mb-2">Recent customer feedback:</div>
+                    <div className="space-y-1">
+                      <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-1">
+                          {Array.from({length: 5}).map((_, i) => (
+                            <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
+                          ))}
+                        </div>
+                        <div className="text-sm">Excellent service and quality!</div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-1">
+                          {Array.from({length: 4}).map((_, i) => (
+                            <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
+                          ))}
+                          <Star className="w-3 h-3 text-gray-300" />
+                        </div>
+                        <div className="text-sm">Great experience, highly recommend!</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* New Reviews Display */}
+              {newReviews.length > 0 && (
+                <div className="space-y-3">
+                  <h4 className="text-lg font-semibold text-gray-900">Recent Reviews</h4>
+                  {newReviews.map((review) => (
+                    <div key={review.id} className="bg-white border border-gray-200 rounded-lg p-4">
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex items-center space-x-2">
+                          <div className="flex items-center space-x-1">
+                            {Array.from({length: 5}).map((_, i) => (
+                              <Star 
+                                key={i} 
+                                className={`w-4 h-4 ${
+                                  i < review.rating ? 'fill-amber-400 text-amber-400' : 'text-gray-300'
+                                }`} 
+                              />
+                            ))}
+                          </div>
+                          <span className="font-medium text-gray-900">{review.reviewer}</span>
+                        </div>
+                        <span className="text-sm text-gray-500">{review.date}</span>
+                      </div>
+                      <p className="text-gray-700">{review.text}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+              
+              {/* Review Form */}
+              {showReviewForm && (
+                <ReviewForm 
+                  businessName={business.name}
+                  onReviewSubmit={(review) => {
+                    setNewReviews([review, ...newReviews]);
+                    setShowReviewForm(false);
+                  }}
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>
