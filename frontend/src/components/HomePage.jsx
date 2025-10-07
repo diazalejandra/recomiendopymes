@@ -64,8 +64,7 @@ const HomePage = () => {
             
             <div className="flex flex-col gap-4">
               {/* Category Filter */}
-              <div className="flex items-start space-x-2">
-                <Filter className="w-5 h-5 text-gray-600 mt-1" />
+              <div className="flex items-start">
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-medium text-gray-700">Category:</span>
