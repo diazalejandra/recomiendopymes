@@ -181,23 +181,34 @@ const BusinessCard = ({ business, viewMode = 'grid' }) => {
             <div className="flex items-center space-x-1">
               {renderStars(business.rating)}
             </div>
-            <span className="text-sm font-semibold text-gray-700">
-              {business.rating}
-            </span>
+            {business.rating > 0 && (
+              <span className="text-sm font-semibold text-gray-700">
+                {business.rating}
+              </span>
+            )}
             <span className="text-sm text-gray-500">
               ({business.reviews} reviews)
             </span>
           </div>
           
           <div className="flex items-center text-sm text-gray-600 space-x-4">
-            <div className="flex items-center space-x-1">
-              <MapPin className="w-4 h-4" />
-              <span>{business.location}, {business.city}</span>
-            </div>
-            <div className="flex items-center space-x-1">
-              <Calendar className="w-4 h-4" />
-              <span>Est. {business.established}</span>
-            </div>
+            {(business.location || business.city) && (
+              <div className="flex items-center space-x-1">
+                <MapPin className="w-4 h-4" />
+                <span>
+                  {business.location && business.city 
+                    ? `${business.location}, ${business.city}`
+                    : business.location || business.city
+                  }
+                </span>
+              </div>
+            )}
+            {business.established && (
+              <div className="flex items-center space-x-1">
+                <Calendar className="w-4 h-4" />
+                <span>Est. {business.established}</span>
+              </div>
+            )}
           </div>
         </div>
         
