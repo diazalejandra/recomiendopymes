@@ -315,10 +315,7 @@ const BusinessDetail = () => {
               {showReviewForm && (
                 <ReviewForm 
                   businessName={business.name}
-                  onReviewSubmit={(review) => {
-                    setNewReviews([review, ...newReviews]);
-                    setShowReviewForm(false);
-                  }}
+                  onReviewSubmit={handleReviewSubmit}
                 />
               )}
             </div>
