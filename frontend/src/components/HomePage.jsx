@@ -155,7 +155,7 @@ const HomePage = () => {
                         ) : (
                           <>
                             <ChevronDown className="w-4 h-4 mr-1" />
-                            Show All ({categories.length - 3} more)
+                            Show All ({categories.length - (window.innerWidth < 768 ? 2 : window.innerWidth < 1024 ? 4 : 6)} more)
                           </>
                         )}
                       </Button>
