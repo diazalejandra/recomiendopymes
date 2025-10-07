@@ -7,6 +7,7 @@ import BusinessCard from './BusinessCard';
 import { businessAPI, metaAPI, handleApiError } from '../utils/api';
 import { useToast } from '../hooks/use-toast';
 import { useWindowSize, getFilterLimits } from '../hooks/useWindowSize';
+import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
 
 const HomePage = () => {
   const [searchTerm, setSearchTerm] = useState('');
