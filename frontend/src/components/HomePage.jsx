@@ -268,30 +268,110 @@ const HomePage = () => {
           )}
         </div>
 
-        {/* Business Grid/List */}
-        {filteredBusinesses.length > 0 ? (
-          <div className={`${
-            viewMode === 'grid'
-              ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
-              : 'space-y-4'
-          }`}>
-            {filteredBusinesses.map((business) => (
-              <div
-                key={business.id}
-                className={viewMode === 'grid' ? "transform hover:scale-102 transition-transform duration-200" : ""}
-              >
-                <BusinessCard business={business} viewMode={viewMode} />
-              </div>
-            ))}
+        {/* Loading State */}
+        {loading && (
+          <div className="flex justify-center items-center py-16">
+            <Loader2 className="w-8 h-8 animate-spin text-blue-600 mr-3" />
+            <span className="text-gray-600">Loading businesses...</span>
           </div>
-        ) : (
+        )}
+
+        {/* Error State */}
+        {error && !loading && (
+          <div className="text-center py-16">
+            <div className="w-24 h-24 mx-auto mb-6 bg-red-100 rounded-full flex items-center justify-center">
+              <Search className="w-12 h-12 text-red-400" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Something went wrong</h3>
+            <p className="text-gray-600 mb-6">{error}</p>
+            <Button 
+              onClick={() => window.location.reload()}
+              variant="outline"
+              className="border-gray-300 text-gray-700 hover:bg-gray-50"
+            >
+              Try Again
+            </Button>
+          </div>
+        )}
+
+        {/* Business Grid/List */}
+        {!loading && !error && businesses.length > 0 && (
+          <>
+            <div className={`${
+              viewMode === 'grid'
+                ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
+                : 'space-y-4'
+            }`}>
+              {businesses.map((business) => (
+                <div
+                  key={business.id}
+                  className={viewMode === 'grid' ? "transform hover:scale-102 transition-transform duration-200" : ""}
+                >
+                  <BusinessCard business={business} viewMode={viewMode} />
+                </div>
+              ))}
+            </div>
+            
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center space-x-2 mt-12">
+                <Button
+                  variant="outline"
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1}
+                  className="px-4"
+                >
+                  Previous
+                </Button>
+                
+                <div className="flex space-x-2">
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    let pageNum;
+                    if (totalPages <= 5) {
+                      pageNum = i + 1;
+                    } else if (currentPage <= 3) {
+                      pageNum = i + 1;
+                    } else if (currentPage >= totalPages - 2) {
+                      pageNum = totalPages - 4 + i;
+                    } else {
+                      pageNum = currentPage - 2 + i;
+                    }
+                    
+                    return (
+                      <Button
+                        key={pageNum}
+                        variant={currentPage === pageNum ? "default" : "outline"}
+                        onClick={() => setCurrentPage(pageNum)}
+                        className="w-10 h-10 p-0"
+                      >
+                        {pageNum}
+                      </Button>
+                    );
+                  })}
+                </div>
+                
+                <Button
+                  variant="outline"
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages}
+                  className="px-4"
+                >
+                  Next
+                </Button>
+              </div>
+            )}
+          </>
+        )}
+
+        {/* No Results */}
+        {!loading && !error && businesses.length === 0 && (
           <div className="text-center py-16">
             <div className="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
               <Search className="w-12 h-12 text-gray-400" />
             </div>
             <h3 className="text-xl font-semibold text-gray-900 mb-2">No businesses found</h3>
             <p className="text-gray-600 mb-6">
-              Try adjusting your search terms or category filter
+              Try adjusting your search terms or filters
             </p>
             <Button 
               onClick={() => {
