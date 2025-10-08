@@ -589,6 +589,185 @@ class APITester:
                         f"Rating or count not updated properly. Rating: {initial_rating} → {updated_rating}, Reviews: {initial_review_count} → {updated_review_count}")
         return False
         
+    def test_new_business_attributes(self):
+        """Test that new business attributes (business_type and delivery_type) are properly stored and returned"""
+        print("\n🔍 Testing New Business Attributes (business_type and delivery_type)...")
+        
+        response = self.make_request("GET", "/businesses")
+        
+        if response and response.status_code == 200:
+            data = response.json()
+            businesses = data.get("businesses", [])
+            
+            if not businesses:
+                self.log_test("New Business Attributes", False, "No businesses found to test attributes")
+                return False
+            
+            # Check if businesses have the new attributes
+            businesses_with_attributes = 0
+            valid_business_types = ["online", "physical", "both"]
+            valid_delivery_types = ["local", "nationwide", "pickup_only", "local_and_pickup"]
+            
+            for business in businesses:
+                has_business_type = "business_type" in business
+                has_delivery_type = "delivery_type" in business
+                
+                if has_business_type and has_delivery_type:
+                    businesses_with_attributes += 1
+                    
+                    # Validate the values are from expected options
+                    business_type = business.get("business_type")
+                    delivery_type = business.get("delivery_type")
+                    
+                    if business_type not in valid_business_types:
+                        self.log_test("New Business Attributes", False, 
+                                    f"Invalid business_type '{business_type}' in business '{business.get('name')}'")
+                        return False
+                        
+                    if delivery_type not in valid_delivery_types:
+                        self.log_test("New Business Attributes", False, 
+                                    f"Invalid delivery_type '{delivery_type}' in business '{business.get('name')}'")
+                        return False
+            
+            if businesses_with_attributes > 0:
+                self.log_test("New Business Attributes", True, 
+                            f"Found {businesses_with_attributes}/{len(businesses)} businesses with new attributes")
+                return True
+            else:
+                self.log_test("New Business Attributes", False, "No businesses found with new attributes")
+                return False
+        else:
+            status_code = response.status_code if response else "No response"
+            self.log_test("New Business Attributes", False, f"Status code: {status_code}")
+        return False
+        
+    def test_business_detail_new_attributes(self):
+        """Test that business detail endpoint returns new attributes"""
+        print("\n🔍 Testing Business Detail New Attributes...")
+        
+        if not self.business_ids:
+            self.log_test("Business Detail New Attributes", False, "No business IDs available")
+            return False
+            
+        business_id = self.business_ids[0]
+        response = self.make_request("GET", f"/businesses/{business_id}")
+        
+        if response and response.status_code == 200:
+            data = response.json()
+            business = data.get("business", {})
+            
+            has_business_type = "business_type" in business
+            has_delivery_type = "delivery_type" in business
+            
+            if has_business_type and has_delivery_type:
+                business_type = business.get("business_type")
+                delivery_type = business.get("delivery_type")
+                
+                self.log_test("Business Detail New Attributes", True, 
+                            f"Business detail includes new attributes: business_type='{business_type}', delivery_type='{delivery_type}'")
+                return True
+            else:
+                missing_attrs = []
+                if not has_business_type:
+                    missing_attrs.append("business_type")
+                if not has_delivery_type:
+                    missing_attrs.append("delivery_type")
+                    
+                self.log_test("Business Detail New Attributes", False, 
+                            f"Missing attributes in business detail: {', '.join(missing_attrs)}")
+                return False
+        else:
+            status_code = response.status_code if response else "No response"
+            self.log_test("Business Detail New Attributes", False, f"Status code: {status_code}")
+        return False
+        
+    def test_database_seeding_verification(self):
+        """Test that database seeding completed successfully with 16 businesses"""
+        print("\n🔍 Testing Database Seeding Verification...")
+        
+        response = self.make_request("GET", "/businesses?limit=50")  # Get more than 16 to verify count
+        
+        if response and response.status_code == 200:
+            data = response.json()
+            businesses = data.get("businesses", [])
+            total = data.get("total", 0)
+            
+            if total >= 16:
+                # Check that businesses have varied attributes indicating proper seeding
+                business_types = set()
+                delivery_types = set()
+                cities = set()
+                
+                for business in businesses:
+                    if "business_type" in business:
+                        business_types.add(business["business_type"])
+                    if "delivery_type" in business:
+                        delivery_types.add(business["delivery_type"])
+                    if "city" in business:
+                        cities.add(business["city"])
+                
+                # Verify we have variety in the data (indicating proper seeding)
+                has_variety = len(business_types) > 1 and len(delivery_types) > 1 and len(cities) > 1
+                
+                if has_variety:
+                    self.log_test("Database Seeding Verification", True, 
+                                f"Database properly seeded with {total} businesses, {len(business_types)} business types, {len(delivery_types)} delivery types, {len(cities)} cities")
+                    return True
+                else:
+                    self.log_test("Database Seeding Verification", False, 
+                                f"Database seeded but lacks variety: {len(business_types)} business types, {len(delivery_types)} delivery types")
+                    return False
+            else:
+                self.log_test("Database Seeding Verification", False, 
+                            f"Expected at least 16 businesses, found {total}")
+                return False
+        else:
+            status_code = response.status_code if response else "No response"
+            self.log_test("Database Seeding Verification", False, f"Status code: {status_code}")
+        return False
+        
+    def test_optional_fields_handling(self):
+        """Test that new fields are optional and don't break existing functionality"""
+        print("\n🔍 Testing Optional Fields Handling...")
+        
+        # Test creating a business without the new fields (should use defaults)
+        business_data = {
+            "name": "Test Business for Optional Fields",
+            "category": "Technology",
+            "description": "This is a test business to verify optional field handling works correctly.",
+            "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop",
+            "owner": "Test Owner",
+            "city": "Test City"
+            # Intentionally omitting business_type and delivery_type
+        }
+        
+        response = self.make_request("POST", "/businesses", json=business_data)
+        
+        if response and response.status_code == 200:
+            created_business = response.json()
+            
+            # Check that defaults were applied
+            has_default_business_type = created_business.get("business_type") == "physical"
+            has_default_delivery_type = created_business.get("delivery_type") == "local"
+            
+            if has_default_business_type and has_default_delivery_type:
+                # Clean up - delete the test business
+                business_id = created_business.get("_id")
+                if business_id:
+                    self.make_request("DELETE", f"/businesses/{business_id}")
+                
+                self.log_test("Optional Fields Handling", True, 
+                            "New fields are optional with proper defaults: business_type='physical', delivery_type='local'")
+                return True
+            else:
+                self.log_test("Optional Fields Handling", False, 
+                            f"Default values not applied correctly: business_type='{created_business.get('business_type')}', delivery_type='{created_business.get('delivery_type')}'")
+                return False
+        else:
+            status_code = response.status_code if response else "No response"
+            self.log_test("Optional Fields Handling", False, f"Failed to create test business, status code: {status_code}")
+        return False
+        
     def run_all_tests(self):
         """Run all tests in sequence"""
         print("🚀 Starting Entrepreneur Catalog Backend API Tests")
