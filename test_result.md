@@ -381,7 +381,13 @@ metadata:
 
 test_plan:
   current_focus:
-    - "All backend API endpoints tested"
+    - "Fix Syntax Errors in seed_data.py"
+    - "Backend Integration for New Business Attributes"
+    - "Reorder BusinessDetail Display"
+    - "Fix List View Images (Squared View)"
+    - "Dynamic Recent Customer Feedback"
+    - "Business Application Confirmation View"
+    - "Add Footer to Business Detail View"
   stuck_tasks: []
   test_all: true
   test_priority: "high_first"
