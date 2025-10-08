@@ -127,6 +127,8 @@ businesses_data = [
         "location": "Fashion District",
         "city": "Los Angeles",
         "established": "2017"
+        "business_type": "both",
+        "delivery_type": "pickup_only"
     },
     {
         "name": "Gourmet Food Truck",
