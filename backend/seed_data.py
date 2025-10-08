@@ -241,7 +241,7 @@ businesses_data = [
         "owner": "Mike Rodriguez",
         "location": "Service Area",
         "city": "Denver",
-        "established": "2022"
+        "established": "2022",
         "business_type": "physical",
         "delivery_type": "local"
     },
