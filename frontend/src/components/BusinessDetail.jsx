@@ -283,26 +283,39 @@ const BusinessDetail = () => {
               </div>
             </div>
             
-            {/* Location and Established - Main View Style */}
-            <div className="flex items-center text-sm text-gray-600 space-x-6">
-              {(business.location || business.city) && (
-                <div className="flex items-center space-x-1">
-                  <MapPin className="w-4 h-4" />
-                  <span>
-                    {business.location && business.city 
-                      ? `${business.location}, ${business.city}`
-                      : business.location || business.city || 'Location not specified'
-                    }
-                  </span>
+            {/* Location and Established */}
+            <Card className="border-gray-200 bg-gray-50">
+              <CardContent className="p-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Location */}
+                  {(business.location || business.city) && (
+                    <div className="flex items-center space-x-3">
+                      <MapPin className="w-5 h-5 text-gray-500" />
+                      <div>
+                        <p className="text-sm text-gray-500">Location</p>
+                        <p className="font-semibold text-gray-900">
+                          {business.location && business.city 
+                            ? `${business.location}, ${business.city}`
+                            : business.location || business.city || 'Location not specified'
+                          }
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Established */}
+                  {business.established && (
+                    <div className="flex items-center space-x-3">
+                      <Calendar className="w-5 h-5 text-gray-500" />
+                      <div>
+                        <p className="text-sm text-gray-500">Established</p>
+                        <p className="font-semibold text-gray-900">Est. {business.established}</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
-              {business.established && (
-                <div className="flex items-center space-x-1">
-                  <Calendar className="w-4 h-4" />
-                  <span>Est. {business.established}</span>
-                </div>
-              )}
-            </div>
+              </CardContent>
+            </Card>
 
             {/* Business Type & Delivery Info */}
             <Card className="border-gray-200 bg-gray-50">
