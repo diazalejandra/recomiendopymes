@@ -107,32 +107,8 @@ const ListBusinessPage = () => {
       // Simulate API call for business submission
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      toast({
-        title: "Application Submitted! 🎉",
-        description: "Thank you for joining our entrepreneur catalog. We'll review your application and contact you within 24 hours.",
-      });
-      
-      // Reset form
-      setFormData({
-        name: '',
-        category: '',
-        description: '',
-        owner: '',
-        location: '',
-        city: '',
-        established: '',
-        email: '',
-        image: '',
-        gallery: ['', '', ''],
-        socialLinks: {
-          website: '',
-          instagram: '',
-          facebook: '',
-          tiktok: '',
-          twitter: '',
-          youtube: ''
-        }
-      });
+      // Show confirmation view
+      setIsSubmitted(true);
     } catch (error) {
       toast({
         title: "Submission Failed",
