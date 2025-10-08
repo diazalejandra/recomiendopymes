@@ -308,7 +308,7 @@ businesses_data = [
         "owner": "Lisa Johnson",
         "location": "Literary District",
         "city": "Portland",
-        "established": "2020"
+        "established": "2020",
         "business_type": "physical",
         "delivery_type": "local"
     },
