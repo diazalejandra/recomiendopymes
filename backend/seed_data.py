@@ -78,7 +78,7 @@ businesses_data = [
         "owner": "David Park",
         "location": "Garden District",
         "city": "San Francisco", 
-        "established": "2018"
+        "established": "2018",
         "business_type": "physical",
         "delivery_type": "local"
     },
