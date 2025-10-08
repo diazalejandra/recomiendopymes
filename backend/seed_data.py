@@ -28,9 +28,11 @@ businesses_data = [
             "website": "https://artisancoffee.com"
         },
         "owner": "Maria Rodriguez",
-        "location": "Downtown District",
+        "location": "Downtown District", 
         "city": "San Francisco",
-        "established": "2019"
+        "established": "2019",
+        "business_type": "physical",
+        "delivery_type": "local"
     },
     {
         "name": "Handcrafted Jewelry Studio",
