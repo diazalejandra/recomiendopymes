@@ -150,7 +150,7 @@ businesses_data = [
         "owner": "Carlos Martinez",
         "location": "Mobile Service",
         "city": "Austin",
-        "established": "2020"
+        "established": "2020",
         "business_type": "physical",
         "delivery_type": "local"
     },
