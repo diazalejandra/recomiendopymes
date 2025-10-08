@@ -70,6 +70,8 @@ class BusinessUpdate(BaseModel):
     location: Optional[str] = Field(None, min_length=1, max_length=100)
     city: Optional[str] = Field(None, min_length=1, max_length=50)
     established: Optional[str] = Field(None, min_length=1, max_length=10)
+    business_type: Optional[str] = Field(None, description="online, physical, or both")
+    delivery_type: Optional[str] = Field(None, description="local, nationwide, pickup_only, or local_and_pickup")
 
 class Business(BusinessBase):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
