@@ -373,7 +373,9 @@ businesses_data = [
             "twitter": "https://twitter.com/mobilebikerepair"
         },
         "owner": "Jake Martinez",
-        "city": "San Diego", 
+        "city": "San Diego",
+        "business_type": "physical",
+        "delivery_type": "local"
         # No location/established date
     }
 ]
