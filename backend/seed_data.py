@@ -209,7 +209,9 @@ businesses_data = [
             "tiktok": "https://tiktok.com/@digitalmarketingpro"
         },
         "owner": "Sarah Kim",
-        "city": "Miami"
+        "city": "Miami",
+        "business_type": "online",
+        "delivery_type": "local_and_pickup"
         # No location and established date provided
     },
     {
