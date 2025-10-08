@@ -353,7 +353,7 @@ businesses_data = [
         "owner": "Pierre Dubois",
         "location": "Baker Street",
         "city": "Portland",
-        "established": "2016"
+        "established": "2016",
         "business_type": "physical",
         "delivery_type": "local"
     },
