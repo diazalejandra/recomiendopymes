@@ -447,7 +447,7 @@ const BusinessDetail = () => {
                                 />
                               ))}
                             </div>
-                            <div className="text-sm truncate">{review.text}</div>
+                            <div className="text-sm truncate max-w-xs">{review.text}</div>
                           </div>
                         ))}
                       </div>
