@@ -283,7 +283,7 @@ const BusinessDetail = () => {
               </div>
             </div>
             
-            {/* Location and Established */}
+            {/* Business Information */}
             <Card className="border-gray-200 bg-gray-50">
               <CardContent className="p-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -313,14 +313,7 @@ const BusinessDetail = () => {
                       </div>
                     </div>
                   )}
-                </div>
-              </CardContent>
-            </Card>
 
-            {/* Business Type & Delivery Info */}
-            <Card className="border-gray-200 bg-gray-50">
-              <CardContent className="p-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {/* Business Type */}
                   <div className="flex items-center space-x-3">
                     <Building className="w-5 h-5 text-gray-500" />
