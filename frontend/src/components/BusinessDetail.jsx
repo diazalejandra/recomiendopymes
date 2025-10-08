@@ -431,27 +431,25 @@ const BusinessDetail = () => {
                     )}
                     <div className="text-sm text-gray-600">{business.reviews} reviews</div>
                   </div>
-                  {business.rating > 0 && (
+                  {business.rating > 0 && reviews.length > 0 && (
                     <div className="flex-1">
                       <div className="text-sm text-gray-600 mb-2">Recent customer feedback:</div>
                       <div className="space-y-1">
-                        <div className="flex items-center space-x-2">
-                          <div className="flex items-center space-x-1">
-                            {Array.from({length: 5}).map((_, i) => (
-                              <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
-                            ))}
+                        {reviews.slice(0, 2).map((review, index) => (
+                          <div key={index} className="flex items-center space-x-2">
+                            <div className="flex items-center space-x-1">
+                              {Array.from({length: 5}).map((_, i) => (
+                                <Star 
+                                  key={i} 
+                                  className={`w-3 h-3 ${
+                                    i < review.rating ? 'fill-amber-400 text-amber-400' : 'text-gray-300'
+                                  }`} 
+                                />
+                              ))}
+                            </div>
+                            <div className="text-sm truncate">{review.text}</div>
                           </div>
-                          <div className="text-sm">Excellent service and quality!</div>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <div className="flex items-center space-x-1">
-                            {Array.from({length: 4}).map((_, i) => (
-                              <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
-                            ))}
-                            <Star className="w-3 h-3 text-gray-300" />
-                          </div>
-                          <div className="text-sm">Great experience, highly recommend!</div>
-                        </div>
+                        ))}
                       </div>
                     </div>
                   )}
