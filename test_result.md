@@ -294,11 +294,14 @@ backend:
     file: "backend/seed_data.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
         comment: "Fixed multiple missing comma syntax errors in JSON structure. All Python linting passes. Database seeding completed successfully with 16 businesses and new store_type/delivery_type attributes."
+      - working: true
+        agent: "testing"
+        comment: "Verified seed_data.py runs without errors and successfully populates database with 16 businesses. All businesses include new business_type and delivery_type attributes with proper variety (3 business types, 4 delivery types, 10 cities)."
 
   - task: "Backend Integration for New Business Attributes"
     implemented: true
@@ -306,11 +309,14 @@ backend:
     file: "backend/models.py, backend/seed_data.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
         comment: "Added store_type and delivery_type fields to Business model. Database populated with new attributes. API returning new fields correctly in business listings."
+      - working: true
+        agent: "testing"
+        comment: "Comprehensive testing confirms new business attributes working correctly: business_type and delivery_type fields are properly stored, returned in API responses (both listings and detail), have proper defaults ('physical', 'local'), and don't break existing functionality. All 16 businesses include these attributes with valid values."
 
 frontend:
   - task: "Reorder BusinessDetail Display"
