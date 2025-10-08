@@ -54,7 +54,9 @@ businesses_data = [
         "owner": "Sarah Chen",
         "location": "Arts Quarter", 
         "city": "Los Angeles",
-        "established": "2020"
+        "established": "2020",
+        "business_type": "both",
+        "delivery_type": "nationwide"
     },
     {
         "name": "Green Thumb Nursery",
