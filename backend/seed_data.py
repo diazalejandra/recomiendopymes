@@ -287,7 +287,7 @@ businesses_data = [
         },
         "owner": "Maria Santos", 
         "location": "Residential & Commercial",
-        "city": "Seattle"
+        "city": "Seattle",
         # No established date
     },
     {
