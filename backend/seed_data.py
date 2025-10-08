@@ -126,7 +126,7 @@ businesses_data = [
         "owner": "Emma Wilson",
         "location": "Fashion District",
         "city": "Los Angeles",
-        "established": "2017"
+        "established": "2017",
         "business_type": "both",
         "delivery_type": "pickup_only"
     },
