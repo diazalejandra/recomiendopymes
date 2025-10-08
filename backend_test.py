@@ -775,7 +775,11 @@ class APITester:
         
         tests = [
             self.test_health_check,
+            self.test_database_seeding_verification,
             self.test_get_all_businesses,
+            self.test_new_business_attributes,
+            self.test_business_detail_new_attributes,
+            self.test_optional_fields_handling,
             self.test_category_filter,
             self.test_city_filter,
             self.test_search_functionality,
