@@ -79,6 +79,8 @@ businesses_data = [
         "location": "Garden District",
         "city": "San Francisco", 
         "established": "2018"
+        "business_type": "physical",
+        "delivery_type": "local"
     },
     {
         "name": "Modern Web Solutions",
@@ -191,6 +193,8 @@ businesses_data = [
         "location": "Waterfront",
         "city": "Seattle",
         "established": "2018"
+        "business_type": "physical",
+        "delivery_type": "local"
     },
     {
         "name": "Digital Marketing Pro",
