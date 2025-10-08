@@ -120,6 +120,81 @@ const ListBusinessPage = () => {
     }
   };
 
+  // Show confirmation view if submitted
+  if (isSubmitted) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-white">
+        {/* Header */}
+        <header className="bg-white shadow-sm border-b border-gray-200">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <Button 
+              onClick={() => navigate('/')} 
+              variant="ghost"
+              className="hover:bg-gray-100 transition-colors duration-200"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Catalog
+            </Button>
+          </div>
+        </header>
+
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="text-center">
+            <div className="w-24 h-24 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+              <CheckCircle className="w-12 h-12 text-white" />
+            </div>
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">Thank You!</h1>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
+              Your business application has been submitted successfully and is now in our review process.
+            </p>
+            
+            <Card className="max-w-2xl mx-auto border-green-200 bg-green-50">
+              <CardContent className="p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">What happens next?</h3>
+                <div className="text-left space-y-3">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">1</span>
+                    </div>
+                    <span className="text-gray-700">Our team will review your application within 24-48 hours</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">2</span>
+                    </div>
+                    <span className="text-gray-700">You'll receive an email confirmation once approved</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">3</span>
+                    </div>
+                    <span className="text-gray-700">Your business will appear in our catalog for customers to discover</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+              <Button 
+                onClick={() => navigate('/')}
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                Browse Catalog
+              </Button>
+              <Button 
+                onClick={() => setIsSubmitted(false)}
+                variant="outline"
+                className="border-gray-300"
+              >
+                Submit Another Business
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
       {/* Header */}
