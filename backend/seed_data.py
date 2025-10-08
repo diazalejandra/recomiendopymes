@@ -100,7 +100,9 @@ businesses_data = [
         "owner": "Alex Thompson",
         "location": "Tech Hub",
         "city": "Austin",
-        "established": "2021"
+        "established": "2021",
+        "business_type": "online",
+        "delivery_type": "nationwide"
     },
     {
         "name": "Vintage Fashion Boutique",
