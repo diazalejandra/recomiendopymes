@@ -313,7 +313,65 @@ backend:
         comment: "Added store_type and delivery_type fields to Business model. Database populated with new attributes. API returning new fields correctly in business listings."
 
 frontend:
-  # No frontend testing performed as per instructions
+  - task: "Reorder BusinessDetail Display"
+    implemented: true
+    working: true
+    file: "frontend/src/components/BusinessDetail.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Reordered display to show location & established time first, then business type & delivery type. Changed to card-based layout for better visual separation."
+
+  - task: "Fix List View Images (Squared View)"
+    implemented: true
+    working: true
+    file: "frontend/src/components/BusinessCard.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Changed list view image height from 'sm:h-full' to 'sm:h-48' to create squared view on PC as requested."
+
+  - task: "Dynamic Recent Customer Feedback"
+    implemented: true
+    working: true
+    file: "frontend/src/components/BusinessDetail.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Replaced hardcoded feedback with real reviews from database. Shows up to 2 most recent reviews with actual ratings and text."
+
+  - task: "Business Application Confirmation View"
+    implemented: true
+    working: true
+    file: "frontend/src/components/ListBusinessPage.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Added comprehensive confirmation screen showing thank you message, next steps, and action buttons for navigation after form submission."
+
+  - task: "Add Footer to Business Detail View"
+    implemented: true
+    working: true
+    file: "frontend/src/components/BusinessDetail.jsx"
+    stuck_count: 0
+    priority: "low"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Added footer matching HomePage footer with brand info, navigation links, and CTA sections."
 
 metadata:
   created_by: "testing_agent"
