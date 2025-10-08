@@ -56,9 +56,9 @@ const BusinessCard = ({ business, viewMode = 'grid' }) => {
   if (viewMode === 'list') {
     return (
       <Card className="group overflow-hidden hover:shadow-lg transition-all duration-300 bg-white border border-gray-200 rounded-xl">
-        <CardContent className="p-0">
+        <CardContent className="p-0 h-full">
           {/* Mobile: Stack vertically, Desktop: Side by side */}
-          <div className="flex flex-col sm:flex-row">
+          <div className="flex flex-col sm:flex-row h-full">
             {/* Image */}
             <div className="relative w-full sm:w-48 h-48 sm:h-full flex-shrink-0 overflow-hidden rounded-t-xl sm:rounded-t-none sm:rounded-l-xl">
               <img
