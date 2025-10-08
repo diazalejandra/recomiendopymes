@@ -23,7 +23,8 @@ import {
   ExternalLink,
   Heart,
   Share2,
-  Loader2
+  Loader2,
+  Building
 } from 'lucide-react';
 import TikTokIcon from './icons/TikTokIcon';
 
