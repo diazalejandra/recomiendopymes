@@ -60,7 +60,7 @@ const BusinessCard = ({ business, viewMode = 'grid' }) => {
           {/* Mobile: Stack vertically, Desktop: Side by side */}
           <div className="flex flex-col sm:flex-row h-full">
             {/* Image */}
-            <div className="relative w-full sm:w-48 h-48 sm:h-full flex-shrink-0 overflow-hidden rounded-t-xl sm:rounded-t-none sm:rounded-l-xl">
+            <div className="relative w-full sm:w-48 h-48 sm:h-48 flex-shrink-0 overflow-hidden rounded-t-xl sm:rounded-t-none sm:rounded-l-xl">
               <img
                 src={business.image}
                 alt={business.name}
