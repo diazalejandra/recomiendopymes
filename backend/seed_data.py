@@ -265,9 +265,9 @@ businesses_data = [
             "youtube": "https://youtube.com/creativephotostudio"
         },
         "owner": "Emily Chen",
-        "established": "2019"
-        "business_type": "physical",
-        "delivery_type": "local"
+        "established": "2019",
+        "business_type": "both",
+        "delivery_type": "local_and_pickup"
         # No location/city provided - completely missing
     },
     {
