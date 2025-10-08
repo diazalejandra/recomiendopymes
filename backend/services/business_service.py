@@ -50,8 +50,14 @@ class BusinessService:
             query["city"] = city
             
         if search:
-            # Use text search for better performance
-            query["$text"] = {"$search": search}
+            # Use regex search for name, description, category, and city
+            search_pattern = {"$regex": search, "$options": "i"}
+            query["$or"] = [
+                {"name": search_pattern},
+                {"description": search_pattern}, 
+                {"category": search_pattern},
+                {"city": search_pattern}
+            ]
         
         # Calculate pagination
         skip = (page - 1) * limit
