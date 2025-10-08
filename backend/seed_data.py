@@ -330,7 +330,7 @@ businesses_data = [
         "owner": "Tom Wilson",
         "location": "Pet District",
         "city": "San Diego",
-        "established": "2021"
+        "established": "2021",
         "business_type": "physical",
         "delivery_type": "local"
     },
