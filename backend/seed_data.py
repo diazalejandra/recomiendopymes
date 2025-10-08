@@ -151,6 +151,8 @@ businesses_data = [
         "location": "Mobile Service",
         "city": "Austin",
         "established": "2020"
+        "business_type": "physical",
+        "delivery_type": "local"
     },
     {
         "name": "Urban Fitness Studio",
@@ -173,6 +175,8 @@ businesses_data = [
         "location": "Fitness District",
         "city": "New York",
         "established": "2019"
+        "business_type": "physical",
+        "delivery_type": "local"
     },
     {
         "name": "Coastal Bakery",
@@ -238,6 +242,8 @@ businesses_data = [
         "location": "Service Area",
         "city": "Denver",
         "established": "2022"
+        "business_type": "physical",
+        "delivery_type": "local"
     },
     {
         "name": "Creative Photo Studio",
@@ -260,6 +266,8 @@ businesses_data = [
         },
         "owner": "Emily Chen",
         "established": "2019"
+        "business_type": "physical",
+        "delivery_type": "local"
         # No location/city provided - completely missing
     },
     {
@@ -301,6 +309,8 @@ businesses_data = [
         "location": "Literary District",
         "city": "Portland",
         "established": "2020"
+        "business_type": "physical",
+        "delivery_type": "local"
     },
     {
         "name": "Pet Grooming Spa",
@@ -321,6 +331,8 @@ businesses_data = [
         "location": "Pet District",
         "city": "San Diego",
         "established": "2021"
+        "business_type": "physical",
+        "delivery_type": "local"
     },
     {
         "name": "Artisan Bakery",
@@ -342,6 +354,8 @@ businesses_data = [
         "location": "Baker Street",
         "city": "Portland",
         "established": "2016"
+        "business_type": "physical",
+        "delivery_type": "local"
     },
     {
         "name": "Mobile Bike Repair", 
