@@ -303,6 +303,40 @@ const BusinessDetail = () => {
               )}
             </div>
 
+            {/* Business Type & Delivery Info */}
+            <Card className="border-gray-200 bg-gray-50">
+              <CardContent className="p-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Business Type */}
+                  <div className="flex items-center space-x-3">
+                    <Building className="w-5 h-5 text-gray-500" />
+                    <div>
+                      <p className="text-sm text-gray-500">Business Type</p>
+                      <p className="font-semibold text-gray-900 capitalize">
+                        {business.business_type === 'both' ? 'Online & Physical' : 
+                         business.business_type === 'online' ? 'Online Store' : 'Physical Location'}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  {/* Delivery Type */}
+                  <div className="flex items-center space-x-3">
+                    <Globe className="w-5 h-5 text-gray-500" />
+                    <div>
+                      <p className="text-sm text-gray-500">Service Area</p>
+                      <p className="font-semibold text-gray-900">
+                        {business.delivery_type === 'local' ? 'Local Delivery Only' :
+                         business.delivery_type === 'nationwide' ? 'Nationwide Delivery' :
+                         business.delivery_type === 'pickup_only' ? 'Pickup Only' :
+                         business.delivery_type === 'local_and_pickup' ? 'Local Delivery & Pickup' :
+                         'Contact for Details'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Description */}
             <div className="space-y-4">
               <h3 className="text-xl font-bold text-gray-900">About</h3>
