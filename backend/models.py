@@ -53,6 +53,8 @@ class BusinessBase(BaseModel):
     location: Optional[str] = Field(None, min_length=1, max_length=100)
     city: Optional[str] = Field(None, min_length=1, max_length=50)
     established: Optional[str] = Field(None, min_length=1, max_length=10)
+    business_type: str = Field("physical", description="online, physical, or both")
+    delivery_type: str = Field("local", description="local, nationwide, pickup_only, or local_and_pickup")
 
 class BusinessCreate(BusinessBase):
     pass
