@@ -198,7 +198,7 @@ businesses_data = [
         "owner": "Jessica Lee",
         "location": "Waterfront",
         "city": "Seattle",
-        "established": "2018"
+        "established": "2018",
         "business_type": "physical",
         "delivery_type": "local"
     },
