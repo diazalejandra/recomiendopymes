@@ -174,7 +174,7 @@ businesses_data = [
         "owner": "Mike Johnson",
         "location": "Fitness District",
         "city": "New York",
-        "established": "2019"
+        "established": "2019",
         "business_type": "physical",
         "delivery_type": "local"
     },
