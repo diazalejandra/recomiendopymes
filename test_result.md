@@ -288,6 +288,30 @@ backend:
         agent: "testing"
         comment: "Minor: Data validation working correctly. Invalid ratings (>5) properly rejected with 422 status. Some test framework issues with automated validation testing"
 
+  - task: "Fix Syntax Errors in seed_data.py"
+    implemented: true
+    working: true
+    file: "backend/seed_data.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Fixed multiple missing comma syntax errors in JSON structure. All Python linting passes. Database seeding completed successfully with 16 businesses and new store_type/delivery_type attributes."
+
+  - task: "Backend Integration for New Business Attributes"
+    implemented: true
+    working: true
+    file: "backend/models.py, backend/seed_data.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Added store_type and delivery_type fields to Business model. Database populated with new attributes. API returning new fields correctly in business listings."
+
 frontend:
   # No frontend testing performed as per instructions
 
