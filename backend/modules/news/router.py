@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Query
 from typing import List
 from .schemas import NewsCreate, NewsUpdate, NewsOut
 from .service import NewsService
-from core.security import require_admin
+from modules.auth.dependencies import require_admin
 
 router = APIRouter(prefix="/news", tags=["News"])
 
