@@ -1,12 +1,13 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { toast } from 'sonner';
 import { useState } from 'react';
-import { Menu, X, ChevronDown } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 
 export default function AppLayout({ children, hideFooter = false }) {
-  const { isLoggedIn, isAdmin, user, logout } = useAuth();
+  const { isLoggedIn, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleLogout = async () => {
@@ -154,8 +155,8 @@ export default function AppLayout({ children, hideFooter = false }) {
 
       {/* ── Footer ── */}
       {!hideFooter && (
-      <footer style={{ borderTop: '1px solid var(--border)', background: 'var(--surface)' }}
-        className="mt-20">
+      <footer style={{ borderTop: location.pathname === '/' ? 'none' : '1px solid var(--border)', background: 'var(--surface)' }}
+        className={location.pathname === '/' ? '' : 'mt-20'}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Recursos para emprendedores */}
           <div className="py-8 border-b flex flex-col gap-4" style={{ borderColor: 'var(--border)' }}>

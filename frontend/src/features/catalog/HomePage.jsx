@@ -4,7 +4,7 @@ import BusinessCard from './BusinessCard';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Search, MapPin, LayoutGrid, List, Map, SlidersHorizontal, X, ChevronDown } from 'lucide-react';
+import { Search, MapPin, LayoutGrid, List, Map, SlidersHorizontal, X, ChevronDown, Store, Compass } from 'lucide-react';
 import ChatbotSearch from './ChatbotSearch';
 
 // Fix Leaflet icons
@@ -196,12 +196,31 @@ export default function HomePage() {
   const topCats = categories.slice(0, 8);
 
   return (
-    <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
+    <div style={{ background: 'var(--bg)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
 
       <section style={{
-        background: 'linear-gradient(135deg, #EFF6FF 0%, #F8FAFC 50%, #F0FDF4 100%)',
+        background: 'linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 50%, var(--bg) 100%)',
+        overflow: 'hidden',
         borderBottom: '1px solid var(--border)',
-      }} className="px-4 pt-14 pb-12 sm:pt-20 sm:pb-16">
+      }} className="relative px-4 pt-14 pb-12 sm:pt-20 sm:pb-16">
+        
+        {/* Marca de agua decorativa: Pin de mapa gigante (wireframe) */}
+        <div style={{
+          position: 'absolute', top: '-60px', right: '-40px',
+          opacity: 0.08, pointerEvents: 'none',
+          transform: 'rotate(15deg)'
+        }}>
+          <MapPin size={450} strokeWidth={1.5} color="var(--brand)" />
+        </div>
+        
+        {/* Marca de agua decorativa secundaria (opcional pequeño) */}
+        <div style={{
+          position: 'absolute', bottom: '20px', left: '-50px',
+          opacity: 0.06, pointerEvents: 'none',
+          transform: 'rotate(-20deg)'
+        }}>
+          <MapPin size={250} strokeWidth={1.5} color="var(--brand)" />
+        </div>
         <div className="max-w-3xl mx-auto text-center">
 
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-bold mb-6 shadow-sm transition-transform hover:-translate-y-0.5 cursor-default"
@@ -221,7 +240,7 @@ export default function HomePage() {
             <span style={{ color: 'var(--brand)' }}>cerca de ti</span>
           </h1>
 
-          <p className="mb-8" style={{ color: 'var(--muted)', maxWidth: '600px', margin: '0 auto 2rem', fontSize: '1rem', lineHeight: 1.6 }}>
+          <p className="mb-8" style={{ color: '#475569', maxWidth: '600px', margin: '0 auto 2rem', fontSize: '1rem', lineHeight: 1.6 }}>
             El catálogo más completo de micro y pequeñas empresas de Chile.
           </p>
 
@@ -314,7 +333,8 @@ export default function HomePage() {
       </section>
 
       {/* ════════ CATÁLOGO ════════ */}
-      <section ref={catalogRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div style={{ flex: 1, background: 'linear-gradient(to bottom, transparent 0%, transparent calc(100% - 150px), var(--surface) 100%)' }}>
+        <section ref={catalogRef} className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-16">
 
         {/* ── Barra de filtros ── */}
         <div className="flex flex-wrap items-center gap-3 mb-6 pb-6"
@@ -478,10 +498,11 @@ export default function HomePage() {
             </MapContainer>
           </div>
         )}
-      </section>
+        </section>
+      </div>
 
       {/* ════════ NOTICIAS ════════ */}
-      <section className="border-t mt-4" style={{ borderColor: 'var(--border)', background: 'var(--surface)' }}>
+      <section className="w-full" style={{ background: 'var(--surface)' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex items-end mb-6">
             <div>
