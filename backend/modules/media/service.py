@@ -32,4 +32,5 @@ class MediaService:
             "cloud_name": settings.CLOUDINARY_CLOUD_NAME,
             "api_key": settings.CLOUDINARY_API_KEY,
             "folder": "recomiendopymes",
+            "transformation": "c_fill,w_800,h_800,q_auto,f_auto",
         }

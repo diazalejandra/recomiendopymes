@@ -4,7 +4,7 @@ from .schemas import NewsCreate, NewsUpdate, NewsOut
 from .service import NewsService
 from modules.auth.dependencies import require_admin
 
-router = APIRouter(prefix="/news", tags=["News"])
+router = APIRouter(prefix="/api/news", tags=["News"])
 
 @router.get("/public", response_model=List[NewsOut])
 async def get_public_news(limit: int = Query(3, ge=1, le=10)):

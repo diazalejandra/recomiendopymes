@@ -89,7 +89,29 @@ class AdminService:
             query["is_visible"] = visible_only
         total = await self.db.reviews.count_documents(query)
         skip = (page - 1) * limit
-        cursor = self.db.reviews.find(query).sort("created_at", -1).skip(skip).limit(limit)
+        
+        pipeline = [
+            {"$match": query},
+            {"$sort": {"created_at": -1}},
+            {"$skip": skip},
+            {"$limit": limit},
+            {
+                "$lookup": {
+                    "from": "businesses",
+                    "localField": "business_id",
+                    "foreignField": "_id",
+                    "as": "business_info"
+                }
+            },
+            {
+                "$addFields": {
+                    "business_name": {"$arrayElemAt": ["$business_info.name", 0]}
+                }
+            },
+            {"$project": {"business_info": 0}}
+        ]
+        
+        cursor = self.db.reviews.aggregate(pipeline)
         reviews = [_review_doc(doc) async for doc in cursor]
         return {"reviews": reviews, "total": total, "page": page, "total_pages": max(1, -(-total // limit))}
 

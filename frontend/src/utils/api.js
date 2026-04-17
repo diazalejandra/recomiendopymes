@@ -74,6 +74,7 @@ export const mediaApi = {
 export const metaApi = {
   getCategories: () => client.get('/categories').then(r => r.data),
   getCities: () => client.get('/cities').then(r => r.data),
+  getLocations: () => client.get('/locations').then(r => r.data),
 };
 
 // Admin

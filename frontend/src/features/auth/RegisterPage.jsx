@@ -120,10 +120,17 @@ export default function RegisterPage() {
       }}>
         <div style={{ width: '100%', maxWidth: '420px' }}>
 
-          <Link to="/" className="flex items-center gap-1.5 mb-6 text-sm transition-colors"
-            style={{ color: 'var(--muted)', textDecoration: 'none' }}
-            onMouseEnter={e => e.currentTarget.style.color = 'var(--brand)'}
-            onMouseLeave={e => e.currentTarget.style.color = 'var(--muted)'}>
+          <Link to="/" className="flex items-center gap-2 mb-8 text-sm font-medium transition-all"
+            style={{ 
+              color: 'var(--brand)', 
+              background: 'var(--brand-light)',
+              padding: '8px 14px',
+              borderRadius: '999px',
+              textDecoration: 'none',
+              width: 'fit-content'
+            }}
+            onMouseEnter={e => e.currentTarget.style.background = '#DBEAFE'}
+            onMouseLeave={e => e.currentTarget.style.background = 'var(--brand-light)'}>
             <ArrowLeft size={16} />
             Volver al inicio
           </Link>

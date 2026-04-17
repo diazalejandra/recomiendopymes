@@ -10,7 +10,9 @@ export default function EntrepreneurDashboard() {
 
   useEffect(() => {
     businessApi.getMine()
-      .then(data => setBusinesses(data.businesses || []))
+      .then(data => {
+        setBusinesses(Array.isArray(data) ? data : (data.businesses || []));
+      })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
@@ -24,15 +26,17 @@ export default function EntrepreneurDashboard() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Mis emprendimientos</h1>
-        <p className="text-gray-500 text-sm mt-1">Hola, {user?.name}</p>
-      </div>
-
-      <div className="mb-6">
+      <div className="mb-8 bg-gradient-to-r from-blue-700 to-blue-500 rounded-3xl p-8 text-white flex flex-col sm:flex-row items-start sm:items-center justify-between shadow-lg shadow-blue-600/20 relative overflow-hidden">
+        {/* Decorative background shape */}
+        <div className="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+        
+        <div className="relative z-10">
+          <p className="text-blue-100 mb-1">Hola, {user?.name} 👋</p>
+          <h1 className="text-3xl font-bold tracking-tight text-white">Mis emprendimientos</h1>
+        </div>
         <Link to="/inscribir"
-          className="inline-block bg-primary text-white px-4 py-2 rounded-lg text-sm hover:bg-primary/90">
-          + Inscribir nuevo emprendimiento
+          className="relative z-10 mt-5 sm:mt-0 inline-flex items-center gap-2 bg-white text-blue-700 font-semibold px-5 py-2.5 rounded-xl hover:bg-blue-50 transition-colors shadow-sm">
+          <span className="text-lg leading-none">+</span> Inscribir nuevo
         </Link>
       </div>
 
@@ -61,10 +65,19 @@ export default function EntrepreneurDashboard() {
                   </span>
                 </div>
                 <p className="text-sm text-gray-500">{b.category} · {b.city}</p>
-                <div className="flex gap-3 mt-2 text-xs text-gray-400">
-                  <span>★ {b.rating > 0 ? b.rating.toFixed(1) : '—'}</span>
-                  <span>{b.review_count} reseña{b.review_count !== 1 ? 's' : ''}</span>
-                  <span>{b.view_count} vistas</span>
+                <div className="grid grid-cols-3 gap-2 mt-4 max-w-sm">
+                  <div className="bg-gray-50 p-3 rounded-lg border border-gray-100 flex flex-col items-center">
+                    <span className="text-xl font-bold text-gray-800">{b.view_count || 0}</span>
+                    <span className="text-[10px] text-gray-500 uppercase font-bold tracking-wider">Visitas</span>
+                  </div>
+                  <div className="bg-gray-50 p-3 rounded-lg border border-gray-100 flex flex-col items-center">
+                    <span className="text-xl font-bold text-gray-800">{b.rating > 0 ? b.rating.toFixed(1) : '0.0'}</span>
+                    <span className="text-[10px] text-gray-500 uppercase font-bold tracking-wider">Rating</span>
+                  </div>
+                  <div className="bg-gray-50 p-3 rounded-lg border border-gray-100 flex flex-col items-center">
+                    <span className="text-xl font-bold text-gray-800">{b.review_count || 0}</span>
+                    <span className="text-[10px] text-gray-500 uppercase font-bold tracking-wider">Reseñas</span>
+                  </div>
                 </div>
               </div>
               <div className="flex gap-2 flex-shrink-0">

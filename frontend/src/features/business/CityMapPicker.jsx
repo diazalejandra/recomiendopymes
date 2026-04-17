@@ -36,17 +36,28 @@ function MapCenterSetter({ center }) {
   return null;
 }
 
-export default function CityMapPicker({ city, onCoordinatesChange }) {
+export default function CityMapPicker({ city, onCoordinatesChange, initialCoordinates }) {
   const [position, setPosition] = useState(null);
   const [isExact, setIsExact] = useState(false);
   const cityCoords = CHILE_CITIES[city] || [-33.4489, -70.6693];
+  
+  // Update map pin when address autocomplete passes new coordinates
+  useEffect(() => {
+    if (initialCoordinates) {
+      setPosition([initialCoordinates.lat, initialCoordinates.lng]);
+      setIsExact(initialCoordinates.is_exact !== false);
+    }
+  }, [initialCoordinates]);
 
   useEffect(() => {
     if (city) {
       const coords = CHILE_CITIES[city] || [-33.4489, -70.6693];
-      setPosition(coords);
-      setIsExact(false);
-      onCoordinatesChange({ lat: coords[0], lng: coords[1], is_exact: false });
+      // Solo setear si no hay initialCoordinates exactas previas prevalecientes
+      if (!initialCoordinates?.is_exact) {
+        setPosition(coords);
+        setIsExact(false);
+        onCoordinatesChange({ lat: coords[0], lng: coords[1], is_exact: false });
+      }
     }
   }, [city]);
 
@@ -69,8 +80,8 @@ export default function CityMapPicker({ city, onCoordinatesChange }) {
             attribution='© <a href="https://www.openstreetmap.org">OpenStreetMap</a>'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          <MapCenterSetter center={cityCoords} />
-          <PinDragger position={position} setPosition={handlePositionChange} />
+          <MapCenterSetter center={position || cityCoords} />
+          <PinDragger position={position || cityCoords} setPosition={handlePositionChange} />
         </MapContainer>
       </div>
     </div>

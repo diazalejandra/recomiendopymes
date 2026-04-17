@@ -51,21 +51,39 @@ class BusinessService:
         category: Optional[str] = None,
         city: Optional[str] = None,
         search: Optional[str] = None,
+        nationwide: bool = False,
         page: int = 1,
         limit: int = 12
     ) -> dict:
         """Lista negocios activos con filtros. Orden: featured → nuevos (30d) → mejor rating → más antiguos."""
         query = {"status": "active"}
+        and_clauses = []
+        
         if category:
             query["category"] = {"$regex": f"^{re.escape(category)}$", "$options": "i"}
+            
         if city:
-            query["city"] = {"$regex": f"^{re.escape(city)}$", "$options": "i"}
+            if nationwide:
+                and_clauses.append({
+                    "$or": [
+                        {"city": {"$regex": f"^{re.escape(city)}$", "$options": "i"}},
+                        {"delivery_scope": "nationwide"}
+                    ]
+                })
+            else:
+                query["city"] = {"$regex": f"^{re.escape(city)}$", "$options": "i"}
+                
         if search:
-            query["$or"] = [
-                {"name": {"$regex": re.escape(search), "$options": "i"}},
-                {"description": {"$regex": re.escape(search), "$options": "i"}},
-                {"category": {"$regex": re.escape(search), "$options": "i"}},
-            ]
+            and_clauses.append({
+                "$or": [
+                    {"name": {"$regex": re.escape(search), "$options": "i"}},
+                    {"description": {"$regex": re.escape(search), "$options": "i"}},
+                    {"category": {"$regex": re.escape(search), "$options": "i"}},
+                ]
+            })
+
+        if and_clauses:
+            query["$and"] = and_clauses
 
         total = await self.db.businesses.count_documents(query)
         skip = (page - 1) * limit
@@ -136,8 +154,8 @@ class BusinessService:
             **data.model_dump(exclude_none=True),
             "slug": slug,
             "owner_user_id": ObjectId(user_id),
-            "status": "pending",
-            "activated_at": None,
+            "status": "active",
+            "activated_at": datetime.utcnow(),
             "featured": False,
             "featured_until": None,
             "is_verified": False,

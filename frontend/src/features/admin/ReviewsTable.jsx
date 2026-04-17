@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { adminApi } from '../../utils/api';
 import { toast } from 'sonner';
-import { Search, MessageSquareQuote, Eye, EyeOff } from 'lucide-react';
+import { Search, MessageSquareQuote, Eye, EyeOff, Store } from 'lucide-react';
 
 export default function ReviewsTable() {
   const [reviews, setReviews] = useState([]);

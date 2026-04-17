@@ -1,7 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { adminApi } from '../../utils/api';
 import { toast } from 'sonner';
-import { Search, Store, CheckCircle, XCircle } from 'lucide-react';
+import { Search, Store, CheckCircle, XCircle, Ban, RotateCcw, ExternalLink } from 'lucide-react';
 
 export default function BusinessesTable() {
   const [businesses, setBusinesses] = useState([]);
@@ -123,7 +124,8 @@ export default function BusinessesTable() {
               <thead className="bg-gray-50/80 text-gray-500 text-xs uppercase font-semibold">
                 <tr>
                   <th className="px-6 py-4">Negocio</th>
-                  <th className="px-6 py-4">Ubicación & Rubro</th>
+                  <th className="px-6 py-4">Rubro</th>
+                  <th className="px-6 py-4">Ciudad</th>
                   <th className="px-6 py-4">Responsable</th>
                   <th className="px-6 py-4">Estado</th>
                   <th className="px-6 py-4 text-right">Acciones</th>
@@ -134,11 +136,12 @@ export default function BusinessesTable() {
                   <tr key={b.id} className="hover:bg-gray-50/50 transition-colors">
                     <td className="px-6 py-4">
                       <p className="font-medium text-gray-900">{b.name}</p>
-                      <p className="text-xs text-gray-500">{b.slug}</p>
+                    </td>
+                    <td className="px-6 py-4 align-middle">
+                      <span className="text-xs text-brand bg-brand-light inline-flex items-center px-2 py-0.5 rounded">{b.category}</span>
                     </td>
                     <td className="px-6 py-4">
                       <p className="text-gray-900">{b.city}</p>
-                      <p className="text-xs text-brand bg-brand-light inline-block px-1.5 rounded mt-0.5">{b.category}</p>
                     </td>
                     <td className="px-6 py-4 text-gray-600">{b.owner || '—'}</td>
                     <td className="px-6 py-4">
@@ -150,20 +153,36 @@ export default function BusinessesTable() {
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">
-                      {b.status === 'pending' ? (
-                        <div className="flex items-center justify-end gap-2">
-                          <button onClick={() => approve(b.id)} title="Aprobar"
+                      <div className="flex items-center justify-end gap-2">
+                        {b.status === 'pending' && (
+                          <>
+                            <button onClick={() => approve(b.id)} title="Aprobar"
+                              className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors">
+                              <CheckCircle size={18} />
+                            </button>
+                            <button onClick={() => reject(b.id)} title="Rechazar"
+                              className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                              <XCircle size={18} />
+                            </button>
+                          </>
+                        )}
+                        {b.status === 'active' && (
+                          <button onClick={() => reject(b.id)} title="Desactivar"
+                            className="p-1.5 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors">
+                            <Ban size={18} />
+                          </button>
+                        )}
+                        {b.status === 'inactive' && (
+                          <button onClick={() => approve(b.id)} title="Reactivar"
                             className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors">
-                            <CheckCircle size={20} />
+                            <RotateCcw size={18} />
                           </button>
-                          <button onClick={() => reject(b.id)} title="Rechazar"
-                            className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
-                            <XCircle size={20} />
-                          </button>
-                        </div>
-                      ) : (
-                        <button className="text-xs font-medium text-primary hover:underline">Ver detalle</button>
-                      )}
+                        )}
+                        <Link to={`/emprendimiento/${b.slug}`} target="_blank" title="Ver en sitio"
+                          className="p-1.5 text-gray-500 hover:bg-gray-50 rounded-lg transition-colors">
+                          <ExternalLink size={18} />
+                        </Link>
+                      </div>
                     </td>
                   </tr>
                 ))}

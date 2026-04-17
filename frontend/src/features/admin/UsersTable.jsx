@@ -114,7 +114,8 @@ export default function UsersTable() {
               <thead className="bg-gray-50/80 text-gray-500 text-xs uppercase font-semibold">
                 <tr>
                   <th className="px-6 py-4">Usuario</th>
-                  <th className="px-6 py-4">Rol & Estado</th>
+                  <th className="px-6 py-4">Rol</th>
+                  <th className="px-6 py-4">Estado</th>
                   <th className="px-6 py-4 text-center">Negocios</th>
                   <th className="px-6 py-4 text-right">Acciones</th>
                 </tr>
@@ -134,14 +135,14 @@ export default function UsersTable() {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex flex-col gap-1 items-start">
-                        <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold ${
-                          u.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>
-                          {u.role === 'admin' && <Shield size={10} />}
-                          {u.role === 'admin' ? 'Admin' : 'Usuario'}
-                        </span>
-                        
-                        <div className="flex gap-1">
+                      <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                        u.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>
+                        {u.role === 'admin' && <Shield size={10} />}
+                        {u.role === 'admin' ? 'Admin' : 'Usuario'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex flex-col gap-1 items-start">
                           <span className={`inline-flex px-2 py-0.5 rounded text-[10px] font-semibold ${
                             u.is_active ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'}`}>
                             {u.is_active ? 'Activo' : 'Inactivo'}
@@ -153,7 +154,6 @@ export default function UsersTable() {
                             </span>
                           )}
                         </div>
-                      </div>
                     </td>
                     <td className="px-6 py-4 text-center">
                       <span className="font-medium text-gray-700 bg-gray-100 px-2 py-1 rounded-lg">

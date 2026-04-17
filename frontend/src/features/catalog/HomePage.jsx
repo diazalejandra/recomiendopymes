@@ -3,8 +3,9 @@ import { businessApi, metaApi, newsApi } from '../../utils/api';
 import BusinessCard from './BusinessCard';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Search, MapPin, LayoutGrid, List, Map, SlidersHorizontal, X, ChevronDown } from 'lucide-react';
+import ChatbotSearch from './ChatbotSearch';
 
 // Fix Leaflet icons
 delete L.Icon.Default.prototype._getIconUrl;
@@ -72,17 +73,33 @@ function SkeletonList() {
 }
 
 export default function HomePage() {
-  // Search state
-  const [heroSearch, setHeroSearch] = useState('');
-  const [heroCity, setHeroCity] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
+  
+  // States
+  const [heroSearch, setHeroSearch] = useState(searchParams.get('search') || '');
+  const [heroCity, setHeroCity] = useState(searchParams.get('city') || '');
   const [heroCommitted, setHeroCommitted] = useState(false);
 
-  // Filter state (below hero)
-  const [search, setSearch] = useState('');
-  const [city, setCity] = useState('');
+  const [search, setSearch] = useState(searchParams.get('search') || '');
+  const [city, setCity] = useState(searchParams.get('city') || '');
   const [category, setCategory] = useState('');
   const [viewMode, setViewMode] = useState('grid');
-  const [mapKey, setMapKey] = useState(0);  // increment to force Leaflet remount
+  const [includeNationwide, setIncludeNationwide] = useState(!!searchParams.get('city') && !!searchParams.get('search'));
+  const [mapKey, setMapKey] = useState(0);
+
+  // Reaction to URL changes (when Chatbot pushes new URL)
+  useEffect(() => {
+    const urlSearch = searchParams.get('search') || '';
+    const urlCity = searchParams.get('city') || '';
+    if (urlSearch !== search || urlCity !== city) {
+      setSearch(urlSearch);
+      setHeroSearch(urlSearch);
+      setCity(urlCity);
+      setHeroCity(urlCity);
+      if (urlCity) setIncludeNationwide(true); // Auto-ON upon new chatbot search
+      setPage(1);
+    }
+  }, [searchParams]);
   const [page, setPage] = useState(1);
 
   // Data
@@ -129,6 +146,7 @@ export default function HomePage() {
     if (search.trim()) params.search = search.trim();
     if (city) params.city = city;
     if (category) params.category = category;
+    if (includeNationwide) params.nationwide = true;
 
     const t = setTimeout(() => {
       businessApi.list(params)
@@ -141,7 +159,7 @@ export default function HomePage() {
         .finally(() => setLoading(false));
     }, search ? 350 : 0);
     return () => clearTimeout(t);
-  }, [search, city, category, page, viewMode]);
+  }, [search, city, category, includeNationwide, page, viewMode]);
 
   useEffect(() => { const cleanup = fetchBusinesses(); return cleanup; }, [fetchBusinesses]);
 
@@ -158,12 +176,20 @@ export default function HomePage() {
     setCity(heroCity);
     setPage(1);
     setHeroCommitted(true);
+    
+    // Push the state to URL so we have a source of truth
+    const sp = new URLSearchParams();
+    if (heroSearch) sp.set('search', heroSearch);
+    if (heroCity) sp.set('city', heroCity);
+    setSearchParams(sp);
+    
     catalogRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   const clearAll = () => {
     setSearch(''); setCity(''); setCategory(''); setPage(1);
     setHeroSearch(''); setHeroCity('');
+    setSearchParams(new URLSearchParams());
   };
 
   const hasFilters = search || city || category;
@@ -172,17 +198,16 @@ export default function HomePage() {
   return (
     <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
 
-      {/* ════════ HERO ════════ */}
       <section style={{
         background: 'linear-gradient(135deg, #EFF6FF 0%, #F8FAFC 50%, #F0FDF4 100%)',
         borderBottom: '1px solid var(--border)',
       }} className="px-4 pt-14 pb-12 sm:pt-20 sm:pb-16">
         <div className="max-w-3xl mx-auto text-center">
 
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-6"
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-bold mb-6 shadow-sm transition-transform hover:-translate-y-0.5 cursor-default"
             style={{ background: 'var(--brand-light)', color: 'var(--brand)', border: '1px solid var(--brand-mid)' }}>
             <img src="https://flagcdn.com/16x12/cl.png" alt="Chile" width="16" height="12" style={{ display: 'inline', verticalAlign: 'middle' }} />
-            Directorio de emprendedores chilenos
+            Directorio de Emprendedores Chilenos
           </div>
 
           <h1 className="mb-4" style={{
@@ -344,6 +369,23 @@ export default function HomePage() {
                 onMouseLeave={e => e.currentTarget.style.color = 'var(--muted)'}>
                 Limpiar todo
               </button>
+              
+              {/* Nationwide Toggle */}
+              {city && viewMode !== 'map' && (
+                <label className="flex items-center gap-1.5 px-3 py-1 ml-2 rounded-full border transition-colors cursor-pointer"
+                  style={{ borderColor: includeNationwide ? 'var(--brand)' : 'var(--border)', background: includeNationwide ? 'var(--brand-light)' : 'var(--surface)' }}
+                >
+                  <input 
+                    type="checkbox" 
+                    checked={includeNationwide} 
+                    onChange={e => { setIncludeNationwide(e.target.checked); setPage(1); }} 
+                    className="rounded text-blue-600 focus:ring-blue-500 w-3 h-3 cursor-pointer"
+                  />
+                  <span className="text-xs font-medium" style={{ color: includeNationwide ? 'var(--brand)' : 'var(--ink)' }}>
+                    Incluir envíos nacionales
+                  </span>
+                </label>
+              )}
             </div>
           )}
 
@@ -489,7 +531,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
+      
+      {/* Bot Chatbot */}
+      <ChatbotSearch cities={cities} />
     </div>
   );
 }

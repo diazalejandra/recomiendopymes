@@ -23,16 +23,26 @@ class Coordinates(BaseModel):
     is_exact: bool = False  # True = pin ubicado por el usuario; False = centroide de ciudad
 
 
+class Offer(BaseModel):
+    title: str = Field(..., max_length=50)
+    description: Optional[str] = Field(None, max_length=200)
+    discount: str = Field(..., max_length=20)
+    expires_at: datetime
+
+
 class BusinessCreate(BaseModel):
     name: str = Field(..., min_length=2, max_length=100)
     category: str = Field(..., min_length=2, max_length=80)
     description: str = Field(..., min_length=10, max_length=1000)
     owner: str = Field(..., min_length=2, max_length=100)
     business_type: str = Field(..., pattern="^(online|physical|both)$")
-    delivery_type: str = Field(
-        default="nationwide",
-        pattern="^(nationwide|local|pickup_only|local_and_pickup)$"
+    delivery_scope: str = Field(
+        default="local",
+        pattern="^(nationwide|local)$"
     )
+    delivery_methods: List[str] = Field(default_factory=list)
+    active_offer: Optional[Offer] = None
+    region: str = Field(..., min_length=2, max_length=100)
     city: str = Field(..., min_length=2, max_length=100)
     location: Optional[str] = Field(None, max_length=200)
     coordinates: Optional[Coordinates] = None
@@ -47,9 +57,12 @@ class BusinessUpdate(BaseModel):
     description: Optional[str] = Field(None, min_length=10, max_length=1000)
     owner: Optional[str] = Field(None, min_length=2, max_length=100)
     business_type: Optional[str] = Field(None, pattern="^(online|physical|both)$")
-    delivery_type: Optional[str] = Field(
-        None, pattern="^(nationwide|local|pickup_only|local_and_pickup)$"
+    delivery_scope: Optional[str] = Field(
+        None, pattern="^(nationwide|local)$"
     )
+    delivery_methods: Optional[List[str]] = None
+    active_offer: Optional[Offer] = None
+    region: Optional[str] = Field(None, min_length=2, max_length=100)
     city: Optional[str] = Field(None, min_length=2, max_length=100)
     location: Optional[str] = None
     coordinates: Optional[Coordinates] = None
@@ -68,7 +81,10 @@ class Business(BaseModel):
     owner: str
     owner_user_id: Optional[PyObjectId] = None
     business_type: str
-    delivery_type: str = "nationwide"
+    delivery_scope: str = "nationwide"
+    delivery_methods: List[str] = Field(default_factory=list)
+    active_offer: Optional[Offer] = None
+    region: Optional[str] = None
     city: str
     location: Optional[str] = None
     coordinates: Optional[Coordinates] = None
@@ -107,7 +123,10 @@ class BusinessPublic(BaseModel):
     owner: str
     owner_user_id: Optional[str] = None
     business_type: str
-    delivery_type: str
+    delivery_scope: str
+    delivery_methods: List[str] = Field(default_factory=list)
+    active_offer: Optional[Offer] = None
+    region: Optional[str] = None
     city: str
     location: Optional[str] = None
     coordinates: Optional[Coordinates] = None

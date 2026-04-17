@@ -38,8 +38,21 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
-      <div className="max-w-md w-full space-y-8">
-        <div>
+      <div className="max-w-md w-full space-y-8 relative pt-4">
+        <Link to="/" className="absolute top-0 left-0 flex items-center gap-2 text-sm font-medium transition-all"
+          style={{ 
+            color: 'var(--brand)', 
+            background: 'var(--brand-light)',
+            padding: '6px 12px',
+            borderRadius: '999px',
+            textDecoration: 'none',
+          }}
+          onMouseEnter={e => e.currentTarget.style.background = '#DBEAFE'}
+          onMouseLeave={e => e.currentTarget.style.background = 'var(--brand-light)'}>
+          <span>←</span> Volver al inicio
+        </Link>
+        
+        <div className="pt-8">
           <Link to="/" className="text-2xl font-bold text-primary block text-center">RecomiendoPymes</Link>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Recuperar contraseña</h2>
           <p className="mt-2 text-center text-sm text-gray-600">

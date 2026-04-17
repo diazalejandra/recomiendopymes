@@ -36,8 +36,14 @@ export default function AdminLayout() {
   return (
     <div className="min-h-screen flex" style={{ background: 'var(--bg)' }}>
       {/* Sidebar */}
-      <aside className="w-64 flex flex-col shadow-lg z-10" style={{ background: 'linear-gradient(180deg, #1E40AF 0%, #1e3a8a 100%)' }}>
-        <div className="p-6 border-b border-white/10 flex flex-col gap-2">
+      <aside className="w-64 flex flex-col shadow-lg z-10 relative overflow-hidden" 
+        style={{ background: 'linear-gradient(135deg, #1E40AF 0%, #2563EB 50%, #3B82F6 100%)' }}>
+        
+        {/* Decorative circles */}
+        <div style={{ position: 'absolute', top: '-80px', right: '-80px', width: '200px', height: '200px', borderRadius: '50%', background: 'rgba(255,255,255,0.06)' }} />
+        <div style={{ position: 'absolute', bottom: '-40px', left: '-60px', width: '250px', height: '250px', borderRadius: '50%', background: 'rgba(255,255,255,0.04)' }} />
+
+        <div className="p-6 border-b border-white/10 flex flex-col gap-2 relative z-10">
           <Link to="/admin" className="flex items-center gap-1.5" style={{ textDecoration: 'none' }}>
             <span style={{ fontSize: '1.25rem', fontWeight: 800, color: '#fff', fontFamily: 'Outfit' }}>
               Recomiendo

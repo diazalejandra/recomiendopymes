@@ -15,12 +15,13 @@ async def list_businesses(
     category: Optional[str] = Query(None),
     city: Optional[str] = Query(None),
     search: Optional[str] = Query(None),
+    nationwide: bool = Query(False),
     page: int = Query(1, ge=1),
     limit: int = Query(12, ge=1, le=500),
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     service = BusinessService(db)
-    return await service.get_businesses(category=category, city=city, search=search, page=page, limit=limit)
+    return await service.get_businesses(category=category, city=city, search=search, nationwide=nationwide, page=page, limit=limit)
 
 
 @router.get("/mine")

@@ -1,12 +1,19 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { mediaApi } from '../../utils/api';
 import axios from 'axios';
 
-export default function CloudinaryUpload({ label, onUpload, multiple = false, maxFiles = 8 }) {
+export default function CloudinaryUpload({ label, onUpload, multiple = false, maxFiles = 8, initialUrls = [] }) {
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [uploaded, setUploaded] = useState([]);
   const inputRef = useRef();
+
+  useEffect(() => {
+    // Only update if we hadn't already and we are getting valid URLs from parents (like EditBusiness async fetch)
+    if (initialUrls && initialUrls.length > 0 && uploaded.length === 0) {
+      setUploaded(Array.isArray(initialUrls) ? initialUrls : [initialUrls]);
+    }
+  }, [initialUrls]);
 
   const handleFiles = async (files) => {
     if (!files.length) return;
