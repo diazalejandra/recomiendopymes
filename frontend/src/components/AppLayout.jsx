@@ -203,8 +203,15 @@ export default function AppLayout({ children, hideFooter = false }) {
                 onMouseLeave={e => e.currentTarget.style.color = 'var(--subtle)'}>
                 Privacidad
               </Link>
-              <span className="text-xs" style={{ color: 'var(--subtle)' }}>
-                © {new Date().getFullYear()} · Hecho en Chile 🇨🇱
+              <span className="text-xs flex items-center gap-1.5" style={{ color: 'var(--subtle)' }}>
+                © {new Date().getFullYear()} · Hecho en Chile
+                <img 
+                  src="https://flagcdn.com/w20/cl.png" 
+                  srcSet="https://flagcdn.com/w40/cl.png 2x" 
+                  width="14" 
+                  alt="Chile" 
+                  className="inline-block rounded-sm opacity-80"
+                />
               </span>
             </div>
           </div>
