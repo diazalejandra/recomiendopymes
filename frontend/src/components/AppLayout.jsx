@@ -210,7 +210,7 @@ export default function AppLayout({ children, hideFooter = false }) {
                   srcSet="https://flagcdn.com/w40/cl.png 2x" 
                   width="14" 
                   alt="Chile" 
-                  className="inline-block rounded-sm opacity-80"
+                  className="inline-block opacity-90"
                 />
               </span>
             </div>
