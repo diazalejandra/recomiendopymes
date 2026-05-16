@@ -25,13 +25,13 @@ Necesitarás **dos cuentas de email reales** que puedas revisar durante las prue
 
 | ID | Test | Pasos a seguir | Resultado Esperado | Pasó? |
 |---|---|---|---|---|
-| C1 | **Cold start / Primera carga** | Entra al sitio desde Chrome incógnito con F12 → Network abierto. Mide el tiempo hasta que aparecen las tarjetas. | El catálogo carga. Si demora más de 30s, es el cold start de Render — espera y recarga. Si falla 2 veces seguidas, anótalo como bug. | [ ] |
-| C2 | **Catálogo sin login** | Navega por las tarjetas sin loguearte. Revisa la consola (F12) mientras navegas. | Las tarjetas muestran imagen, nombre, categoría y ciudad. Sin errores rojos en consola. | [ ] |
-| C3 | **Filtro por categoría** | Usa el dropdown de categoría. Luego limpia el filtro. | Las tarjetas se filtran correctamente. Limpiar el filtro restaura todos los resultados. | [ ] |
-| C4 | **Buscador** | Escribe el nombre de un negocio del seed en el buscador y presiona Enter. | Aparece el negocio buscado. Una búsqueda sin resultados muestra un mensaje vacío, no error. | [ ] |
-| C5 | **Toggle "envíos nacionales"** | Activa el switch de envíos nacionales (si está visible en la vista). | Aparecen negocios con `delivery_scope: nationwide` que antes no estaban. | [ ] |
-| C6 | **Mapa interactivo** | Ve a la vista de mapa. | Solo aparecen pines de negocios físicos o mixtos. Los negocios 100% digitales **no tienen pin**. | [ ] |
-| C7 | **Detalle de negocio** | Haz click en cualquier tarjeta del catálogo. | Se carga la página de detalle. El **título de la pestaña del navegador** cambia al nombre del negocio. | [ ] |
+| C1 | **Cold start / Primera carga** | Entra al sitio desde Chrome incógnito con F12 → Network abierto. Mide el tiempo hasta que aparecen las tarjetas. | El catálogo carga. Si demora más de 30s, es el cold start de Render — espera y recarga. Si falla 2 veces seguidas, anótalo como bug. | [x] |
+| C2 | **Catálogo sin login** | Navega por las tarjetas sin loguearte. Revisa la consola (F12) mientras navegas. | Las tarjetas muestran imagen, nombre, categoría y ciudad. Sin errores rojos en consola. | [x] |
+| C3 | **Filtro por categoría** | Usa el dropdown de categoría. Luego limpia el filtro. | Las tarjetas se filtran correctamente. Limpiar el filtro restaura todos los resultados. | [x] |
+| C4 | **Buscador** | Escribe el nombre de un negocio del seed en el buscador y presiona Enter. | Aparece el negocio buscado. Una búsqueda sin resultados muestra un mensaje vacío, no error. | [x] |
+| C5 | **Toggle "envíos nacionales"** | Activa el switch de envíos nacionales (si está visible en la vista). | Aparecen negocios con `delivery_scope: nationwide` que antes no estaban. | [FALLÓ] |
+| C6 | **Mapa interactivo** | Ve a la vista de mapa. | Solo aparecen pines de negocios físicos o mixtos. Los negocios 100% digitales **no tienen pin**. | [x] |
+| C7 | **Detalle de negocio** | Haz click en cualquier tarjeta del catálogo. | Se carga la página de detalle. El **título de la pestaña del navegador** cambia al nombre del negocio. | [x] |
 | C8 | **Botón WhatsApp** | En el detalle de un negocio que tenga WhatsApp, haz click en el botón. | Abre WhatsApp Web o la app con un mensaje prellenado que menciona "RecomiendoPymes" y el nombre del negocio. | [ ] |
 | C9 | **Registro con email real** | Click en Registrarse. Usa un email real que puedas revisar ahora. | Ves un mensaje de "revisa tu email". El email de verificación llega en menos de 2 minutos. | [ ] |
 | C10 | **Verificación de email** | Abre el email de verificación y haz click en el link. | El sitio te confirma que tu cuenta está verificada. Puedes iniciar sesión. | [ ] |
@@ -80,6 +80,18 @@ Esperado: [qué debía pasar]
 Real:     [qué pasó — incluye el mensaje de error exacto]
 Evidencia: [captura o texto de la consola F12]
 ```
+
+**Bug #1 — C1 (Favicon no encontrado)**
+Pasos: 1. Cargar la página inicial. 2. Observar la consola de red.
+Esperado: El favicon debe cargar con código HTTP 200.
+Real: `GET /favicon.ico 404 (Not Found)`
+Evidencia: Error en consola del navegador reportado por el subagente en C1.
+
+**Bug #2 — C5 (Toggle "envíos nacionales" faltante)**
+Pasos: 1. Navegar por el catálogo y los filtros.
+Esperado: Debe existir un switch/toggle para ver solo emprendimientos con envío a todo Chile.
+Real: El control visual no existe en la interfaz.
+Evidencia: Revisión visual y click de la automatización en el catálogo de Vercel.
 
 ---
 
