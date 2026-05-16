@@ -33,6 +33,15 @@ const TYPE_ICONS = {
   both: '🏪🌐',
 };
 
+const DEFAULT_TITLE = 'RecomiendoPymes — Catálogo de Emprendedores Chilenos';
+const DEFAULT_DESC = 'Catálogo de emprendedores chilenos. Descubre y apoya micro-emprendimientos de toda Chile.';
+
+function setMeta(attr, key, value) {
+  let el = document.querySelector(`meta[${attr}="${key}"]`);
+  if (!el) { el = document.createElement('meta'); el.setAttribute(attr, key); document.head.appendChild(el); }
+  el.setAttribute('content', value);
+}
+
 // Limpia el texto de ubicación pero mantiene información útil
 const formatLocationStr = (locStr, city) => {
   if (!locStr) return '';
@@ -57,9 +66,17 @@ export default function BusinessDetail() {
 
       // SEO dinámico
       const b = data.business;
+      const desc = b.description?.slice(0, 160) || '';
+      const pageUrl = `https://recomiendopymes.cl/emprendimiento/${b.slug}`;
       document.title = `${b.name} — ${b.category} en ${b.city} | RecomiendoPymes`;
-      const metaDesc = document.querySelector('meta[name="description"]');
-      if (metaDesc) metaDesc.setAttribute('content', b.description?.slice(0, 160) || '');
+      setMeta('name', 'description', desc);
+      setMeta('property', 'og:title', `${b.name} | RecomiendoPymes`);
+      setMeta('property', 'og:description', desc);
+      setMeta('property', 'og:image', b.image || '');
+      setMeta('property', 'og:url', pageUrl);
+      setMeta('name', 'twitter:title', `${b.name} | RecomiendoPymes`);
+      setMeta('name', 'twitter:description', desc);
+      setMeta('name', 'twitter:image', b.image || '');
 
       // JSON-LD LocalBusiness
       const schema = {
@@ -97,7 +114,12 @@ export default function BusinessDetail() {
 
     return () => {
       document.getElementById('json-ld')?.remove();
-      document.title = 'RecomiendoPymes — Catálogo de emprendedores chilenos';
+      document.title = DEFAULT_TITLE;
+      setMeta('name', 'description', DEFAULT_DESC);
+      setMeta('property', 'og:title', DEFAULT_TITLE);
+      setMeta('property', 'og:description', 'Descubre y apoya micro-emprendimientos de toda Chile.');
+      setMeta('property', 'og:image', '');
+      setMeta('property', 'og:url', 'https://recomiendopymes.cl');
     };
   }, [slug]);
 

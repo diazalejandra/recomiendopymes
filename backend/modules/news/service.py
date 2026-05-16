@@ -8,11 +8,20 @@ class NewsService:
     @staticmethod
     async def get_all_news(limit: int = 10, only_published: bool = True):
         db = get_db()
-        query = {"is_published": True} if only_published else {}
+        query = {"status": "published"} if only_published else {}
         cursor = db.news.find(query).sort("created_at", -1).limit(limit)
         news = await cursor.to_list(length=limit)
         
         return [{**n, "id": str(n["_id"])} for n in news]
+
+    @staticmethod
+    async def get_news_by_slug(slug: str):
+        db = get_db()
+        news = await db.news.find_one({"slug": slug, "status": "published"})
+        if not news:
+            raise HTTPException(status_code=404, detail="Noticia no encontrada")
+        return {**news, "id": str(news["_id"])}
+
 
     @staticmethod
     async def create_news(data: NewsCreate):

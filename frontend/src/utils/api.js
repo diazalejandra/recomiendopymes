@@ -103,6 +103,7 @@ export const adminApi = {
 // News (Public)
 export const newsApi = {
   getPublicNews: (limit = 3) => client.get(`/news/public?limit=${limit}`).then(r => r.data),
+  getBySlug: (slug) => client.get(`/news/public/${slug}`).then(r => r.data),
 };
 
 export default client;

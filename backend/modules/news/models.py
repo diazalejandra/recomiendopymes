@@ -20,11 +20,15 @@ class PyObjectId(ObjectId):
 
 class NewsArticle(BaseModel):
     id: Optional[PyObjectId] = Field(alias="_id", default=None)
+    slug: str
     title: str
     content: str
+    excerpt: Optional[str] = None
+    image_url: Optional[str] = None
     tag: str = "Noticia"
-    url: Optional[str] = None  # If they want to link out
-    is_published: bool = True
+    status: str = "draft"  # "draft" | "published"
+    source: str = "manual" # "manual" | "n8n"
+    published_at: Optional[datetime] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
@@ -32,3 +36,4 @@ class NewsArticle(BaseModel):
         populate_by_name = True
         arbitrary_types_allowed = True
         json_encoders = {ObjectId: str}
+

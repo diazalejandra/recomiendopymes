@@ -12,6 +12,8 @@ const BusinessDetail = lazy(() => import('./features/business/BusinessDetail'));
 const ListBusinessPage = lazy(() => import('./features/business/ListBusinessPage'));
 const TermsPage = lazy(() => import('./features/catalog/TermsPage'));
 const PrivacyPage = lazy(() => import('./features/catalog/PrivacyPage'));
+const NewsGrid = lazy(() => import('./features/news/NewsGrid'));
+const NewsDetail = lazy(() => import('./features/news/NewsDetail'));
 
 // Auth
 const LoginPage = lazy(() => import('./features/auth/LoginPage'));
@@ -66,6 +68,8 @@ export default function App() {
             <Route path="/terminos" element={<AppLayout><TermsPage /></AppLayout>} />
             <Route path="/privacidad" element={<AppLayout><PrivacyPage /></AppLayout>} />
             <Route path="/planes" element={<AppLayout><PlanesPage /></AppLayout>} />
+            <Route path="/noticias" element={<AppLayout><NewsGrid /></AppLayout>} />
+            <Route path="/noticias/:slug" element={<AppLayout><NewsDetail /></AppLayout>} />
 
             {/* Auth (sin AppLayout) */}
             <Route path="/login" element={<LoginPage />} />

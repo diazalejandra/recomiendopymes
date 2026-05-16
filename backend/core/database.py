@@ -5,15 +5,23 @@ client: AsyncIOMotorClient = None
 db: AsyncIOMotorDatabase = None
 
 
+import certifi
+
 async def connect_db():
     global client, db
-    client = AsyncIOMotorClient(
-        settings.MONGO_URL,
-        tlsAllowInvalidCertificates=settings.MONGO_TLS_ALLOW_INVALID,
-        serverSelectionTimeoutMS=5000,
-        connectTimeoutMS=5000,
-        socketTimeoutMS=10000,
-    )
+    
+    kwargs = {
+        "serverSelectionTimeoutMS": 5000,
+        "connectTimeoutMS": 5000,
+        "socketTimeoutMS": 10000,
+    }
+    
+    if settings.MONGO_TLS_ALLOW_INVALID:
+        kwargs["tlsAllowInvalidCertificates"] = True
+    else:
+        kwargs["tlsCAFile"] = certifi.where()
+
+    client = AsyncIOMotorClient(settings.MONGO_URL, **kwargs)
     db = client[settings.DB_NAME]
 
 
