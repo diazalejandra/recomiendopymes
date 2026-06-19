@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 from fastapi import HTTPException
 from motor.motor_asyncio import AsyncIOMotorDatabase
@@ -68,9 +68,9 @@ class AdminService:
         doc = await self.db.businesses.find_one({"_id": ObjectId(business_id)})
         if not doc:
             raise HTTPException(status_code=404, detail="Emprendimiento no encontrado")
-        update = {"status": "active", "updated_at": datetime.utcnow()}
+        update = {"status": "active", "updated_at": datetime.now(timezone.utc)}
         if not doc.get("activated_at"):
-            update["activated_at"] = datetime.utcnow()
+            update["activated_at"] = datetime.now(timezone.utc)
         await self.db.businesses.update_one({"_id": ObjectId(business_id)}, {"$set": update})
         updated = await self.db.businesses.find_one({"_id": ObjectId(business_id)})
         return _business_doc(updated)
@@ -78,7 +78,7 @@ class AdminService:
     async def reject_business(self, business_id: str) -> dict:
         await self.db.businesses.update_one(
             {"_id": ObjectId(business_id)},
-            {"$set": {"status": "inactive", "updated_at": datetime.utcnow()}}
+            {"$set": {"status": "inactive", "updated_at": datetime.now(timezone.utc)}}
         )
         updated = await self.db.businesses.find_one({"_id": ObjectId(business_id)})
         return _business_doc(updated)
@@ -136,7 +136,7 @@ class AdminService:
         new_state = not user.get("is_active", True)
         await self.db.users.update_one(
             {"_id": ObjectId(user_id)},
-            {"$set": {"is_active": new_state, "updated_at": datetime.utcnow()}}
+            {"$set": {"is_active": new_state, "updated_at": datetime.now(timezone.utc)}}
         )
 
         # Cascada: al inactivar, ocultar negocios y reseñas
@@ -167,7 +167,7 @@ class AdminService:
         """Promover usuario a admin."""
         await self.db.users.update_one(
             {"_id": ObjectId(user_id)},
-            {"$set": {"role": "admin", "updated_at": datetime.utcnow()}}
+            {"$set": {"role": "admin", "updated_at": datetime.now(timezone.utc)}}
         )
         updated = await self.db.users.find_one({"_id": ObjectId(user_id)})
         return _user_public(updated)

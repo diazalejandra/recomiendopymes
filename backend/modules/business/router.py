@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Query
 from typing import Optional
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from core.database import get_db
-from modules.auth.dependencies import get_current_user, require_admin
+from modules.auth.dependencies import get_current_user, require_admin, get_current_user_optional
 from modules.business.service import BusinessService
 from modules.business.models import BusinessCreate, BusinessUpdate
 from modules.review.service import ReviewService
@@ -12,9 +12,9 @@ router = APIRouter(prefix="/api/businesses", tags=["businesses"])
 
 @router.get("")
 async def list_businesses(
-    category: Optional[str] = Query(None),
-    city: Optional[str] = Query(None),
-    search: Optional[str] = Query(None),
+    category: Optional[str] = Query(None, max_length=80),
+    city: Optional[str] = Query(None, max_length=80),
+    search: Optional[str] = Query(None, max_length=100),
     nationwide: bool = Query(False),
     page: int = Query(1, ge=1),
     limit: int = Query(12, ge=1, le=500),
@@ -34,14 +34,18 @@ async def get_my_businesses(
 
 
 @router.get("/{slug_or_id}")
-async def get_business(slug_or_id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
+async def get_business(
+    slug_or_id: str, 
+    current_user: Optional[dict] = Depends(get_current_user_optional),
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
     service = BusinessService(db)
     review_svc = ReviewService(db)
     from bson import ObjectId
     if ObjectId.is_valid(slug_or_id):
-        business = await service.get_by_id(slug_or_id)
+        business = await service.get_by_id(slug_or_id, current_user)
     else:
-        business = await service.get_by_slug(slug_or_id)
+        business = await service.get_by_slug(slug_or_id, current_user)
     # Return wrapper {business, reviews} expected by BusinessDetail.jsx
     review_data = await review_svc.get_business_reviews(business["id"], page=1, limit=50)
     return {"business": business, "reviews": review_data.get("reviews", [])}

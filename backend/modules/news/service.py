@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status
 from bson import ObjectId
-from datetime import datetime
+from datetime import datetime, timezone
 from core.database import get_db
 from .schemas import NewsCreate, NewsUpdate
 
@@ -27,8 +27,8 @@ class NewsService:
     async def create_news(data: NewsCreate):
         db = get_db()
         doc = data.dict()
-        doc["created_at"] = datetime.utcnow()
-        doc["updated_at"] = datetime.utcnow()
+        doc["created_at"] = datetime.now(timezone.utc)
+        doc["updated_at"] = datetime.now(timezone.utc)
         
         result = await db.news.insert_one(doc)
         created = await db.news.find_one({"_id": result.inserted_id})
@@ -44,7 +44,7 @@ class NewsService:
         if not update_data:
             raise HTTPException(status_code=400, detail="Sin datos para actualizar")
             
-        update_data["updated_at"] = datetime.utcnow()
+        update_data["updated_at"] = datetime.now(timezone.utc)
         
         result = await db.news.update_one(
             {"_id": ObjectId(news_id)},

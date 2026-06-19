@@ -1,8 +1,11 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from fastapi import HTTPException
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from bson import ObjectId
 from modules.review.models import ReviewCreate, ReviewPublic, ReviewResponse
+
+# Import at module level to avoid circular import anti-pattern
+from modules.business.service import BusinessService
 
 
 SUSPICIOUS_THRESHOLD = 5  # reseñas en la misma ventana de tiempo
@@ -46,7 +49,7 @@ class ReviewService:
         # Detección de comportamiento sospechoso (configurable vía admin)
         config = await self.db.config.find_one({"key": "review_rate_limit"})
         threshold = config["value"] if config else SUSPICIOUS_THRESHOLD
-        window_start = datetime.utcnow() - timedelta(hours=SUSPICIOUS_WINDOW_HOURS)
+        window_start = datetime.now(timezone.utc) - timedelta(hours=SUSPICIOUS_WINDOW_HOURS)
         recent_count = await self.db.reviews.count_documents({
             "author_id": author["_id"],
             "created_at": {"$gte": window_start}
@@ -67,13 +70,12 @@ class ReviewService:
             "comment": data.comment,
             "is_visible": True,
             "owner_response": None,
-            "created_at": datetime.utcnow(),
-            "updated_at": datetime.utcnow()
+            "created_at": datetime.now(timezone.utc),
+            "updated_at": datetime.now(timezone.utc)
         }
         result = await self.db.reviews.insert_one(doc)
 
         # Recalcular rating del negocio
-        from modules.business.service import BusinessService
         bs = BusinessService(self.db)
         await bs.recalculate_rating(business_id)
 
@@ -94,11 +96,11 @@ class ReviewService:
         response = {
             "text": text,
             "author": owner["name"],
-            "created_at": datetime.utcnow()
+            "created_at": datetime.now(timezone.utc)
         }
         await self.db.reviews.update_one(
             {"_id": ObjectId(review_id)},
-            {"$set": {"owner_response": response, "updated_at": datetime.utcnow()}}
+            {"$set": {"owner_response": response, "updated_at": datetime.now(timezone.utc)}}
         )
         updated = await self.db.reviews.find_one({"_id": ObjectId(review_id)})
         return _doc_to_public(updated)
@@ -111,10 +113,9 @@ class ReviewService:
         new_vis = not review.get("is_visible", True)
         await self.db.reviews.update_one(
             {"_id": ObjectId(review_id)},
-            {"$set": {"is_visible": new_vis, "updated_at": datetime.utcnow()}}
+            {"$set": {"is_visible": new_vis, "updated_at": datetime.now(timezone.utc)}}
         )
         # Recalcular rating del negocio tras el cambio de visibilidad
-        from modules.business.service import BusinessService
         bs = BusinessService(self.db)
         await bs.recalculate_rating(str(review["business_id"]))
 
