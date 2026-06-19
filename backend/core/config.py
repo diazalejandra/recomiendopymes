@@ -34,6 +34,14 @@ class Settings(BaseSettings):
     # Dev: desactivar validacion TLS (necesario en redes con SSL inspection)
     MONGO_TLS_ALLOW_INVALID: bool = False
 
+    # Entorno de ejecución
+    ENVIRONMENT: str = "development"  # En producción: "production"
+
+    @property
+    def COOKIE_SECURE(self) -> bool:
+        """True solo en producción (requiere HTTPS). False en desarrollo local."""
+        return self.ENVIRONMENT == "production"
+
     class Config:
         env_file = ".env"
 

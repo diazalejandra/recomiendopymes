@@ -1,6 +1,10 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 from core.config import settings
 from core.database import connect_db, close_db, get_db
 
@@ -12,6 +16,9 @@ from modules.media.router import router as media_router
 from modules.admin.router import router as admin_router
 from modules.meta.router import router as meta_router
 from modules.news.router import router as news_router
+
+# Rate limiter (por IP)
+limiter = Limiter(key_func=get_remote_address)
 
 
 @asynccontextmanager
@@ -49,10 +56,8 @@ async def _create_indexes():
     await db.reviews.create_index([("author_id", 1), ("created_at", -1)])
     await db.reviews.create_index([("business_id", 1), ("author_id", 1)], unique=True)
 
-    # Legal & Config (small collections, no indexes needed)
-
     # News
-    await db.news.create_index([("is_published", 1), ("created_at", -1)])
+    await db.news.create_index([("status", 1), ("created_at", -1)])
 
 
 def create_app() -> FastAPI:
@@ -61,7 +66,14 @@ def create_app() -> FastAPI:
         description="API para el catálogo de emprendedores chilenos",
         version="1.0.0",
         lifespan=lifespan,
+        # Ocultar docs en producción
+        docs_url="/docs" if settings.ENVIRONMENT != "production" else None,
+        redoc_url="/redoc" if settings.ENVIRONMENT != "production" else None,
     )
+
+    # Rate limiting
+    app.state.limiter = limiter
+    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
     # CORS
     origins = [o.strip() for o in settings.CORS_ORIGINS.split(",")]
@@ -72,6 +84,16 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+    # Security headers middleware
+    @app.middleware("http")
+    async def add_security_headers(request: Request, call_next):
+        response = await call_next(request)
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        response.headers["X-XSS-Protection"] = "1; mode=block"
+        return response
 
     # Registrar routers
     app.include_router(auth_router)
