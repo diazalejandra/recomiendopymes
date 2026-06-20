@@ -84,7 +84,7 @@ export default function ReviewForm({ businessId, onReviewAdded }) {
         className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary resize-none"
       />
       <button type="submit" disabled={loading}
-        className="w-full py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 disabled:opacity-50">
+        className="w-full py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors">
         {loading ? 'Publicando...' : 'Publicar reseña'}
       </button>
     </form>

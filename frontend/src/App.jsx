@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'sonner';
+import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from './hooks/useAuth';
 import ProtectedRoute from './components/ProtectedRoute';
 import AppLayout from './components/AppLayout';
@@ -55,9 +56,10 @@ const NotFound = () => (
 
 export default function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Toaster position="top-right" richColors />
+    <HelmetProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <Toaster position="top-right" richColors />
         <Suspense fallback={<Loading />}>
           <Routes>
             {/* Públicas con AppLayout */}
@@ -107,5 +109,6 @@ export default function App() {
         </Suspense>
       </BrowserRouter>
     </AuthProvider>
+    </HelmetProvider>
   );
 }

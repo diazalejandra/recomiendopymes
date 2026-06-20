@@ -23,8 +23,7 @@ export default function DashboardPage() {
         setStats(d);
         setError(false);
       })
-      .catch(e => {
-        console.error('Error fetching dashboard stats:', e);
+      .catch(() => {
         setError(true);
       })
       .finally(() => setLoading(false));
@@ -36,7 +35,7 @@ export default function DashboardPage() {
         <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="h-32 bg-white rounded-2xl border border-gray-100 shadow-sm animate-pulse" />
+            <div key={`skeleton-${i}`} className="h-32 bg-white rounded-2xl border border-gray-100 shadow-sm animate-pulse" />
           ))}
         </div>
       </div>
@@ -46,42 +45,42 @@ export default function DashboardPage() {
   const cards = [
     { 
       label: 'Total Usuarios', 
-      value: stats?.total_users ?? 0, 
+      value: stats?.users?.total ?? 0, 
       icon: Users,
       color: 'blue',
       link: '/admin/usuarios'
     },
     { 
       label: 'Negocios Activos', 
-      value: stats?.active_businesses ?? 0, 
+      value: stats?.businesses?.active ?? 0, 
       icon: Store,
       color: 'emerald',
       link: '/admin/emprendimientos?status=active'
     },
     { 
       label: 'Pendientes de Aprob.', 
-      value: stats?.pending_businesses ?? 0, 
+      value: stats?.businesses?.pending ?? 0, 
       icon: Clock,
       color: 'amber',
       link: '/admin/emprendimientos?status=pending'
     },
     { 
       label: 'Total Reseñas', 
-      value: stats?.total_reviews ?? 0, 
+      value: stats?.reviews?.total ?? 0, 
       icon: MessageSquareQuote,
       color: 'purple',
       link: '/admin/resenas'
     },
     { 
       label: 'Usuarios Sospechosos', 
-      value: stats?.suspicious_users ?? 0, 
+      value: stats?.users?.suspicious ?? 0, 
       icon: ShieldAlert,
       color: 'red',
       link: '/admin/usuarios'
     },
     { 
       label: 'Reseñas Ocultas', 
-      value: stats?.hidden_reviews ?? 0, 
+      value: stats?.reviews?.hidden ?? 0, 
       icon: EyeOff,
       color: 'orange',
       link: '/admin/resenas'
@@ -98,6 +97,11 @@ export default function DashboardPage() {
       orange: 'bg-orange-50 text-orange-600 border-orange-100',
     };
     return map[color] || map.blue;
+  };
+
+  const isWarningCard = (color, value) => {
+    if (value <= 0) return false;
+    return color === 'amber' || color === 'red';
   };
 
   return (
@@ -132,8 +136,8 @@ export default function DashboardPage() {
               <p className="text-sm font-medium text-gray-500 mb-2">{label}</p>
               <div className="flex items-baseline gap-2">
                 <span className="text-4xl font-extrabold text-gray-900 tracking-tight">{value}</span>
-                {value > 0 && color === 'amber' && <TrendingUp size={16} className="text-amber-500" strokeWidth={3} />}
-                {value > 0 && color === 'red' && <ShieldAlert size={16} className="text-red-500" strokeWidth={3} />}
+                {isWarningCard(color, value) && color === 'amber' && <TrendingUp size={16} className="text-amber-500" strokeWidth={3} />}
+                {isWarningCard(color, value) && color === 'red' && <ShieldAlert size={16} className="text-red-500" strokeWidth={3} />}
               </div>
             </div>
             <div className={`p-3 rounded-xl border ${getColorClasses(color)} relative z-10`}>

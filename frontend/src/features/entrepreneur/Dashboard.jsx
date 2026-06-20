@@ -3,6 +3,14 @@ import { Link } from 'react-router-dom';
 import { businessApi } from '../../utils/api';
 import { useAuth } from '../../hooks/useAuth';
 
+const calculateCompletion = (b) => {
+  let score = 50; // base (name, category, description)
+  if (b.image) score += 20;
+  if (b.city && b.region) score += 20;
+  if (b.social_links && Object.keys(b.social_links).length > 0) score += 10;
+  return score;
+};
+
 export default function EntrepreneurDashboard() {
   const { user } = useAuth();
   const [businesses, setBusinesses] = useState([]);
@@ -79,6 +87,22 @@ export default function EntrepreneurDashboard() {
                     <span className="text-[10px] text-gray-500 uppercase font-bold tracking-wider">Reseñas</span>
                   </div>
                 </div>
+                {calculateCompletion(b) < 100 && (
+                  <div className="mt-4 bg-amber-50 rounded-lg p-3 border border-amber-100 max-w-sm">
+                    <div className="flex justify-between items-center mb-1.5">
+                      <span className="text-xs font-semibold text-amber-800">Perfil {calculateCompletion(b)}% completado</span>
+                      <Link to={`/mi-negocio/editar/${b.id}`} className="text-xs text-amber-700 hover:underline">Completar ahora →</Link>
+                    </div>
+                    <div className="w-full bg-amber-200 rounded-full h-1.5 mb-1.5">
+                      <div className="bg-amber-500 h-1.5 rounded-full" style={{ width: `${calculateCompletion(b)}%` }}></div>
+                    </div>
+                    <p className="text-[10px] text-amber-700 leading-tight">
+                      {!b.image && "Sube una foto. "}
+                      {!b.city && "Agrega tu comuna. "}
+                      {(!b.social_links || Object.keys(b.social_links).length === 0) && "Añade tus redes."}
+                    </p>
+                  </div>
+                )}
               </div>
               <div className="flex gap-2 flex-shrink-0">
                 <Link to={`/mi-negocio/editar/${b.id}`}
@@ -89,10 +113,14 @@ export default function EntrepreneurDashboard() {
                   className="text-xs border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50">
                   Reseñas
                 </Link>
-                {b.status === 'active' && (
+                {b.slug && (
                   <Link to={`/emprendimiento/${b.slug}`}
-                    className="text-xs bg-primary text-white px-3 py-1.5 rounded-lg hover:bg-primary/90">
-                    Ver perfil
+                    className={`text-xs px-3 py-1.5 rounded-lg transition-colors ${
+                      b.status === 'active' 
+                        ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    }`}>
+                    {b.status === 'active' ? 'Ver perfil' : 'Previsualizar'}
                   </Link>
                 )}
               </div>

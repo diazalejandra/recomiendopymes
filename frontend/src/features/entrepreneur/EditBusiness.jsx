@@ -12,7 +12,7 @@ const BUSINESS_TYPES = [
   { value: 'both', label: 'Mixto (físico y digital)' },
 ];
 const DELIVERY_CARDS = [
-  { id: 'local_delivery', icon: '🛵', title: 'Despacho Local', desc: 'Dentro de tu ciudad/comuna' },
+  { id: 'home_delivery', icon: '🛵', title: 'Despacho Local', desc: 'Dentro de tu ciudad/comuna' },
   { id: 'nationwide', icon: '✈️', title: 'Envío a todo Chile', desc: 'Vía courier (Starken, etc)' },
   { id: 'store_pickup', icon: '🏪', title: 'Retiro en tienda', desc: 'El cliente va hacia ti' },
   { id: 'meeting_point', icon: '🤝', title: 'Punto de encuentro', desc: 'Zonas céntricas o metro' }

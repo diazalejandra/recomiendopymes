@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { businessApi, metaApi, newsApi } from '../../utils/api';
 import BusinessCard from './BusinessCard';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Search, MapPin, LayoutGrid, List, Map, SlidersHorizontal, X, ChevronDown, Store, Compass } from 'lucide-react';
@@ -36,6 +36,16 @@ const VIEWS = [
   { key: 'list', Icon: List,       label: 'Lista' },
   { key: 'map',  Icon: Map,        label: 'Mapa' },
 ];
+
+function MapFitBounds({ markers }) {
+  const map = useMap();
+  useEffect(() => {
+    if (!markers || markers.length === 0) return;
+    const bounds = L.latLngBounds(markers.map(m => [m.coordinates.lat, m.coordinates.lng]));
+    map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 });
+  }, [markers, map]);
+  return null;
+}
 
 function SkeletonGrid() {
   return (
@@ -166,10 +176,10 @@ export default function HomePage() {
   // Load map data
   useEffect(() => {
     if (viewMode !== 'map') return;
-    businessApi.list({ limit: 200, ...(city && { city }), ...(category && { category }) })
+    businessApi.list({ limit: 200, ...(city && { city }), ...(category && { category }), ...(search && { search: search.trim() }), ...(includeNationwide && { nationwide: true }) })
       .then(d => setMapBusinesses((d.businesses || []).filter(b => b.coordinates?.lat && b.coordinates?.lng)))
       .catch(() => {});
-  }, [viewMode, city, category]);
+  }, [viewMode, city, category, search, includeNationwide]);
 
   const handleHeroSearch = () => {
     setSearch(heroSearch);
@@ -391,7 +401,7 @@ export default function HomePage() {
               </button>
               
               {/* Nationwide Toggle */}
-              {city && viewMode !== 'map' && (
+              {viewMode !== 'map' && (
                 <label className="flex items-center gap-1.5 px-3 py-1 ml-2 rounded-full border transition-colors cursor-pointer"
                   style={{ borderColor: includeNationwide ? 'var(--brand)' : 'var(--border)', background: includeNationwide ? 'var(--brand-light)' : 'var(--surface)' }}
                 >
@@ -471,6 +481,7 @@ export default function HomePage() {
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
+              <MapFitBounds markers={mapBusinesses} />
               {mapBusinesses.map(b => (
                 <Marker key={b.id} position={[b.coordinates.lat, b.coordinates.lng]}>
                   <Popup maxWidth={220}>
@@ -512,43 +523,53 @@ export default function HomePage() {
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-            {(news.length > 0 ? news : BACKUP_NEWS).map((item, i) => (
-              <a key={item.id || i} href={item.url || '#'} target={item.url ? '_blank' : '_self'} rel="noreferrer"
-                className="group rounded-2xl p-5 transition-all outline-none"
-                style={{ border: '1px solid var(--border)', background: 'var(--bg)', textDecoration: 'none' }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.borderColor = 'var(--brand)';
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(37,99,235,0.05)';
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.borderColor = 'var(--border)';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = 'none';
-                }}
-              >
-                <div className="flex justify-between items-start mb-3">
-                  <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md inline-block"
-                    style={{ background: 'var(--brand-light)', color: 'var(--brand)' }}>
-                    {item.tag}
-                  </span>
-                </div>
-                
-                <h3 className="font-bold text-sm leading-snug mb-2 group-hover:text-primary transition-colors" style={{ color: 'var(--ink)' }}>
-                  {item.title}
-                </h3>
-                
-                {item.content && (
-                  <p className="text-xs line-clamp-2 mb-3" style={{ color: 'var(--subtle)' }}>
-                    {item.content}
+            {(news.length > 0 ? news : BACKUP_NEWS).map((item, i) => {
+              const isExternal = !!item.url;
+              const LinkComponent = isExternal ? 'a' : Link;
+              const linkProps = isExternal 
+                ? { href: item.url, target: '_blank', rel: 'noreferrer' }
+                : { to: `/noticias/${item.slug}` };
+
+              return (
+                <LinkComponent 
+                  key={item.id || i} 
+                  {...linkProps}
+                  className="group rounded-2xl p-5 transition-all outline-none block"
+                  style={{ border: '1px solid var(--border)', background: 'var(--bg)', textDecoration: 'none' }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.borderColor = 'var(--brand)';
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(37,99,235,0.05)';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.borderColor = 'var(--border)';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
+                >
+                  <div className="flex justify-between items-start mb-3">
+                    <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md inline-block"
+                      style={{ background: 'var(--brand-light)', color: 'var(--brand)' }}>
+                      {item.tag}
+                    </span>
+                  </div>
+                  
+                  <h3 className="font-bold text-sm leading-snug mb-2 group-hover:text-primary transition-colors" style={{ color: 'var(--ink)' }}>
+                    {item.title}
+                  </h3>
+                  
+                  {(item.content || item.excerpt) && (
+                    <p className="text-xs line-clamp-2 mb-3" style={{ color: 'var(--subtle)' }}>
+                      {item.excerpt || item.content.replace(/[#*]/g, '')}
+                    </p>
+                  )}
+                  
+                  <p className="text-[11px] font-medium" style={{ color: 'var(--subtle)' }}>
+                    {item.created_at ? new Date(item.created_at).toLocaleDateString('es-CL') : item.date}
                   </p>
-                )}
-                
-                <p className="text-[11px] font-medium" style={{ color: 'var(--subtle)' }}>
-                  {item.created_at ? new Date(item.created_at).toLocaleDateString('es-CL') : item.date}
-                </p>
-              </a>
-            ))}
+                </LinkComponent>
+              );
+            })}
           </div>
         </div>
       </section>
