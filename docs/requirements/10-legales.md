@@ -34,8 +34,8 @@ No hay exención general para pymes ni MVP.
 
 | ID | Item | Esfuerzo | Notas |
 |---|---|---|---|
-| **L-1** | Redactar **Términos y Condiciones** | Medio | Incluir desactivación de listado y responsabilidad del emprendedor (diseño §8) |
-| **L-2** | Redactar **Política de Privacidad** conforme a Ley 21.719 | Medio | Datos, finalidad, base legal, retención, derechos ARCO+, contacto |
+| **L-1** | Redactar **Términos y Condiciones** | Medio | 🟡 Borrador en `docs/legal/terminos-y-condiciones.md` — faltan datos `[…]` + revisión legal |
+| **L-2** | Redactar **Política de Privacidad** conforme a Ley 21.719 | Medio | 🟡 Borrador en `docs/legal/politica-de-privacidad.md` — faltan datos `[…]` + revisión legal |
 | **L-3** | Revisión por abogado/a de datos | — | Antes de la vigencia (~dic 2026) |
 | **L-4** | Versionar los textos legales (fecha + versión) y enlazarlos al consentimiento (B-6) | Bajo | Para trazabilidad de qué versión aceptó cada usuario |
 | **L-5** | Confirmar fecha exacta de vigencia y montos de sanciones en BCN | Bajo | Fuentes en vivo no disponibles al redactar esto |
