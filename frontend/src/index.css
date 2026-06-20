@@ -27,10 +27,10 @@
   --success-bg:   #ECFDF5;
   --warning:      #D97706;
   --warning-bg:   #FFFBEB;
-
-  /* Tailwind compat */
-  --primary: var(--brand);
 }
+/* Nota: --primary lo define el bloque shadcn (@layer base) como triplete HSL,
+   porque Tailwind lo consume vía hsl(var(--primary)). No redefinir aquí con un
+   color hex o se rompe bg-primary/text-primary en toda la app. */
 
 /* ── Base ───────────────────────────────────────────── */
 @layer base {
