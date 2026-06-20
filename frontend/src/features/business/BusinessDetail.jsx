@@ -8,6 +8,7 @@ import {
   Instagram, Facebook, Twitter, Linkedin, Youtube, 
   Globe, Mail, MessageCircle, MapPin, ExternalLink, Zap, Star
 } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
 
 const SOCIAL_ICONS = {
   instagram: { label: 'Instagram', color: 'bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7]', icon: Instagram },
@@ -36,12 +37,6 @@ const TYPE_ICONS = {
 const DEFAULT_TITLE = 'RecomiendoPymes — Catálogo de Emprendedores Chilenos';
 const DEFAULT_DESC = 'Catálogo de emprendedores chilenos. Descubre y apoya micro-emprendimientos de toda Chile.';
 
-function setMeta(attr, key, value) {
-  let el = document.querySelector(`meta[${attr}="${key}"]`);
-  if (!el) { el = document.createElement('meta'); el.setAttribute(attr, key); document.head.appendChild(el); }
-  el.setAttribute('content', value);
-}
-
 // Limpia el texto de ubicación pero mantiene información útil
 const formatLocationStr = (locStr, city) => {
   if (!locStr) return '';
@@ -64,39 +59,25 @@ export default function BusinessDetail() {
       setBusiness(data.business);
       setReviews(data.reviews || []);
 
-      // SEO dinámico
-      const b = data.business;
-      const desc = b.description?.slice(0, 160) || '';
-      const pageUrl = `https://recomiendopymes.cl/emprendimiento/${b.slug}`;
-      document.title = `${b.name} — ${b.category} en ${b.city} | RecomiendoPymes`;
-      setMeta('name', 'description', desc);
-      setMeta('property', 'og:title', `${b.name} | RecomiendoPymes`);
-      setMeta('property', 'og:description', desc);
-      setMeta('property', 'og:image', b.image || '');
-      setMeta('property', 'og:url', pageUrl);
-      setMeta('name', 'twitter:title', `${b.name} | RecomiendoPymes`);
-      setMeta('name', 'twitter:description', desc);
-      setMeta('name', 'twitter:image', b.image || '');
-
       // JSON-LD LocalBusiness
       const schema = {
         '@context': 'https://schema.org',
         '@type': 'LocalBusiness',
-        name: b.name,
-        description: b.description,
-        image: b.image,
-        ...(b.location ? {
+        name: data.business.name,
+        description: data.business.description,
+        image: data.business.image,
+        ...(data.business.location ? {
           address: {
             '@type': 'PostalAddress',
-            addressLocality: b.city,
+            addressLocality: data.business.city,
             addressCountry: 'CL',
           }
         } : {}),
-        ...(b.review_count > 0 ? {
+        ...(data.business.review_count > 0 ? {
           aggregateRating: {
             '@type': 'AggregateRating',
-            ratingValue: b.rating,
-            reviewCount: b.review_count,
+            ratingValue: data.business.rating,
+            reviewCount: data.business.review_count,
           }
         } : {}),
       };
@@ -114,19 +95,17 @@ export default function BusinessDetail() {
 
     return () => {
       document.getElementById('json-ld')?.remove();
-      document.title = DEFAULT_TITLE;
-      setMeta('name', 'description', DEFAULT_DESC);
-      setMeta('property', 'og:title', DEFAULT_TITLE);
-      setMeta('property', 'og:description', 'Descubre y apoya micro-emprendimientos de toda Chile.');
-      setMeta('property', 'og:image', '');
-      setMeta('property', 'og:url', 'https://recomiendopymes.cl');
     };
   }, [slug]);
 
   const isOwner = user && business?.owner_user_id &&
     String(business.owner_user_id) === String(user.id);
 
-  const handleReviewAdded = (review) => setReviews(prev => [review, ...prev]);
+  const handleReviewAdded = (review) => {
+    setReviews(prev => [review, ...prev]);
+    // Actualizar datos del negocio para refrescar rating y contador
+    businessApi.get(slug).then(data => setBusiness(data.business)).catch(() => {});
+  };
   const handleResponseAdded = (updated) =>
     setReviews(prev => prev.map(r => (r._id || r.id) === (updated._id || updated.id) ? updated : r));
 
@@ -153,8 +132,23 @@ export default function BusinessDetail() {
     ? `https://www.google.com/maps/search/?api=1&query=${business.coordinates.lat},${business.coordinates.lng}`
     : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(business.location || business.city)}`;
 
+  const pageUrl = `https://recomiendopymes.cl/emprendimiento/${business.slug}`;
+  const desc = business.description?.slice(0, 160) || DEFAULT_DESC;
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+      <Helmet>
+        <title>{`${business.name} — ${business.category} en ${business.city} | RecomiendoPymes`}</title>
+        <meta name="description" content={desc} />
+        <meta property="og:title" content={`${business.name} | RecomiendoPymes`} />
+        <meta property="og:description" content={desc} />
+        <meta property="og:image" content={business.image || ''} />
+        <meta property="og:url" content={pageUrl} />
+        <meta name="twitter:title" content={`${business.name} | RecomiendoPymes`} />
+        <meta name="twitter:description" content={desc} />
+        <meta name="twitter:image" content={business.image || ''} />
+      </Helmet>
+
       <Link to="/" className="text-sm text-gray-500 hover:text-blue-600 mb-6 flex items-center gap-1.5 w-fit">
         ← Volver al catálogo
       </Link>

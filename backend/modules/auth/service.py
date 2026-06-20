@@ -1,3 +1,4 @@
+import asyncio
 import resend
 import jwt
 from datetime import datetime, timezone
@@ -14,13 +15,19 @@ from modules.auth.models import UserCreate, UserLogin, TokenResponse, UserPublic
 
 resend.api_key = settings.RESEND_API_KEY
 
+# Constantes para mensajes de error (evitar literales duplicados)
+TOKEN_INVALIDO = "Token inválido"
+TOKEN_EXPIRADO_VERIFICACION = "El enlace de verificación ha expirado"
+TOKEN_EXPIRADO_RESET = "El enlace ha expirado. Solicita uno nuevo."
+
 
 async def send_verification_email(email: str, name: str, token: str):
     """Envía email de verificación via Resend. Skip silencioso en dev sin API key."""
-    if not settings.RESEND_API_KEY:
-        return
     verify_url = f"{settings.FRONTEND_URL}/verificar-email?token={token}"
-    resend.Emails.send({
+    if not settings.RESEND_API_KEY:
+        print(f"\n[DEV MODE] Enlace de verificación para {email}:\n{verify_url}\n")
+        return
+    payload = {
         "from": settings.FROM_EMAIL,
         "to": email,
         "subject": "Verifica tu email — RecomiendoPymes",
@@ -32,15 +39,17 @@ async def send_verification_email(email: str, name: str, token: str):
         <p>Este enlace expira en 24 horas.</p>
         <p>Si no creaste esta cuenta, puedes ignorar este email.</p>
         """
-    })
+    }
+    await asyncio.to_thread(resend.Emails.send, payload)
 
 
 async def send_password_reset_email(email: str, name: str, token: str):
     """Envía email de reset de contraseña."""
-    if not settings.RESEND_API_KEY:
-        return
     reset_url = f"{settings.FRONTEND_URL}/reset-password?token={token}"
-    resend.Emails.send({
+    if not settings.RESEND_API_KEY:
+        print(f"\n[DEV MODE] Enlace de recuperación para {email}:\n{reset_url}\n")
+        return
+    payload = {
         "from": settings.FROM_EMAIL,
         "to": email,
         "subject": "Recuperar contraseña — RecomiendoPymes",
@@ -50,7 +59,8 @@ async def send_password_reset_email(email: str, name: str, token: str):
         <a href="{reset_url}">Restablecer contraseña</a>
         <p>Este enlace expira en 15 minutos. Si no solicitaste esto, ignora este email.</p>
         """
-    })
+    }
+    await asyncio.to_thread(resend.Emails.send, payload)
 
 
 def _doc_to_user_public(doc: dict) -> UserPublic:
@@ -61,7 +71,7 @@ def _doc_to_user_public(doc: dict) -> UserPublic:
         role=doc["role"],
         is_active=doc.get("is_active", True),
         is_email_verified=doc.get("is_email_verified", False),
-        created_at=doc.get("created_at", datetime.utcnow())
+        created_at=doc.get("created_at", datetime.now(timezone.utc))
     )
 
 
@@ -82,8 +92,8 @@ class AuthService:
             "role": "user",
             "is_active": True,
             "is_email_verified": False,
-            "created_at": datetime.utcnow(),
-            "updated_at": datetime.utcnow()
+            "created_at": datetime.now(timezone.utc),
+            "updated_at": datetime.now(timezone.utc)
         }
         result = await self.users.insert_one(user_doc)
         user_id = str(result.inserted_id)
@@ -111,16 +121,16 @@ class AuthService:
         try:
             payload = decode_token(token)
             if payload.get("purpose") != "verify_email":
-                raise HTTPException(status_code=400, detail="Token inválido")
+                raise HTTPException(status_code=400, detail=TOKEN_INVALIDO)
             user_id = payload["sub"]
         except jwt.ExpiredSignatureError:
-            raise HTTPException(status_code=400, detail="El enlace de verificación ha expirado")
+            raise HTTPException(status_code=400, detail=TOKEN_EXPIRADO_VERIFICACION)
         except jwt.InvalidTokenError:
-            raise HTTPException(status_code=400, detail="Token inválido")
+            raise HTTPException(status_code=400, detail=TOKEN_INVALIDO)
 
         await self.users.update_one(
             {"_id": ObjectId(user_id)},
-            {"$set": {"is_email_verified": True, "updated_at": datetime.utcnow()}}
+            {"$set": {"is_email_verified": True, "updated_at": datetime.now(timezone.utc)}}
         )
         return {"message": "Email verificado correctamente"}
 
@@ -150,22 +160,22 @@ class AuthService:
         try:
             payload = decode_token(token)
             if payload.get("purpose") != "reset_password":
-                raise HTTPException(status_code=400, detail="Token inválido")
+                raise HTTPException(status_code=400, detail=TOKEN_INVALIDO)
             user_id = payload["sub"]
         except jwt.ExpiredSignatureError:
-            raise HTTPException(status_code=400, detail="El enlace ha expirado. Solicita uno nuevo.")
+            raise HTTPException(status_code=400, detail=TOKEN_EXPIRADO_RESET)
         except jwt.InvalidTokenError:
-            raise HTTPException(status_code=400, detail="Token inválido")
+            raise HTTPException(status_code=400, detail=TOKEN_INVALIDO)
 
         await self.users.update_one(
             {"_id": ObjectId(user_id)},
-            {"$set": {"password_hash": hash_password(new_password), "updated_at": datetime.utcnow()}}
+            {"$set": {"password_hash": hash_password(new_password), "updated_at": datetime.now(timezone.utc)}}
         )
         return {"message": "Contraseña actualizada correctamente"}
 
     async def update_profile(self, user_id: str, data: UserUpdate) -> UserPublic:
         update_data = {k: v for k, v in data.model_dump().items() if v is not None}
-        update_data["updated_at"] = datetime.utcnow()
+        update_data["updated_at"] = datetime.now(timezone.utc)
         await self.users.update_one({"_id": ObjectId(user_id)}, {"$set": update_data})
         doc = await self.users.find_one({"_id": ObjectId(user_id)})
         return _doc_to_user_public(doc)

@@ -50,6 +50,10 @@ export default function ListBusinessPage() {
   const [authLoading, setAuthLoading] = useState(false);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [step]);
+
+  useEffect(() => {
     metaApi.getCategories().then(d => setCategories(d.categories)).catch(() => {});
     metaApi.getLocations().then(d => setRegionsData(d.regions || {})).catch(() => {});
   }, []);
@@ -77,7 +81,7 @@ export default function ListBusinessPage() {
     if (step === 0) return form.name && form.category && form.description.length >= 10 && form.owner && hasDelivery;
     if (step === 1) return true; // Redes sociales opcionales
     if (step === 2) return !!form.city; // La comuna es requerida
-    if (step === 3) return !!form.image;
+    if (step === 3) return true; // La imagen es opcional
     if (step === 4) {
        if (!form.accept_terms) return false;
        if (!isLoggedIn) {
@@ -130,14 +134,17 @@ export default function ListBusinessPage() {
   if (submitted) return (
     <div className="max-w-lg mx-auto px-4 py-16 text-center">
       <div className="text-5xl mb-4">🎉</div>
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">¡Felicidades!</h2>
+      <h2 className="text-2xl font-bold text-gray-900 mb-2">¡Recibido exitosamente!</h2>
       <p className="text-gray-600 mb-2">
-        Tu emprendimiento <strong>{form.name}</strong> ha sido <strong>activado y publicado</strong>.
+        Tu emprendimiento <strong>{form.name}</strong> ha sido enviado.
       </p>
-      <p className="text-gray-500 text-sm mb-6">Ya puedes verlo en el catálogo y empezar a recibir clientes.</p>
+      <p className="text-gray-500 text-sm mb-6">
+        Actualmente se encuentra <span className="font-semibold text-amber-600">pendiente de revisión</span>. 
+        Una vez aprobado, aparecerá en el catálogo público.
+      </p>
       {isLoggedIn && (
-        <Link to="/mi-negocio" className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 mr-3 inline-block">
-          Ver mis negocios
+        <Link to="/dashboard" className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 mr-3 inline-block">
+          Ir a mi panel
         </Link>
       )}
       <Link to="/" className="text-blue-600 hover:underline">Volver al catálogo</Link>
@@ -270,7 +277,7 @@ export default function ListBusinessPage() {
           <h2 className="text-lg font-semibold">Ubicación</h2>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Región base *</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Región *</label>
             <select value={form.region} onChange={e => { set('region', e.target.value); set('city', ''); }}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
               <option value="">Selecciona tu región</option>
@@ -278,7 +285,7 @@ export default function ListBusinessPage() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Comuna base *</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Comuna *</label>
             <select value={form.city} onChange={e => set('city', e.target.value)} disabled={!form.region}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:opacity-50">
               <option value="">Selecciona tu comuna</option>
@@ -315,7 +322,7 @@ export default function ListBusinessPage() {
       {step === 3 && (
         <div className="space-y-6">
           <h2 className="text-lg font-semibold">Imágenes</h2>
-          <CloudinaryUpload label="Foto principal *" onUpload={(url) => set('image', url)} multiple={false} />
+          <CloudinaryUpload label="Foto principal (opcional)" onUpload={(url) => set('image', url)} multiple={false} />
           <CloudinaryUpload label="Galería (opcional, máx. 8 imágenes)" onUpload={(urls) => set('gallery', urls)} multiple={true} maxFiles={8} />
         </div>
       )}

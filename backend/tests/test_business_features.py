@@ -1,8 +1,8 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from modules.business.models import Business, Offer
 
 def test_business_offer_and_delivery_methods():
-    future_date = datetime.utcnow() + timedelta(days=2)
+    future_date = datetime.now(timezone.utc) + timedelta(days=2)
     offer = Offer(title="10% OFF", discount="10%", expires_at=future_date)
     
     business = Business(

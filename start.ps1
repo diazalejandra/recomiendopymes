@@ -84,7 +84,7 @@ if ($backendReady) {
 }
 
 # ----- Frontend -----
-Write-Step "Iniciando Frontend (Vite en puerto 3001)..."
+Write-Step "Iniciando Frontend (Vite en puerto 3000)..."
 
 # Verificar node_modules
 if (-not (Test-Path (Join-Path $frontendDir "node_modules"))) {
@@ -101,7 +101,7 @@ if (-not (Test-Path (Join-Path $frontendDir "node_modules"))) {
         "-ExecutionPolicy", "Bypass",
         "-NoExit",
         "-Command",
-        "Write-Host '[Frontend] Vite corriendo en http://localhost:3001' -ForegroundColor Green; " +
+        "Write-Host '[Frontend] Vite corriendo en http://localhost:3000' -ForegroundColor Green; " +
         "Set-Location '$frontendDir'; npm.cmd run dev"
     ) -WindowStyle Normal
 }
@@ -123,4 +123,4 @@ Write-Host ""
 
 # Abrir el browser automaticamente
 Start-Sleep -Seconds 3
-Start-Process "http://localhost:3001"
+Start-Process "http://localhost:3000"

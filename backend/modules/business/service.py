@@ -1,5 +1,5 @@
 import re
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 from fastapi import HTTPException
 from motor.motor_asyncio import AsyncIOMotorDatabase
@@ -39,7 +39,7 @@ def _is_new_boost(activated_at: Optional[datetime], boost_days: int = 30) -> boo
     """Retorna True si el negocio fue aprobado hace menos de boost_days días."""
     if not activated_at:
         return False
-    return (datetime.utcnow() - activated_at).days <= boost_days
+    return (datetime.now(timezone.utc) - activated_at).days <= boost_days
 
 
 class BusinessService:
@@ -97,7 +97,7 @@ class BusinessService:
                         {"$and": [
                             {"$ne": ["$activated_at", None]},
                             {"$lte": [
-                                {"$subtract": [datetime.utcnow(), "$activated_at"]},
+                                {"$subtract": [datetime.now(timezone.utc), "$activated_at"]},
                                 30 * 24 * 60 * 60 * 1000  # 30 días en ms
                             ]}
                         ]},
@@ -127,21 +127,39 @@ class BusinessService:
             "total_pages": max(1, -(-total // limit))  # ceiling division
         }
 
-    async def get_by_slug(self, slug: str) -> dict:
-        doc = await self.db.businesses.find_one({"slug": slug, "status": "active"})
+    async def get_by_slug(self, slug: str, current_user: Optional[dict] = None) -> dict:
+        doc = await self.db.businesses.find_one({"slug": slug})
         if not doc:
             raise HTTPException(status_code=404, detail="Emprendimiento no encontrado")
 
-        # Incrementar contador de visitas
-        await self.db.businesses.update_one({"_id": doc["_id"]}, {"$inc": {"view_count": 1}})
-        doc["view_count"] = doc.get("view_count", 0) + 1
+        if doc.get("status") != "active":
+            if not current_user:
+                raise HTTPException(status_code=404, detail="Emprendimiento no encontrado")
+            is_owner = str(doc.get("owner_user_id")) == str(current_user["_id"])
+            is_admin = current_user.get("role") == "admin"
+            if not (is_owner or is_admin):
+                raise HTTPException(status_code=404, detail="Emprendimiento no encontrado")
+
+        # Incrementar contador de visitas solo si está activo
+        if doc.get("status") == "active":
+            await self.db.businesses.update_one({"_id": doc["_id"]}, {"$inc": {"view_count": 1}})
+            doc["view_count"] = doc.get("view_count", 0) + 1
 
         return _doc_to_public(doc)
 
-    async def get_by_id(self, business_id: str) -> dict:
+    async def get_by_id(self, business_id: str, current_user: Optional[dict] = None) -> dict:
         doc = await self.db.businesses.find_one({"_id": ObjectId(business_id)})
         if not doc:
             raise HTTPException(status_code=404, detail="Emprendimiento no encontrado")
+            
+        if doc.get("status") != "active":
+            if not current_user:
+                raise HTTPException(status_code=404, detail="Emprendimiento no encontrado")
+            is_owner = str(doc.get("owner_user_id")) == str(current_user["_id"])
+            is_admin = current_user.get("role") == "admin"
+            if not (is_owner or is_admin):
+                raise HTTPException(status_code=404, detail="Emprendimiento no encontrado")
+                
         return _doc_to_public(doc)
 
     async def get_mine(self, user_id: str) -> list:
@@ -161,8 +179,8 @@ class BusinessService:
             "rating": 0.0,
             "review_count": 0,
             "view_count": 0,
-            "created_at": datetime.utcnow(),
-            "updated_at": datetime.utcnow(),
+            "created_at": datetime.now(timezone.utc),
+            "updated_at": datetime.now(timezone.utc),
         }
         # Convertir social_links y coordinates a dict si son modelos Pydantic
         if data.social_links:
@@ -186,7 +204,7 @@ class BusinessService:
             update_data["social_links"] = data.social_links.model_dump(exclude_none=True)
         if data.coordinates:
             update_data["coordinates"] = data.coordinates.model_dump()
-        update_data["updated_at"] = datetime.utcnow()
+        update_data["updated_at"] = datetime.now(timezone.utc)
 
         await self.db.businesses.update_one({"_id": ObjectId(business_id)}, {"$set": update_data})
         updated = await self.db.businesses.find_one({"_id": ObjectId(business_id)})
@@ -206,11 +224,11 @@ class BusinessService:
             if new_status not in allowed.get(doc["status"], []):
                 raise HTTPException(status_code=400, detail=f"No puedes cambiar de '{doc['status']}' a '{new_status}'")
 
-        update = {"status": new_status, "updated_at": datetime.utcnow()}
+        update = {"status": new_status, "updated_at": datetime.now(timezone.utc)}
 
         # Si se activa por primera vez, registrar activated_at para el badge Nuevo
         if new_status == "active" and not doc.get("activated_at"):
-            update["activated_at"] = datetime.utcnow()
+            update["activated_at"] = datetime.now(timezone.utc)
 
         await self.db.businesses.update_one({"_id": ObjectId(business_id)}, {"$set": update})
         updated = await self.db.businesses.find_one({"_id": ObjectId(business_id)})

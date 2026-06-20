@@ -1,18 +1,23 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { authApi } from '../../utils/api';
+import { useAuth } from '../../hooks/useAuth';
 
 export default function VerifyEmailPage() {
   const [searchParams] = useSearchParams();
   const [status, setStatus] = useState('loading');
   const token = searchParams.get('token');
+  const { refreshUser } = useAuth();
 
   useEffect(() => {
     if (!token) { setStatus('error'); return; }
     authApi.verifyEmail(token)
-      .then(() => setStatus('success'))
+      .then(() => {
+        setStatus('success');
+        refreshUser();
+      })
       .catch(() => setStatus('error'));
-  }, [token]);
+  }, [token, refreshUser]);
 
   if (status === 'loading') {
     return (

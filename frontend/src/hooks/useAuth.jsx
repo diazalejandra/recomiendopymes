@@ -45,12 +45,12 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
-  const refreshUser = async () => {
+  const refreshUser = useCallback(async () => {
     try {
       const data = await authApi.getMe();
       setUser(data);
     } catch {}
-  };
+  }, []);
 
   const isAdmin = user?.role === 'admin';
   const isLoggedIn = !!user;

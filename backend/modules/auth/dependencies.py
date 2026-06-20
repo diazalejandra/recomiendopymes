@@ -7,6 +7,25 @@ from core.security import decode_token
 from core.database import get_db
 
 security = HTTPBearer()
+security_optional = HTTPBearer(auto_error=False)
+
+async def get_current_user_optional(
+    credentials: HTTPAuthorizationCredentials = Depends(security_optional),
+    db: AsyncIOMotorDatabase = Depends(get_db)
+) -> dict | None:
+    if not credentials:
+        return None
+    try:
+        payload = decode_token(credentials.credentials)
+        user_id = payload.get("sub")
+        if not user_id:
+            return None
+        user = await db.users.find_one({"_id": ObjectId(user_id)})
+        if user and user.get("is_active", True):
+            return user
+    except Exception:
+        pass
+    return None
 
 
 async def get_current_user(
