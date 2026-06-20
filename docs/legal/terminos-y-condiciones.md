@@ -1,16 +1,17 @@
 # Términos y Condiciones de Uso — RecomiendoPymes
 
 > ⚠️ **BORRADOR — requiere revisión por un/a abogado/a antes de publicar.**
-> Completar los campos marcados como `[…]`. Última edición del borrador: 2026-06-20.
+> Pendiente: razón social y RUT del responsable (al formalizar actividades). Resto de
+> datos completados. Última edición del borrador: 2026-06-20.
 
-**Última actualización:** [FECHA DE PUBLICACIÓN]
+**Última actualización:** 2026-06-20
 
 ## 1. Quiénes somos y aceptación
 
 RecomiendoPymes ("la Plataforma", "nosotros") es un sitio web disponible en
-`https://recomiendopymes.cl`, operado por [RAZÓN SOCIAL O NOMBRE DEL RESPONSABLE],
-RUT [RUT], con domicilio en [DOMICILIO / "operación 100% en línea"] y correo de
-contacto [EMAIL DE CONTACTO].
+`https://recomiendopymes.cl`, operado por **[Responsable: PENDIENTE de formalización —
+se completará razón social y RUT al iniciar actividades]**, con domicilio en Santiago,
+Chile (operación 100% en línea) y correo de contacto contacto@recomiendopymes.cl.
 
 Al acceder, registrarte o usar la Plataforma aceptas estos Términos y Condiciones y la
 [Política de Privacidad](./politica-de-privacidad.md). Si no estás de acuerdo, no uses
@@ -98,8 +99,8 @@ vigente.
 ## 12. Ley aplicable y jurisdicción
 
 Estos Términos se rigen por las leyes de la República de Chile. Cualquier controversia se
-someterá a los tribunales competentes de [CIUDAD], salvo norma legal en contrario.
+someterá a los tribunales competentes de Santiago, salvo norma legal en contrario.
 
 ## 13. Contacto
 
-Consultas sobre estos Términos: [EMAIL DE CONTACTO].
+Consultas sobre estos Términos: contacto@recomiendopymes.cl.
