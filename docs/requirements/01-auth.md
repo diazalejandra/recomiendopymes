@@ -104,8 +104,8 @@ de confianza (reseñas) y el acceso a paneles (emprendedor, admin).
 | US-7 Editar perfil | 🟡 | Solo **nombre** (`PUT /me`). Falta contraseña y email con re-verificación (B-1). |
 | US-8 Restricción admin | ✅ | `require_admin` en dependencias. |
 | RN-11 Verificación en acciones | 🟡 | Solo **reseñar** la exige hoy; falta gatear inscribir/editar/responder (B-2). |
-| RN-14 Login rate limiting | ❌ | Login sin límite hoy (B-5). |
-| RN-15 Consentimiento T&C | ❌ | No se registra al crear cuenta; legal (B-6). |
+| RN-14 Login rate limiting | ✅ | `/login` a 10/min por IP (B-5; pendiente de merge a `main`). |
+| RN-15 Consentimiento T&C | ✅ | Checkbox obligatorio + `accepted_terms`/`terms_accepted_at`/`terms_version` (B-6; texto aún borrador, pendiente de merge). |
 | RN-16 Borrado de cuenta (ARCO) | ❌ | No existe; legal (B-7). |
 | RN-17/18 Enumeración + revocación | ❌ | Registro filtra existencia; logout no revoca (B-8). |
 | UI recuperación de contraseña | 🟡 | Funciona pero estilo plano, no homologado a LoginPage (B-9). |
@@ -133,8 +133,8 @@ de confianza (reseñas) y el acceso a paneles (emprendedor, admin).
 | **B-2** | Aplicar `require_verified` a inscribir/editar negocio y responder reseña | Bajo | La dependencia ya existe; falta usarla en los routers de `business` y `review` (se reflejará en sus specs) |
 | **B-3** | `/refresh` revalida `is_active` | Bajo | Leer el usuario y rechazar si `is_active:false` |
 | **B-4** | Separar modelo de entrada de registro (no heredar `role`/`is_active`/`is_email_verified`) | Bajo | Higiene; evita modelo de entrada engañoso |
-| **B-5** | Rate limiting en login | Bajo | slowapi por IP; evaluar límite por cuenta (seguridad) |
-| **B-6** | Registrar consentimiento T&C/Privacidad al registrarse (fecha + versión) | Bajo | Campo en modelo + validación; respaldo legal (Ley 21.719) |
+| ~~**B-5**~~ | ✅ Rate limiting en login | Bajo | Hecho: `/login` 10/min por IP (rama `fix/auth-login-ratelimit`, pendiente merge) |
+| ~~**B-6**~~ | ✅ Registrar consentimiento T&C/Privacidad al registrarse | Bajo | Hecho: checkbox + `accepted_terms`/`terms_accepted_at`/`terms_version` (pendiente merge) |
 | **B-7** | Borrado de cuenta (derecho ARCO) | Medio-Alto | Definir cascada vs. anonimización de negocios/reseñas; legal |
 | **B-8** | Respuesta uniforme en registro (RN-17) + revocación de tokens (RN-18) | Medio | logout/cambio de contraseña invalidan sesiones |
 | **B-9** | Homologar UI de ForgotPassword/ResetPassword al estilo de LoginPage | Bajo | Tokens + logo "Recomiendo/Pymes"; destino ya existe |
