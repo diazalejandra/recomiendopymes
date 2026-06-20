@@ -3,6 +3,10 @@
 Runbook para migrar de los dominios temporales (`recomiendopymes.vercel.app` +
 `recomiendopymes-api.onrender.com`) al dominio propio `recomiendopymes.cl`.
 
+> **Decisión (2026-06-19):** DNS gestionado por **Vercel DNS**. Los nameservers del
+> dominio en NIC Chile apuntan a `ns1.vercel-dns.com` / `ns2.vercel-dns.com`. Todos los
+> registros (apex automático, `api`→Render, Resend) se crean en el panel de Vercel.
+
 ## Arquitectura objetivo
 
 | Pieza | Dominio objetivo | Plataforma |
