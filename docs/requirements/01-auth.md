@@ -44,11 +44,16 @@ de confianza (reseñas) y el acceso a paneles (emprendedor, admin).
 - **RN-11** — Requieren email verificado: escribir reseña, **inscribir negocio**, **editar negocio** y **responder reseña**. Navegar el catálogo y editar el perfil no lo requieren. _(decidido 2026-06-20; ver Backlog)_
 - **RN-12** — El cambio de email exige re-verificación: al cambiarlo, la cuenta queda `is_email_verified: false` hasta confirmar el nuevo. El cambio de contraseña requiere la contraseña actual. _(decidido 2026-06-20)_
 - **RN-13** — `POST /refresh` debe rechazar a usuarios `is_active: false`. _(decidido 2026-06-20)_
+- **RN-14** — El login debe tener rate limiting (por IP, y evaluar por cuenta) para mitigar fuerza bruta / credential stuffing. _(decidido 2026-06-20)_
+- **RN-15** — El registro debe guardar el consentimiento de **T&C y Privacidad** (fecha + versión aceptada). Sin aceptación, el registro es inválido. _(legal, Ley 21.719)_
+- **RN-16** — El usuario tiene derecho a **eliminar su cuenta y datos personales** (ARCO, Ley 21.719); definir cascada vs. anonimización de negocios/reseñas asociados. _(legal)_
+- **RN-17** — El registro debe responder **sin revelar** si un email ya existe (uniforme, consistente con RN-7). _(corrige inconsistencia de enumeración)_
+- **RN-18** — Debe existir revocación de sesión (p. ej. versión de token) para invalidar refresh tokens en logout, cambio de contraseña y desactivación.
 
 ## Criterios de aceptación (= casos de QA)
 
 - **CA-1** — Dado un email no registrado, cuando me registro con datos válidos, entonces se crea la cuenta (`is_email_verified: false`), recibo un access token y se envía el email de verificación.
-- **CA-2** — Dado un email ya registrado, cuando intento registrarme, entonces recibo error 400 "Este email ya está registrado".
+- **CA-2** — Dado un email ya registrado, cuando intento registrarme, entonces recibo error 400 "Este email ya está registrado". _(comportamiento actual; RN-17 lo cambiará a respuesta uniforme — ver CA-28)_
 - **CA-3** — Dada una contraseña < 8 caracteres o email inválido, cuando me registro, entonces recibo error de validación (422) y no se crea la cuenta.
 - **CA-4** — Dado que envío `role: "admin"` en el registro, cuando se crea la cuenta, entonces queda como `user` (nunca admin).
 - **CA-5** — Dado el enlace de verificación válido, cuando lo abro, entonces mi cuenta queda `is_email_verified: true`.
@@ -71,10 +76,18 @@ de confianza (reseñas) y el acceso a paneles (emprendedor, admin).
 - **CA-22** — Dada una contraseña actual incorrecta, cuando intento cambiar la contraseña, entonces recibo error y no se actualiza.
 - **CA-23** — Dado que cambio mi email, cuando guardo, entonces la cuenta queda `is_email_verified: false` y se envía verificación al nuevo email.
 - **CA-24** — Dado un usuario `is_active: false` con cookie de refresh válida, cuando llama a `/refresh`, entonces recibe 401/403 y no obtiene un nuevo access token.
+- **CA-25** — Dado que supero el límite de intentos de login, cuando insisto, entonces recibo 429.
+- **CA-26** — Dado que me registro sin aceptar T&C/Privacidad, cuando envío, entonces se rechaza; al aceptar, se guarda el consentimiento con fecha y versión.
+- **CA-27** — Dado que solicito eliminar mi cuenta, cuando se confirma, entonces mis datos personales se eliminan/anonimizan según la política definida.
+- **CA-28** — Dado un email ya registrado, cuando intento registrarme (post RN-17), entonces la respuesta no permite distinguir que el email existe.
+- **CA-29** — Dado que cierro sesión o cambio mi contraseña, cuando ocurre, entonces los refresh tokens previos quedan invalidados.
+
+## Roadmap (futuro / Fase 2)
+
+- **R-1 — Login social (Google).** Registro/login con Google. Interés confirmado (2026-06-20); se construye en Fase 2. **Decisión clave a definir:** account-linking cuando el email ya existe con contraseña (¿vincular cuentas o mantenerlas separadas?). Como Google entrega el email ya verificado, esos usuarios podrían saltarse el paso de verificación. Implica que el modelo deje de asumir `password_hash` siempre presente.
 
 ## Fuera de alcance (de este módulo)
 
-- Login social (Google, etc.).
 - Autenticación de dos factores (2FA).
 - Permisos granulares más allá de `admin`/`user`.
 
@@ -91,6 +104,11 @@ de confianza (reseñas) y el acceso a paneles (emprendedor, admin).
 | US-7 Editar perfil | 🟡 | Solo **nombre** (`PUT /me`). Falta contraseña y email con re-verificación (B-1). |
 | US-8 Restricción admin | ✅ | `require_admin` en dependencias. |
 | RN-11 Verificación en acciones | 🟡 | Solo **reseñar** la exige hoy; falta gatear inscribir/editar/responder (B-2). |
+| RN-14 Login rate limiting | ❌ | Login sin límite hoy (B-5). |
+| RN-15 Consentimiento T&C | ❌ | No se registra al crear cuenta; legal (B-6). |
+| RN-16 Borrado de cuenta (ARCO) | ❌ | No existe; legal (B-7). |
+| RN-17/18 Enumeración + revocación | ❌ | Registro filtra existencia; logout no revoca (B-8). |
+| UI recuperación de contraseña | 🟡 | Funciona pero estilo plano, no homologado a LoginPage (B-9). |
 | RN-2 Forzar rol user | ✅ | El servicio ignora `role` del input. |
 | RN-5 Cookies/JWT | ✅ | `COOKIE_SECURE` por `ENVIRONMENT`. |
 | RN-7 Respuesta uniforme | ✅ | `forgot_password` no revela existencia. |
@@ -103,6 +121,9 @@ de confianza (reseñas) y el acceso a paneles (emprendedor, admin).
 - **D-2** — La verificación de email se exige también para **inscribir, editar y responder** (además de reseñar). → RN-11, B-2.
 - **D-3** — Se cierra la brecha de `/refresh`: debe rechazar usuarios desactivados. → RN-13, B-3.
 - **D-4** — Se acepta la higiene del modelo de registro (no aceptar `role`/`is_active`/`is_email_verified` en el input). → B-4.
+- **D-5** — Se agregan al backlog: rate limiting de login (B-5), consentimiento T&C (B-6), borrado ARCO (B-7), respuesta uniforme + revocación (B-8). → RN-14..18.
+- **D-6** — **Login social (Google):** al roadmap de Fase 2, con la decisión de account-linking pendiente. → R-1.
+- **D-7** — Homologar el diseño de las pantallas de recuperación queda **especificado** (B-9), sin implementar ahora.
 
 ## Backlog derivado (decidido, pendiente de implementar)
 
@@ -112,3 +133,8 @@ de confianza (reseñas) y el acceso a paneles (emprendedor, admin).
 | **B-2** | Aplicar `require_verified` a inscribir/editar negocio y responder reseña | Bajo | La dependencia ya existe; falta usarla en los routers de `business` y `review` (se reflejará en sus specs) |
 | **B-3** | `/refresh` revalida `is_active` | Bajo | Leer el usuario y rechazar si `is_active:false` |
 | **B-4** | Separar modelo de entrada de registro (no heredar `role`/`is_active`/`is_email_verified`) | Bajo | Higiene; evita modelo de entrada engañoso |
+| **B-5** | Rate limiting en login | Bajo | slowapi por IP; evaluar límite por cuenta (seguridad) |
+| **B-6** | Registrar consentimiento T&C/Privacidad al registrarse (fecha + versión) | Bajo | Campo en modelo + validación; respaldo legal (Ley 21.719) |
+| **B-7** | Borrado de cuenta (derecho ARCO) | Medio-Alto | Definir cascada vs. anonimización de negocios/reseñas; legal |
+| **B-8** | Respuesta uniforme en registro (RN-17) + revocación de tokens (RN-18) | Medio | logout/cambio de contraseña invalidan sesiones |
+| **B-9** | Homologar UI de ForgotPassword/ResetPassword al estilo de LoginPage | Bajo | Tokens + logo "Recomiendo/Pymes"; destino ya existe |
