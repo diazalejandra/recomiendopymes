@@ -5,7 +5,7 @@ Crea 2 admins, usuarios de prueba, y 20 emprendimientos chilenos variados.
 Uso: cd backend && python seed_data.py
 """
 import asyncio
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from motor.motor_asyncio import AsyncIOMotorClient
 from core.config import settings
 from core.security import hash_password
@@ -31,8 +31,8 @@ async def seed():
         "role": "admin",
         "is_active": True,
         "is_email_verified": True,
-        "created_at": datetime.utcnow(),
-        "updated_at": datetime.utcnow()
+        "created_at": datetime.now(timezone.utc),
+        "updated_at": datetime.now(timezone.utc)
     })).inserted_id
 
     admin2_id = (await db.users.insert_one({
@@ -42,8 +42,8 @@ async def seed():
         "role": "admin",
         "is_active": True,
         "is_email_verified": True,
-        "created_at": datetime.utcnow(),
-        "updated_at": datetime.utcnow()
+        "created_at": datetime.now(timezone.utc),
+        "updated_at": datetime.now(timezone.utc)
     })).inserted_id
     print(f"[OK] Admins creados: {settings.ADMIN_EMAIL}, {settings.ADMIN_EMAIL_2}")
 
@@ -53,7 +53,7 @@ async def seed():
         "name": "María González",
         "password_hash": hash_password("Contrasena123!"),
         "role": "user", "is_active": True, "is_email_verified": True,
-        "created_at": datetime.utcnow(), "updated_at": datetime.utcnow()
+        "created_at": datetime.now(timezone.utc), "updated_at": datetime.now(timezone.utc)
     })).inserted_id
 
     user2_id = (await db.users.insert_one({
@@ -61,7 +61,7 @@ async def seed():
         "name": "Pedro Silva",
         "password_hash": hash_password("Contrasena123!"),
         "role": "user", "is_active": True, "is_email_verified": True,
-        "created_at": datetime.utcnow(), "updated_at": datetime.utcnow()
+        "created_at": datetime.now(timezone.utc), "updated_at": datetime.now(timezone.utc)
     })).inserted_id
 
     user3_id = (await db.users.insert_one({
@@ -69,7 +69,7 @@ async def seed():
         "name": "Ana Rodríguez",
         "password_hash": hash_password("Contrasena123!"),
         "role": "user", "is_active": True, "is_email_verified": True,
-        "created_at": datetime.utcnow(), "updated_at": datetime.utcnow()
+        "created_at": datetime.now(timezone.utc), "updated_at": datetime.now(timezone.utc)
     })).inserted_id
 
     user4_id = (await db.users.insert_one({
@@ -77,7 +77,7 @@ async def seed():
         "name": "Carlos Morales",
         "password_hash": hash_password("Contrasena123!"),
         "role": "user", "is_active": True, "is_email_verified": True,
-        "created_at": datetime.utcnow(), "updated_at": datetime.utcnow()
+        "created_at": datetime.now(timezone.utc), "updated_at": datetime.now(timezone.utc)
     })).inserted_id
 
     user5_id = (await db.users.insert_one({
@@ -85,7 +85,7 @@ async def seed():
         "name": "Lucía Parra",
         "password_hash": hash_password("Contrasena123!"),
         "role": "user", "is_active": True, "is_email_verified": True,
-        "created_at": datetime.utcnow(), "updated_at": datetime.utcnow()
+        "created_at": datetime.now(timezone.utc), "updated_at": datetime.now(timezone.utc)
     })).inserted_id
     print("[OK] 5 usuarios de prueba creados (contraseña: Contrasena123!)")
 
@@ -108,7 +108,7 @@ async def seed():
             "coordinates": {"lat": -33.4569, "lng": -70.5978, "is_exact": False},
             "social_links": {"instagram": "https://instagram.com/dulcetentacion_cl", "whatsapp": "56912345678"},
             "status": "active", "featured": True,
-            "activated_at": datetime.utcnow() - timedelta(days=10),
+            "activated_at": datetime.now(timezone.utc) - timedelta(days=10),
             "rating": 4.8, "review_count": 3, "view_count": 142,
             "is_verified": True,
             "image": "https://images.unsplash.com/photo-1558301211-0d8c8ddee6ec?w=600&h=400&fit=crop",
@@ -124,7 +124,7 @@ async def seed():
             "coordinates": {"lat": -33.5101, "lng": -70.7577, "is_exact": False},
             "social_links": {"facebook": "https://facebook.com/techreparo", "whatsapp": "56987654321", "website": "https://techreparo.cl"},
             "status": "active", "featured": False,
-            "activated_at": datetime.utcnow() - timedelta(days=60),
+            "activated_at": datetime.now(timezone.utc) - timedelta(days=60),
             "rating": 4.5, "review_count": 2, "view_count": 89,
             "is_verified": False,
             "image": "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=600&h=400&fit=crop",
@@ -140,7 +140,7 @@ async def seed():
             "coordinates": {"lat": -33.0460, "lng": -71.6197, "is_exact": True},
             "social_links": {"instagram": "https://instagram.com/lamolienda_valpo", "facebook": "https://facebook.com/lamoliendavalpo"},
             "status": "active", "featured": False,
-            "activated_at": datetime.utcnow() - timedelta(days=120),
+            "activated_at": datetime.now(timezone.utc) - timedelta(days=120),
             "rating": 4.2, "review_count": 1, "view_count": 67,
             "is_verified": True,
             "image": "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=600&h=400&fit=crop",
@@ -156,7 +156,7 @@ async def seed():
             "coordinates": {"lat": -23.6524, "lng": -70.3954, "is_exact": True},
             "social_links": {"instagram": "https://instagram.com/luznorte_foto", "email": "hola@luznorte.cl"},
             "status": "active", "featured": True,
-            "activated_at": datetime.utcnow() - timedelta(days=20),
+            "activated_at": datetime.now(timezone.utc) - timedelta(days=20),
             "rating": 5.0, "review_count": 4, "view_count": 210,
             "is_verified": True,
             "image": "https://images.unsplash.com/photo-1554048612-b6a482bc67e5?w=600&h=400&fit=crop",
@@ -172,7 +172,7 @@ async def seed():
             "coordinates": {"lat": -36.8201, "lng": -73.0444, "is_exact": False},
             "social_links": {"linkedin": "https://linkedin.com/company/pathfinder-cl", "website": "https://pathfinder.cl", "email": "hola@pathfinder.cl"},
             "status": "active", "featured": False,
-            "activated_at": datetime.utcnow() - timedelta(days=45),
+            "activated_at": datetime.now(timezone.utc) - timedelta(days=45),
             "rating": 4.7, "review_count": 6, "view_count": 320,
             "is_verified": True,
             "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop",
@@ -188,7 +188,7 @@ async def seed():
             "coordinates": {"lat": -41.4693, "lng": -72.9424, "is_exact": True},
             "social_links": {"instagram": "https://instagram.com/raices_joyeria", "email": "contacto@raicesjoyeria.cl"},
             "status": "active", "featured": False,
-            "activated_at": datetime.utcnow() - timedelta(days=8),
+            "activated_at": datetime.now(timezone.utc) - timedelta(days=8),
             "rating": 4.9, "review_count": 11, "view_count": 445,
             "is_verified": False,
             "image": "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=600&h=400&fit=crop",
@@ -204,7 +204,7 @@ async def seed():
             "coordinates": {"lat": -33.0245, "lng": -71.5518, "is_exact": False},
             "social_links": {"instagram": "https://instagram.com/nandu_moda", "tiktok": "https://tiktok.com/@nandu.moda"},
             "status": "active", "featured": False,
-            "activated_at": datetime.utcnow() - timedelta(days=3),
+            "activated_at": datetime.now(timezone.utc) - timedelta(days=3),
             "rating": 4.6, "review_count": 8, "view_count": 287,
             "is_verified": False,
             "image": "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600&h=400&fit=crop",
@@ -220,7 +220,7 @@ async def seed():
             "coordinates": {"lat": -33.4186, "lng": -70.6093, "is_exact": True},
             "social_links": {"instagram": "https://instagram.com/kalpana_yoga_cl", "website": "https://kalpanayoga.cl"},
             "status": "active", "featured": False,
-            "activated_at": datetime.utcnow() - timedelta(days=90),
+            "activated_at": datetime.now(timezone.utc) - timedelta(days=90),
             "rating": 4.4, "review_count": 5, "view_count": 156,
             "is_verified": True,
             "image": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=400&fit=crop",
@@ -236,7 +236,7 @@ async def seed():
             "coordinates": {"lat": -38.7359, "lng": -72.5904, "is_exact": False},
             "social_links": {"website": "https://businesspro-english.cl", "email": "clases@businesspro-english.cl", "whatsapp": "56945678901"},
             "status": "active", "featured": False,
-            "activated_at": datetime.utcnow() - timedelta(days=200),
+            "activated_at": datetime.now(timezone.utc) - timedelta(days=200),
             "rating": 4.3, "review_count": 9, "view_count": 512,
             "is_verified": True,
             "image": "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=600&h=400&fit=crop",
@@ -252,7 +252,7 @@ async def seed():
             "coordinates": {"lat": -39.8196, "lng": -73.2452, "is_exact": False},
             "social_links": {"instagram": "https://instagram.com/vivero_austral", "facebook": "https://facebook.com/viveropaintasnativas"},
             "status": "active", "featured": False,
-            "activated_at": datetime.utcnow() - timedelta(days=15),
+            "activated_at": datetime.now(timezone.utc) - timedelta(days=15),
             "rating": 4.8, "review_count": 7, "view_count": 198,
             "is_verified": False,
             "image": "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600&h=400&fit=crop",
@@ -271,7 +271,7 @@ async def seed():
             # Sin coordinates — para probar el catálogo sin pin en mapa
             "social_links": {"instagram": "https://instagram.com/kimun_artesanias", "tiktok": "https://tiktok.com/@kimun.artesanias", "email": "contacto@kimun.cl"},
             "status": "active", "featured": False,
-            "activated_at": datetime.utcnow() - timedelta(days=5),
+            "activated_at": datetime.now(timezone.utc) - timedelta(days=5),
             "rating": 4.1, "review_count": 3, "view_count": 95,
             "is_verified": False,
             "image": "https://images.unsplash.com/photo-1604782206219-3b9576575203?w=600&h=400&fit=crop",
@@ -287,7 +287,7 @@ async def seed():
             # Sin coordinates
             "social_links": {"instagram": "https://instagram.com/lapatitafeliz_cl", "whatsapp": "56934567890"},
             "status": "active", "featured": False,
-            "activated_at": datetime.utcnow() - timedelta(days=30),
+            "activated_at": datetime.now(timezone.utc) - timedelta(days=30),
             "rating": 4.6, "review_count": 14, "view_count": 387,
             "is_verified": False,
             "image": "https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?w=600&h=400&fit=crop",
@@ -303,7 +303,7 @@ async def seed():
             # Sin coordinates
             "social_links": {"website": "https://pymeclick.cl", "instagram": "https://instagram.com/pymeclick", "whatsapp": "56978901234"},
             "status": "active", "featured": False,
-            "activated_at": datetime.utcnow() - timedelta(days=75),
+            "activated_at": datetime.now(timezone.utc) - timedelta(days=75),
             "rating": 4.9, "review_count": 22, "view_count": 634,
             "is_verified": True,
             "image": "https://images.unsplash.com/photo-1547658719-da2b51169166?w=600&h=400&fit=crop",
@@ -319,7 +319,7 @@ async def seed():
             # Sin coordinates
             "social_links": {"instagram": "https://instagram.com/rayen_spa_laserena", "email": "reservas@rayenspa.cl"},
             "status": "active", "featured": False,
-            "activated_at": datetime.utcnow() - timedelta(days=50),
+            "activated_at": datetime.now(timezone.utc) - timedelta(days=50),
             "rating": 4.7, "review_count": 18, "view_count": 423,
             "is_verified": True,
             "image": "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=600&h=400&fit=crop",
@@ -335,7 +335,7 @@ async def seed():
             # Sin coordinates
             "social_links": {"linkedin": "https://linkedin.com/in/coaching-impulsa", "website": "https://impulsa-coaching.cl", "whatsapp": "56956789012"},
             "status": "active", "featured": False,
-            "activated_at": datetime.utcnow() - timedelta(days=180),
+            "activated_at": datetime.now(timezone.utc) - timedelta(days=180),
             "rating": 5.0, "review_count": 16, "view_count": 891,
             "is_verified": True,
             "image": "https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&fit=crop",
@@ -351,7 +351,7 @@ async def seed():
             # Sin coordinates
             "social_links": {"instagram": "https://instagram.com/morada_deco_cl", "email": "hola@moradadeco.cl"},
             "status": "active", "featured": False,
-            "activated_at": datetime.utcnow() - timedelta(days=25),
+            "activated_at": datetime.now(timezone.utc) - timedelta(days=25),
             "rating": 4.5, "review_count": 7, "view_count": 267,
             "is_verified": False,
             "image": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&h=400&fit=crop",
@@ -367,7 +367,7 @@ async def seed():
             # Sin coordinates
             "social_links": {"instagram": "https://instagram.com/fitsur_entrenamiento", "whatsapp": "56967890123"},
             "status": "active", "featured": False,
-            "activated_at": datetime.utcnow() - timedelta(days=40),
+            "activated_at": datetime.now(timezone.utc) - timedelta(days=40),
             "rating": 4.8, "review_count": 12, "view_count": 334,
             "is_verified": False,
             "image": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&h=400&fit=crop",
@@ -383,7 +383,7 @@ async def seed():
             # Sin coordinates
             "social_links": {"instagram": "https://instagram.com/equilibrio_pilates_pa"},
             "status": "active", "featured": False,
-            "activated_at": datetime.utcnow() - timedelta(days=60),
+            "activated_at": datetime.now(timezone.utc) - timedelta(days=60),
             "rating": 4.9, "review_count": 9, "view_count": 145,
             "is_verified": True,
             "image": "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600&h=400&fit=crop",
@@ -399,7 +399,7 @@ async def seed():
             # Sin coordinates
             "social_links": {"instagram": "https://instagram.com/bodasdelsurcl", "website": "https://bodasdelsur.cl", "email": "hola@bodasdelsur.cl"},
             "status": "active", "featured": False,
-            "activated_at": datetime.utcnow() - timedelta(days=2),
+            "activated_at": datetime.now(timezone.utc) - timedelta(days=2),
             "rating": 5.0, "review_count": 3, "view_count": 88,
             "is_verified": False,
             "image": "https://images.unsplash.com/photo-1519741497674-611481863552?w=600&h=400&fit=crop",
@@ -435,8 +435,8 @@ async def seed():
             "established": None,
             "image": b.get("image"),  # Use image from data if present
             "featured_until": None,
-            "created_at": datetime.utcnow() - timedelta(days=len(business_ids) * 3),
-            "updated_at": datetime.utcnow(),
+            "created_at": datetime.now(timezone.utc) - timedelta(days=len(business_ids) * 3),
+            "updated_at": datetime.now(timezone.utc),
         }
         # Asegurar is_verified si no está en los datos
         if "is_verified" not in doc:
@@ -460,7 +460,7 @@ async def seed():
          "rating": 5, "comment": "¡La torta de cumpleaños quedó perfecta! Muy prolija la decoración.", "is_visible": True, "owner_response": None},
         {"business_id": business_ids[0], "author_id": user3_id, "author_name": "Ana Rodríguez",
          "rating": 5, "comment": "Los cupcakes de vainilla son una delicia. Entrega puntual.", "is_visible": True,
-         "owner_response": {"text": "¡Gracias Ana! Un placer 🎉", "author": "María González", "created_at": datetime.utcnow() - timedelta(days=3)}},
+         "owner_response": {"text": "¡Gracias Ana! Un placer 🎉", "author": "María González", "created_at": datetime.now(timezone.utc) - timedelta(days=3)}},
         {"business_id": business_ids[0], "author_id": admin1_id, "author_name": "Admin Principal",
          "rating": 4, "comment": "Muy buena calidad. Los brownies son adictivos.", "is_visible": True, "owner_response": None},
         # TechReparo
@@ -485,13 +485,13 @@ async def seed():
     ]
 
     for r in reviews:
-        await db.reviews.insert_one({**r, "created_at": datetime.utcnow() - timedelta(days=10), "updated_at": datetime.utcnow()})
+        await db.reviews.insert_one({**r, "created_at": datetime.now(timezone.utc) - timedelta(days=10), "updated_at": datetime.now(timezone.utc)})
     print(f"[OK] {len(reviews)} reseñas creadas")
 
     # ─── Textos legales ───────────────────────────────────────────────
     await db.legal.insert_many([
-        {"key": "terms", "content": "# Términos y Condiciones de RecomiendoPymes\n\n**Última actualización:** Abril 2025\n\nAl acceder y utilizar RecomiendoPymes, aceptas estos Términos.", "updated_at": datetime.utcnow()},
-        {"key": "privacy", "content": "# Política de Privacidad de RecomiendoPymes\n\n**Última actualización:** Abril 2025\n\nEsta política describe cómo recopilamos y usamos tu información.", "updated_at": datetime.utcnow()},
+        {"key": "terms", "content": "# Términos y Condiciones de RecomiendoPymes\n\n**Última actualización:** Abril 2025\n\nAl acceder y utilizar RecomiendoPymes, aceptas estos Términos.", "updated_at": datetime.now(timezone.utc)},
+        {"key": "privacy", "content": "# Política de Privacidad de RecomiendoPymes\n\n**Última actualización:** Abril 2025\n\nEsta política describe cómo recopilamos y usamos tu información.", "updated_at": datetime.now(timezone.utc)},
     ])
     print("[OK] Textos legales creados")
 

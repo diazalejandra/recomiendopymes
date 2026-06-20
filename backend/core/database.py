@@ -14,6 +14,8 @@ async def connect_db():
         "serverSelectionTimeoutMS": 5000,
         "connectTimeoutMS": 5000,
         "socketTimeoutMS": 10000,
+        # Devuelve datetimes tz-aware (UTC) para evitar mezclar naive/aware en aritmética
+        "tz_aware": True,
     }
     
     if settings.MONGO_TLS_ALLOW_INVALID:
