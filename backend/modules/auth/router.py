@@ -32,7 +32,8 @@ async def register(request: Request, user_data: UserCreate, response: Response, 
 
 
 @router.post("/login")
-async def login(credentials: UserLogin, response: Response, db: AsyncIOMotorDatabase = Depends(get_db)):
+@limiter.limit("10/minute")
+async def login(request: Request, credentials: UserLogin, response: Response, db: AsyncIOMotorDatabase = Depends(get_db)):
     service = AuthService(db)
     result = await service.login(credentials)
     refresh_token = create_refresh_token({"sub": result.user.id, "role": result.user.role})
