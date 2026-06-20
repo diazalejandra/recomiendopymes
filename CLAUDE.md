@@ -75,7 +75,8 @@ Manual:
 ## Convenciones
 
 - **Fechas:** usar `datetime.now(timezone.utc)` (timezone-aware), **nunca**
-  `datetime.utcnow()` (deprecado).
+  `datetime.utcnow()` (deprecado). El cliente Mongo usa `tz_aware=True`, así que los
+  datetimes leídos de la DB ya vienen tz-aware (UTC) — no los mezcles con valores naive.
 - **Mensajes de error de API:** en español, vía `HTTPException`.
 - **Negocios no-`active`** (pending/inactive) solo son visibles por su dueño o un admin;
   para el resto devuelven 404.

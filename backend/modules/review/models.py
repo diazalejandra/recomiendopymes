@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import Optional
-from datetime import datetime
+from datetime import datetime, timezone
 from bson import ObjectId
 from models import PyObjectId, MONGO_MODEL_CONFIG
 
@@ -9,7 +9,7 @@ class ReviewResponse(BaseModel):
     """Respuesta del dueño del negocio a una reseña."""
     text: str = Field(..., min_length=1, max_length=500)
     author: str
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 class ReviewCreate(BaseModel):
@@ -31,8 +31,8 @@ class Review(BaseModel):
     comment: str
     is_visible: bool = True
     owner_response: Optional[ReviewResponse] = None
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
     model_config = MONGO_MODEL_CONFIG
 

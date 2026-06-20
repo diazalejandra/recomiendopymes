@@ -130,10 +130,10 @@ async def update_legal(
     current_user: dict = Depends(require_admin),
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
-    from datetime import datetime
+    from datetime import datetime, timezone
     await db.legal.update_one(
         {"key": key},
-        {"$set": {"content": body.get("content", ""), "updated_at": datetime.utcnow()}},
+        {"$set": {"content": body.get("content", ""), "updated_at": datetime.now(timezone.utc)}},
         upsert=True
     )
     return {"key": key, "message": "Actualizado correctamente"}
@@ -155,10 +155,10 @@ async def update_config(
     current_user: dict = Depends(require_admin),
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
-    from datetime import datetime
+    from datetime import datetime, timezone
     await db.config.update_one(
         {"key": key},
-        {"$set": {"value": body.get("value"), "updated_at": datetime.utcnow()}},
+        {"$set": {"value": body.get("value"), "updated_at": datetime.now(timezone.utc)}},
         upsert=True
     )
     return {"key": key, "message": "Configuración actualizada"}
