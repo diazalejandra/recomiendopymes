@@ -17,6 +17,9 @@ class Settings(BaseSettings):
     FROM_EMAIL: str = "noreply@recomiendopymes.cl"
     FRONTEND_URL: str = "http://localhost:3000"
 
+    # Legal: versión vigente de T&C / Privacidad aceptada al registrarse
+    TERMS_VERSION: str = "2026-06-20-borrador"
+
     # Cloudinary
     CLOUDINARY_CLOUD_NAME: str = ""
     CLOUDINARY_API_KEY: str = ""

@@ -93,10 +93,17 @@ class AuthService:
         self.users = db.users
 
     async def register(self, user_data: UserCreate) -> TokenResponse:
+        if not user_data.accepted_terms:
+            raise HTTPException(
+                status_code=400,
+                detail="Debes aceptar los Términos y Condiciones y la Política de Privacidad"
+            )
+
         existing = await self.users.find_one({"email": user_data.email})
         if existing:
             raise HTTPException(status_code=400, detail="Este email ya está registrado")
 
+        now = datetime.now(timezone.utc)
         user_doc = {
             "email": user_data.email,
             "name": user_data.name,
@@ -104,8 +111,12 @@ class AuthService:
             "role": "user",
             "is_active": True,
             "is_email_verified": False,
-            "created_at": datetime.now(timezone.utc),
-            "updated_at": datetime.now(timezone.utc)
+            # Consentimiento (Ley 21.719): qué versión aceptó y cuándo
+            "accepted_terms": True,
+            "terms_accepted_at": now,
+            "terms_version": settings.TERMS_VERSION,
+            "created_at": now,
+            "updated_at": now
         }
         result = await self.users.insert_one(user_doc)
         user_id = str(result.inserted_id)

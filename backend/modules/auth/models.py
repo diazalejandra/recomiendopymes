@@ -15,6 +15,7 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     password: str = Field(..., min_length=8, max_length=100)
+    accepted_terms: bool = False  # debe ser True; el servicio lo valida
 
 
 class UserLogin(BaseModel):
