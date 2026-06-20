@@ -1,4 +1,5 @@
 import asyncio
+import logging
 import resend
 import jwt
 from datetime import datetime, timezone
@@ -14,6 +15,8 @@ from core.security import (
 from modules.auth.models import UserCreate, UserLogin, TokenResponse, UserPublic, UserUpdate
 
 resend.api_key = settings.RESEND_API_KEY
+
+logger = logging.getLogger(__name__)
 
 # Constantes para mensajes de error (evitar literales duplicados)
 TOKEN_INVALIDO = "Token inválido"
@@ -40,7 +43,12 @@ async def send_verification_email(email: str, name: str, token: str):
         <p>Si no creaste esta cuenta, puedes ignorar este email.</p>
         """
     }
-    await asyncio.to_thread(resend.Emails.send, payload)
+    try:
+        await asyncio.to_thread(resend.Emails.send, payload)
+    except Exception:
+        # Best-effort: un fallo de Resend no debe romper el registro.
+        # El usuario puede reintentar con "reenviar verificación".
+        logger.exception("Fallo al enviar email de verificación a %s", email)
 
 
 async def send_password_reset_email(email: str, name: str, token: str):
@@ -60,7 +68,11 @@ async def send_password_reset_email(email: str, name: str, token: str):
         <p>Este enlace expira en 15 minutos. Si no solicitaste esto, ignora este email.</p>
         """
     }
-    await asyncio.to_thread(resend.Emails.send, payload)
+    try:
+        await asyncio.to_thread(resend.Emails.send, payload)
+    except Exception:
+        # Best-effort: no romper el flujo ni revelar si el email existe.
+        logger.exception("Fallo al enviar email de recuperación a %s", email)
 
 
 def _doc_to_user_public(doc: dict) -> UserPublic:
