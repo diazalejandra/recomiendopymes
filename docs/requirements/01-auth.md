@@ -1,6 +1,6 @@
 # Spec — Autenticación y Usuarios
 
-> Estado del spec: **borrador para revisión** · Anclado al código a 2026-06-20 (rama `main`)
+> Estado del spec: **revisado y reconciliado** (decisiones D-1..D-4) · Anclado al código a 2026-06-20 (rama `main`)
 > Módulo backend: `modules/auth/` · Frontend: `features/auth/`
 
 ## Propósito
@@ -26,7 +26,7 @@ de confianza (reseñas) y el acceso a paneles (emprendedor, admin).
 - **US-4** — Como usuario, quiero iniciar y cerrar sesión.
 - **US-5** — Como usuario, quiero que mi sesión se mantenga (refresh automático) sin re-loguearme cada hora.
 - **US-6** — Como usuario, quiero recuperar mi contraseña si la olvidé (enlace por email).
-- **US-7** — Como usuario, quiero editar mi perfil.
+- **US-7** — Como usuario, quiero editar mi perfil: nombre, contraseña (con la actual) y email (re-verificando el nuevo).
 - **US-8** — Como admin, quiero que ciertas rutas estén restringidas solo a administradores.
 
 ## Reglas de negocio
@@ -41,6 +41,9 @@ de confianza (reseñas) y el acceso a paneles (emprendedor, admin).
 - **RN-8** — Un usuario con `is_active: false` no puede iniciar sesión ni operar en rutas protegidas.
 - **RN-9** — Rate limiting: registro 5/min por IP; recuperación de contraseña 3/min por IP.
 - **RN-10** — El envío de emails es *best-effort*: si el proveedor falla, la operación no se rompe.
+- **RN-11** — Requieren email verificado: escribir reseña, **inscribir negocio**, **editar negocio** y **responder reseña**. Navegar el catálogo y editar el perfil no lo requieren. _(decidido 2026-06-20; ver Backlog)_
+- **RN-12** — El cambio de email exige re-verificación: al cambiarlo, la cuenta queda `is_email_verified: false` hasta confirmar el nuevo. El cambio de contraseña requiere la contraseña actual. _(decidido 2026-06-20)_
+- **RN-13** — `POST /refresh` debe rechazar a usuarios `is_active: false`. _(decidido 2026-06-20)_
 
 ## Criterios de aceptación (= casos de QA)
 
@@ -63,6 +66,11 @@ de confianza (reseñas) y el acceso a paneles (emprendedor, admin).
 - **CA-17** — Dado que supero el rate limit (5 registros/min o 3 reset/min), cuando insisto, entonces recibo 429.
 - **CA-18** — Dado que estoy autenticado, cuando consulto `/me`, entonces recibo mis datos sin `password_hash`.
 - **CA-19** — Dado un usuario no admin, cuando accede a una ruta `require_admin`, entonces recibe 403.
+- **CA-20** — Dado un usuario sin email verificado, cuando intenta inscribir negocio, editar negocio o responder reseña, entonces recibe 403 "Debes verificar tu email…".
+- **CA-21** — Dado que estoy autenticado y conozco mi contraseña actual, cuando la cambio por una nueva (≥8), entonces se actualiza y puedo iniciar sesión con ella.
+- **CA-22** — Dada una contraseña actual incorrecta, cuando intento cambiar la contraseña, entonces recibo error y no se actualiza.
+- **CA-23** — Dado que cambio mi email, cuando guardo, entonces la cuenta queda `is_email_verified: false` y se envía verificación al nuevo email.
+- **CA-24** — Dado un usuario `is_active: false` con cookie de refresh válida, cuando llama a `/refresh`, entonces recibe 401/403 y no obtiene un nuevo access token.
 
 ## Fuera de alcance (de este módulo)
 
@@ -78,19 +86,29 @@ de confianza (reseñas) y el acceso a paneles (emprendedor, admin).
 | US-2 Verificación email | ✅ | `GET /api/auth/verify-email`. Depende de Resend configurado en prod. |
 | US-3 Reenviar verificación | ✅ | `POST /api/auth/resend-verification` (requiere login). |
 | US-4 Login / Logout | ✅ | `POST /login`, `/logout`. |
-| US-5 Refresh de sesión | 🟡 | `POST /refresh` funciona, pero **no revalida `is_active`** (ver H-3). |
+| US-5 Refresh de sesión | 🟡 | `POST /refresh` funciona; falta revalidar `is_active` (RN-13, B-3). |
 | US-6 Recuperar contraseña | ✅ | `forgot-password` + `reset-password`. |
-| US-7 Editar perfil | 🟡 | Solo **nombre** (`PUT /me`). Falta email y contraseña (ver H-1). |
+| US-7 Editar perfil | 🟡 | Solo **nombre** (`PUT /me`). Falta contraseña y email con re-verificación (B-1). |
 | US-8 Restricción admin | ✅ | `require_admin` en dependencias. |
+| RN-11 Verificación en acciones | 🟡 | Solo **reseñar** la exige hoy; falta gatear inscribir/editar/responder (B-2). |
 | RN-2 Forzar rol user | ✅ | El servicio ignora `role` del input. |
 | RN-5 Cookies/JWT | ✅ | `COOKIE_SECURE` por `ENVIRONMENT`. |
 | RN-7 Respuesta uniforme | ✅ | `forgot_password` no revela existencia. |
 | RN-9 Rate limiting | ✅ | slowapi en register/forgot-password. |
 | RN-10 Email best-effort | ✅ | try/except + logging. |
 
-## Hallazgos / decisiones pendientes
+## Decisiones tomadas (2026-06-20)
 
-- **H-1 (gap)** — No existe cambio de **contraseña** ni de **email** estando logueado. `ChangePasswordRequest` está definido pero sin endpoint; `UserUpdate` solo permite `name`. ¿Se implementa cambio de contraseña/email en perfil? *(decisión)*
-- **H-2 (higiene)** — `UserCreate` hereda `role`/`is_active`/`is_email_verified` de `UserBase`; el servicio los ignora (no explotable) pero el modelo de entrada no debería aceptarlos. Recomendado: separar el modelo de entrada.
-- **H-3 (menor)** — `POST /refresh` no revalida `is_active`; un usuario desactivado con cookie válida puede emitir access tokens nuevos (las rutas protegidas igual lo bloquean al revalidar). ¿Se cierra esta brecha?
-- **H-4 (decisión de diseño)** — El login **no** exige email verificado; se puede navegar sin verificar y solo acciones puntuales (reseñas) lo requieren. Confirmar que es el comportamiento deseado.
+- **D-1** — Sí se implementa cambio de **contraseña** (con la actual) y de **email** (con re-verificación) en el perfil. → RN-12, US-7, B-1.
+- **D-2** — La verificación de email se exige también para **inscribir, editar y responder** (además de reseñar). → RN-11, B-2.
+- **D-3** — Se cierra la brecha de `/refresh`: debe rechazar usuarios desactivados. → RN-13, B-3.
+- **D-4** — Se acepta la higiene del modelo de registro (no aceptar `role`/`is_active`/`is_email_verified` en el input). → B-4.
+
+## Backlog derivado (decidido, pendiente de implementar)
+
+| ID | Item | Esfuerzo | Notas |
+|---|---|---|---|
+| **B-1** | Endpoint(s) de cambio de contraseña (usa `ChangePasswordRequest`) y de email con re-verificación; UI en perfil | Medio | Validar contraseña actual; al cambiar email → `is_email_verified:false` + enviar verificación |
+| **B-2** | Aplicar `require_verified` a inscribir/editar negocio y responder reseña | Bajo | La dependencia ya existe; falta usarla en los routers de `business` y `review` (se reflejará en sus specs) |
+| **B-3** | `/refresh` revalida `is_active` | Bajo | Leer el usuario y rechazar si `is_active:false` |
+| **B-4** | Separar modelo de entrada de registro (no heredar `role`/`is_active`/`is_email_verified`) | Bajo | Higiene; evita modelo de entrada engañoso |
