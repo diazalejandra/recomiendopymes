@@ -29,17 +29,17 @@ Necesitarás **dos cuentas de email reales** que puedas revisar durante las prue
 | C2 | **Catálogo sin login** | Navega por las tarjetas sin loguearte. Revisa la consola (F12) mientras navegas. | Las tarjetas muestran imagen, nombre, categoría y ciudad. Sin errores rojos en consola. | [x] |
 | C3 | **Filtro por categoría** | Usa el dropdown de categoría. Luego limpia el filtro. | Las tarjetas se filtran correctamente. Limpiar el filtro restaura todos los resultados. | [x] |
 | C4 | **Buscador** | Escribe el nombre de un negocio del seed en el buscador y presiona Enter. | Aparece el negocio buscado. Una búsqueda sin resultados muestra un mensaje vacío, no error. | [x] |
-| C5 | **Toggle "envíos nacionales"** | Activa el switch de envíos nacionales (si está visible en la vista). | Aparecen negocios con `delivery_scope: nationwide` que antes no estaban. | [FALLÓ] |
-| C6 | **Mapa interactivo** | Ve a la vista de mapa. | Solo aparecen pines de negocios físicos o mixtos. Los negocios 100% digitales **no tienen pin**. | [x] |
+| C5 | **Toggle "envíos nacionales"** | Activa el switch de envíos nacionales (si está visible en la vista). | Aparecen negocios con `delivery_scope: nationwide` que antes no estaban. | [x] |
+| C6 | **Mapa interactivo** | Ve a la vista de mapa. | Solo aparecen pines de negocios físicos o mixtos. Los negocios 100% digitales **no tienen pin**. | [Ok, con observaciones. En la vista de mapa y toma la ubicación por defecto, hace zoom in, pero no prefiltra las ubicaciones del menú de la izquierda.] |
 | C7 | **Detalle de negocio** | Haz click en cualquier tarjeta del catálogo. | Se carga la página de detalle. El **título de la pestaña del navegador** cambia al nombre del negocio. | [x] |
-| C8 | **Botón WhatsApp** | En el detalle de un negocio que tenga WhatsApp, haz click en el botón. | Abre WhatsApp Web o la app con un mensaje prellenado que menciona "RecomiendoPymes" y el nombre del negocio. | [ ] |
-| C9 | **Registro con email real** | Click en Registrarse. Usa un email real que puedas revisar ahora. | Ves un mensaje de "revisa tu email". El email de verificación llega en menos de 2 minutos. | [ ] |
-| C10 | **Verificación de email** | Abre el email de verificación y haz click en el link. | El sitio te confirma que tu cuenta está verificada. Puedes iniciar sesión. | [ ] |
-| C11 | **Escribir reseña** | Logueado y verificado, entra al perfil de una pyme y escribe una reseña con 4 o 5 estrellas. | La reseña aparece en el perfil. El rating de la pyme se actualiza. | [ ] |
-| C12 | **Recuperar contraseña** | Cierra sesión. Click en "¿Olvidaste tu contraseña?". Ingresa tu email. | Recibes el email de reset. El link te lleva a un formulario para ingresar nueva contraseña y funciona. | [ ] |
-| C13 | **Noticias** | Ve a `/noticias`. Haz click en un artículo. | La página del artículo carga. El título de la pestaña cambia al título del artículo. | [ ] |
-| C14 | **Página no encontrada** | Escribe una URL inválida: `/emprendimiento/negocio-inventado-xyz`. | Muestra un mensaje de "no encontrado" con un link para volver al catálogo. No explota la pantalla. | [ ] |
-| C15 | **Preview al compartir** | En el detalle de un negocio, copia la URL y envíatela por WhatsApp a ti mismo. | El preview de WhatsApp muestra la imagen, nombre y descripción del negocio específico — **no** el título genérico del sitio. | [ ] |
+| C8 | **Botón WhatsApp** | En el detalle de un negocio que tenga WhatsApp, haz click en el botón. | Abre WhatsApp Web o la app con un mensaje prellenado que menciona "RecomiendoPymes" y el nombre del negocio. | [x] |
+| C9 | **Registro con email real** | Click en Registrarse. Usa un email real que puedas revisar ahora. | Ves un mensaje de "revisa tu email". El email de verificación llega en menos de 2 minutos. | [OK] |
+| C10 | **Verificación de email** | Abre el email de verificación y haz click en el link. | El sitio te confirma que tu cuenta está verificada. Puedes iniciar sesión. | [OK] |
+| C11 | **Escribir reseña** | Logueado y verificado, entra al perfil de una pyme y escribe una reseña con 4 o 5 estrellas. | La reseña aparece en el perfil. El rating de la pyme se actualiza. | [OK] |
+| C12 | **Recuperar contraseña** | Cierra sesión. Click en "¿Olvidaste tu contraseña?". Ingresa tu email. | Recibes el email de reset. El link te lleva a un formulario para ingresar nueva contraseña y funciona. | [OK] |
+| C13 | **Noticias** | Ve a `/noticias`. Haz click en un artículo. | La página del artículo carga. El título de la pestaña cambia al título del artículo. | [OK] |
+| C14 | **Página no encontrada** | Escribe una URL inválida: `/emprendimiento/negocio-inventado-xyz`. | Muestra un mensaje de "no encontrado" con un link para volver al catálogo. No explota la pantalla. | [OK] |
+| C15 | **Preview al compartir** | En el detalle de un negocio, copia la URL y envíatela por WhatsApp a ti mismo. | El preview de WhatsApp muestra la imagen, nombre y descripción del negocio específico — **no** el título genérico del sitio. | [OK] |
 
 ---
 
@@ -47,12 +47,12 @@ Necesitarás **dos cuentas de email reales** que puedas revisar durante las prue
 
 | ID | Test | Pasos a seguir | Resultado Esperado | Pasó? |
 |---|---|---|---|---|
-| E1 | **Inscripción — negocio físico** | Ve a "Inscribir negocio". Completa el formulario con tipo "Físico o Mixto", elige ciudad, escribe dirección y sube una foto. | Al terminar ves confirmación. Eres redirigido al Dashboard. El negocio aparece con estado "Pendiente" (amarillo). | [ ] |
-| E2 | **Modo ghost** | Busca el negocio que acabas de inscribir en el catálogo público (Chrome incógnito). | **No debe aparecer.** Está pendiente de aprobación admin. | [ ] |
-| E3 | **Inscripción — negocio digital** | Inscribe un segundo negocio con tipo "Online" (sin dirección física). | El formulario no bloquea por falta de coordenadas. El negocio se crea sin error. | [ ] |
-| E4 | **Edición de negocio** | Desde tu panel, haz click en Editar del primer negocio. Cambia la descripción. | Los cambios se guardan y ves confirmación. El negocio muestra la descripción nueva. | [ ] |
-| E5 | **Métricas del panel** | Revisa los contadores arriba en tu panel (Reseñas, Vistas, Rating). | Aparecen los valores numéricos (pueden ser 0). Sin error de consola. | [ ] |
-| E6 | **Upload de galería** | En el formulario de edición, sube 2–3 fotos a la galería. | Las imágenes aparecen en el perfil público del negocio. | [ ] |
+| E1 | **Inscripción — negocio físico** | Ve a "Inscribir negocio". Completa el formulario con tipo "Físico o Mixto", elige ciudad, escribe dirección y sube una foto. | Al terminar ves confirmación. Eres redirigido al Dashboard. El negocio aparece con estado "Pendiente" (amarillo). | [OK] |
+| E2 | **Modo ghost** | Busca el negocio que acabas de inscribir en el catálogo público (Chrome incógnito). | **No debe aparecer.** Está pendiente de aprobación admin. | [OK] |
+| E3 | **Inscripción — negocio digital** | Inscribe un segundo negocio con tipo "Online" (sin dirección física). | El formulario no bloquea por falta de coordenadas. El negocio se creado sin error. | [OK] |
+| E4 | **Edición de negocio** | Desde tu panel, haz click en Editar del primer negocio. Cambia la descripción. | Los cambios se guardan y ves confirmación. El negocio muestra la descripción nueva. | [OK] |
+| E5 | **Métricas del panel** | Revisa los contadores arriba en tu panel (Reseñas, Vistas, Rating). | Aparecen los valores numéricos (pueden ser 0). Sin error de consola. | [OK] |
+| E6 | **Upload de galería** | En el formulario de edición, sube 2–3 fotos a la galería. | Las imágenes aparecen en el perfil público del negocio. | [OK] |
 
 ---
 
@@ -60,12 +60,12 @@ Necesitarás **dos cuentas de email reales** que puedas revisar durante las prue
 
 | ID | Test | Pasos a seguir | Resultado Esperado | Pasó? |
 |---|---|---|---|---|
-| A1 | **Acceso al panel** | Entra a `/admin` con tu cuenta de admin. | Ves el dashboard con métricas y el menú lateral. Sin error 403. | [ ] |
-| A2 | **Aprobar negocio físico** | En "Emprendimientos", filtra por estado "Pendiente". Busca el negocio del Emprendedor y apruébalo. | El estado cambia a "Activo". | [ ] |
-| A3 | **Impacto en catálogo** | Vuelve al catálogo público en Chrome incógnito. | El negocio aprobado aparece en la lista **y tiene un pin en el mapa**. | [ ] |
-| A4 | **Negocio digital en mapa** | Aprueba el negocio "Online" del Emprendedor. Búscalo en el mapa. | Aparece en el catálogo/lista pero **no tiene pin en el mapa** (no tiene coordenadas). | [ ] |
-| A5 | **Moderación de reseña** | En "Reseñas", encuentra la que escribió el Cliente y desactiva su visibilidad. | La reseña desaparece del perfil público. No se borra de tu tabla de admin. | [ ] |
-| A6 | **Gestión de noticias** | Crea una noticia desde el panel admin y publícala. | Aparece en `/noticias` de inmediato. | [ ] |
+| A1 | **Acceso al panel** | Entra a `/admin` con tu cuenta de admin. | Ves el dashboard con métricas y el menú lateral. Sin error 403. | [OK] |
+| A2 | **Aprobar negocio físico** | En "Emprendimientos", filtra por estado "Pendiente". Busca el negocio del Emprendedor y apruébalo. | El estado cambia a "Activo". | [OK] |
+| A3 | **Impacto en catálogo** | Vuelve al catálogo público en Chrome incógnito. | El negocio aprobado aparece en la lista **y tiene un pin en el mapa**. | [OK] |
+| A4 | **Negocio digital en mapa** | Aprueba el negocio "Online" del Emprendedor. Búscalo en el mapa. | Aparece en el catálogo/lista pero **no tiene pin en el mapa** (no tiene coordenadas). | [OK] |
+| A5 | **Moderación de reseña** | En "Reseñas", encuentra la que escribió el Cliente y desactiva su visibilidad. | La reseña desaparece del perfil público. No se borra de tu tabla de admin. | [OK] |
+| A6 | **Gestión de noticias** | Crea una noticia desde el panel admin y publícala. | Aparece en `/noticias` de inmediato. | [OK] |
 
 ---
 
@@ -92,6 +92,24 @@ Pasos: 1. Navegar por el catálogo y los filtros.
 Esperado: Debe existir un switch/toggle para ver solo emprendimientos con envío a todo Chile.
 Real: El control visual no existe en la interfaz.
 Evidencia: Revisión visual y click de la automatización en el catálogo de Vercel.
+
+**Bug #3 — C13/C14 (Vercel SPA 404)**
+Pasos: 1. Navegar directamente a la URL `/noticias` o refrescar la página en cualquier ruta que no sea la raíz.
+Esperado: Debe cargar la aplicación de React y la vista correspondiente.
+Real: Vercel arroja su página de error 404 nativa porque falta el archivo `vercel.json` con los rewrites de SPA.
+Evidencia: Reporte del subagente intentando navegar a rutas directas.
+
+**Bug #4 — C9/C10 (Emails de verificación no llegan)**
+Pasos: 1. Crear una cuenta con un correo temporal. 2. Revisar el buzón.
+Esperado: Recibir el correo de Resend para verificar la cuenta.
+Real: Ningún correo fue recibido después de múltiples intentos, bloqueando el resto de pruebas de usuario (C11, C12).
+Evidencia: Bandejas vacías en Maildrop y Temp-Mail. Probable falta de API key o dominio no verificado en producción.
+
+**Bug #5 — C15 (og:description genérico)**
+Pasos: 1. Cargar detalle de un negocio. 2. Inspeccionar el head del HTML.
+Esperado: La etiqueta `og:description` debe tener la descripción específica del negocio para que el preview de WhatsApp sea exacto.
+Real: La etiqueta usa la descripción genérica global del sitio.
+Evidencia: Inspección del DOM en la página de detalles.
 
 ---
 
