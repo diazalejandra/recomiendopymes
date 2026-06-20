@@ -604,7 +604,9 @@ Cuando llegue la Fase 2, no hay refactor arquitectural — solo se implementa lo
 2. Todas sus reseñas se marcan `is_visible: false` automáticamente (ocultamiento en cascada)
 3. Sus negocios pasan a `inactive` automáticamente
 4. Las reseñas y negocios **no se eliminan** — quedan en DB para auditoría
-5. Si el admin reactiva al usuario, los negocios y reseñas **no** se reactivan automáticamente — el admin los revisa y decide caso a caso
+5. Si el admin reactiva al usuario, la cascada **se revierte automáticamente**: sus reseñas vuelven a ser visibles (`is_visible: true`) y sus negocios que quedaron `inactive` pasan a `pending` para re-moderación. _(Actualizado 2026-06-19 — antes el spec decía lo contrario; se alineó al comportamiento real del código.)_
+
+> ⚠️ **Borde conocido:** la reversión es indiscriminada — también re-publica negocios que el propio dueño había desactivado y vuelve visibles reseñas que un admin pudo haber ocultado por abuso. Si esto se vuelve un problema, habría que marcar qué fue ocultado *por la cascada* (p. ej. un flag) y revertir solo eso.
 
 ---
 

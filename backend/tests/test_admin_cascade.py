@@ -4,11 +4,9 @@ Tests de la cascada al activar/inactivar un usuario (admin).
 Inactivar un usuario debe: ocultar sus reseñas y pasar a `inactive` sus negocios
 que estaban `active` (los `pending` no se tocan).
 
-OJO — discrepancia conocida con el spec: el diseño (R8, punto 5) dice que al
-REACTIVAR no se revierte la cascada automáticamente, pero el código actual SÍ
-revierte (negocios inactive→pending, reseñas vuelven visibles). Estos tests fijan
-el comportamiento REAL actual; si se decide alinear con el spec, hay que
-actualizarlos junto con admin/service.py.
+Al REACTIVAR, la cascada se revierte automáticamente: negocios `inactive`→`pending`
+(re-moderación) y reseñas vuelven visibles. Comportamiento confirmado como deseado
+y alineado en el spec (R8, punto 5) el 2026-06-19.
 """
 from bson import ObjectId
 
@@ -45,14 +43,14 @@ async def test_deactivation_cascades():
     assert reviews.stored(review_id)["is_visible"] is False
 
 
-async def test_reactivation_reverts_cascade_current_behavior():
+async def test_reactivation_reverts_cascade():
     svc, businesses, reviews, active_id, pending_id, review_id = _setup(
         user_active=False, biz_status="inactive", review_visible=False
     )
     result = await svc.toggle_user_active(str(USER_ID))
 
     assert result["is_active"] is True
-    # Comportamiento ACTUAL (no el del spec): inactive → pending
+    # Reversión automática de la cascada (spec R8, punto 5): inactive → pending
     assert businesses.stored(active_id)["status"] == "pending"
     assert reviews.stored(review_id)["is_visible"] is True
 
