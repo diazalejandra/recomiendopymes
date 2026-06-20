@@ -99,3 +99,27 @@ Recién cuando los tres dominios resuelvan con SSL:
   varias horas.
 - Mantén `recomiendopymes.vercel.app` operativo hasta confirmar que el `.cl` funciona
   end-to-end; recién entonces comunica el cambio de URL.
+
+## Troubleshooting
+
+### `ERR_CERT_AUTHORITY_INVALID` / "La conexión no es privada" en la red de la oficina
+Si el dominio da error de certificado **solo en la red corporativa**, probablemente el
+filtrado web de la empresa (p. ej. **Cisco Umbrella**) está bloqueando el dominio
+recién registrado y sirviendo su propia página de bloqueo.
+
+**Cómo confirmarlo:** compara la resolución DNS interna vs. pública.
+```
+nslookup recomiendopymes.cl            # resolver corporativo
+nslookup recomiendopymes.cl 8.8.8.8    # resolver público (Google)
+```
+Si el resolver interno devuelve una IP del rango `146.112.61.x` (Cisco Umbrella) mientras
+que el público devuelve la IP de Vercel (`216.198.79.x`), es bloqueo corporativo, **no**
+un problema de DNS/Vercel.
+
+**Qué hacer:**
+1. Verifica el sitio desde **fuera** de la red corporativa (datos móviles del celular).
+   Debería cargar con certificado válido.
+2. Pide a IT que agregue `recomiendopymes.cl` a la lista blanca de Umbrella (suele estar
+   como "newly seen / uncategorized domain"). También puede resolverse solo en unos días
+   cuando Umbrella categorice el dominio.
+3. Por HSTS no podrás hacer "continuar de todos modos" en el navegador — usa otra red.
