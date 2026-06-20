@@ -17,10 +17,23 @@ Si frontend y backend comparten el dominio raíz `recomiendopymes.cl`, son *same
 y la cookie viaja correctamente. Con `onrender.com` son *cross-site* y `SameSite=Lax`
 no la envía → el refresh de sesión queda frágil.
 
-> **Dónde administrar el DNS:** los registros de abajo son los mismos sin importar el
-> panel. Si compraste el `.cl` directo en NIC Chile, usa su editor de zona; si fue por
-> un reseller, su panel de DNS. Cloudflare (gratis) es más cómodo a largo plazo pero
-> requiere cambiar los nameservers en NIC Chile — opcional, no necesario para esto.
+> **⚠️ NIC Chile NO es un proveedor de DNS.** Solo registra el dominio y permite
+> **delegar los nameservers (NS)**; no tiene editor para agregar registros A/CNAME/MX
+> (su "secundario gratuito" es solo respaldo de un DNS primario externo). Por eso en
+> NIC Chile no aparece la opción de CNAME.
+>
+> **Necesitas un proveedor de DNS primario** y apuntar los NS de NIC Chile hacia él:
+> - **Cloudflare (gratis, recomendado):** crea cuenta, agrega el dominio, Cloudflare te
+>   da 2 nameservers → los pones en NIC Chile. Soporta "CNAME flattening" en el apex.
+> - **Vercel DNS:** agrega el dominio en Vercel, usa los nameservers de Vercel
+>   (`ns1.vercel-dns.com` / `ns2.vercel-dns.com`) en NIC Chile, y gestionas todos los
+>   registros (incl. el CNAME `api` → Render y los de Resend) dentro de Vercel.
+>
+> Una vez delegado, **todos los registros de abajo se crean en ese proveedor**, no en
+> NIC Chile.
+>
+> **Regla clave:** el apex `recomiendopymes.cl` usa un registro **A** (no CNAME — el
+> CNAME no se permite en la raíz). CNAME es solo para subdominios (`www`, `api`).
 
 ---
 
