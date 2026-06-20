@@ -64,7 +64,7 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="RecomiendoPymes API",
         description="API para el catálogo de emprendedores chilenos",
-        version="1.0.0",
+        version="1.1.0",
         lifespan=lifespan,
         # Ocultar docs en producción
         docs_url="/docs" if settings.ENVIRONMENT != "production" else None,
