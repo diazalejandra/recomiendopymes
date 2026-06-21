@@ -72,6 +72,9 @@ Es el núcleo de valor del producto.
 - **R-2 — `new_business_boost_days` configurable** desde el panel admin (hoy hardcodeado a 30).
 - **R-3 — Verificación de identidad (`is_verified`)** como badge de confianza.
 - **R-4 — Límite de negocios pendientes por usuario** (anti-spam, R7 del diseño).
+- **R-5 — Paginación por keyset/cursor** (P-3): a escala, el sort con `is_new_boost` computado obliga a ordenar en memoria; el cursor evita el costo del `$skip` profundo.
+- **R-6 — `view_count` fuera del read-path / deduplicado** (P-9): hoy se escribe en cada lectura de ficha.
+- **R-7 — Caché del catálogo (CDN/ISR)** (P-10): es público y casi estático.
 
 ## Estado vs código (diagnóstico)
 
@@ -102,6 +105,7 @@ Es el núcleo de valor del producto.
 - **D-4** — Se aplica `require_verified` a inscribir/editar/cambiar-estado (decisión D-2 de Auth). → RN-8, N-1.
 - **D-5** — Se valida la galería a **máx. 8** imágenes. → RN-12, N-4.
 - **D-6** — `view_count` sin deduplicar se **acepta por ahora** (H-5); se revisará si las métricas se vuelven relevantes.
+- **D-7** — Mejoras de lógica al backlog (paginación, búsqueda, robustez) → N-6..N-12; las de escala a roadmap → R-5..R-7.
 
 ## Backlog derivado (decidido, pendiente de implementar)
 
@@ -112,6 +116,13 @@ Es el núcleo de valor del producto.
 | **N-3** | Soft-delete de negocios (status archivado + ocultar reseñas) en vez de borrado duro | Medio | Conserva auditoría; ajustar catálogo para excluir archivados |
 | **N-4** | Validar galería a máx. 8 imágenes en el modelo | Bajo | `max_length=8` en `gallery` |
 | **N-5** | Eliminar código muerto `_is_new_boost()` | Bajo | El boost se calcula en el pipeline |
+| **N-6** | Orden estable: `_id` como último criterio de sort (P-1) | Bajo | Evita repetir/saltar ítems entre páginas |
+| **N-7** | Capar `limit` público (~60–100); mapa con límite propio (P-2) | Bajo | Hoy permite 500 en ruta pública |
+| **N-8** | Búsqueda con índice de texto + colación sin acentos (P-4) | Medio | Hoy `$regex` hace scan y distingue acentos |
+| **N-9** | Validar `category` contra la colección de categorías (P-8) | Bajo-Medio | Evita categorías que el filtro nunca muestra |
+| **N-10** | Reintentar slug ante `DuplicateKeyError` (P-5) | Bajo | El índice único protege la BD; hoy da 500 en carrera |
+| **N-11** | ID inválido → 404 en `update`/`status`/`delete` (P-6) | Bajo | Hoy `ObjectId(id)` mal formado da 500 |
+| **N-12** | Validar rango de `coordinates` y exigir coords en physical/both (P-7) | Bajo | Un físico sin coords no aparece en el mapa |
 
 ## Notas abiertas
 
