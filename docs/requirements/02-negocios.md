@@ -1,6 +1,6 @@
 # Spec — Catálogo y Emprendimientos
 
-> Estado del spec: **borrador para revisión** · Anclado al código a 2026-06-20 (rama `main`)
+> Estado del spec: **revisado y reconciliado** (decisiones D-1..D-6) · Anclado al código a 2026-06-20 (rama `main`)
 > Módulo backend: `modules/business/` · Frontend: `features/catalog/`, `features/business/`, `features/entrepreneur/`
 
 ## Propósito
@@ -80,25 +80,39 @@ Es el núcleo de valor del producto.
 | US-1/US-2 Catálogo + filtros | ✅ | `GET /api/businesses` con filtros, búsqueda y orden. |
 | US-3 Inscribir | ✅ | `POST /api/businesses` (status `pending`). |
 | US-5 Ver mis negocios | ✅ | `GET /api/businesses/mine`. |
-| US-6 Editar | 🟡 | `PUT` solo dueño; **admin no puede editar** ajeno (ver H-2). Nombre no editable ✅. |
+| US-6 Editar | 🟡 | `PUT` solo dueño; admin editará ajeno tras N-2. Nombre no editable ✅. |
 | US-7 Estados dueño | ✅ | `PATCH /{id}/status` con transiciones válidas. |
-| US-8 Admin estado/eliminar | 🟡 | Cambia estado y elimina; **editar ajeno no** (H-2). |
+| US-8 Admin estado/eliminar | 🟡 | Cambia estado y elimina; editar ajeno → N-2; borrado pasará a soft (N-3). |
 | RN-1 Nombre no editable | ✅ | `BusinessUpdate` no incluye `name`. |
 | RN-2 Slug único | ✅ | `_generate_unique_slug`. |
 | RN-5 Acceso no-active | ✅ | Implementado en 1.1.0 (ver `01-auth.md`). |
-| RN-8 Verificación inscribir/editar | ❌ | Usan `get_current_user`, no `require_verified` (B-2). |
-| RN-9 Admin edita cualquiera | ❌ | `PUT` bloquea no-dueños (H-2). |
+| RN-8 Verificación inscribir/editar | ❌ | Usan `get_current_user`, no `require_verified` → N-1. |
+| RN-9 Admin edita cualquiera | ❌ | `PUT` bloquea no-dueños; decidido habilitar → N-2. |
 | RN-10 Orden catálogo | 🟡 | Implementado, pero ignora `featured_until` (R-1) y `boost` hardcodeado (R-2). |
 | RN-11 Envíos nacionales | ✅ | `$or` ciudad / `nationwide`. |
-| RN-12 Galería máx 8 | ❌ | No validado en el modelo (H-3). |
-| RN-13 Eliminar (admin) | 🟡 | Borrado **duro** de negocio + reseñas (H-4). |
+| RN-12 Galería máx 8 | ❌ | No validado; decidido validar → N-4. |
+| RN-13 Eliminar (admin) | 🟡 | Hoy borrado **duro**; pasará a soft-delete → N-3. |
 | RN-14 Recalcular rating | ✅ | Sobre reseñas visibles. |
 
-## Hallazgos / decisiones pendientes
+## Decisiones tomadas (2026-06-20)
 
-- **H-1 (decisión)** — `owner` es texto libre **además** de `owner_user_id`. ¿Se mantiene (nombre de fantasía del dueño/contacto) o se deriva del usuario y se elimina del input? *(decisión)*
-- **H-2 (gap vs diseño)** — El admin **no puede editar** negocios ajenos (`PUT` es solo-dueño). El diseño dice que el admin edita cualquiera. ¿Se habilita edición admin? *(decisión + B)*
-- **H-3 (gap)** — La galería no valida el **máx. 8** (RN-12). Recomendado validar en el modelo.
-- **H-4 (decisión)** — Eliminar negocio hace **borrado duro** y elimina sus reseñas, a diferencia del soft-delete del resto del sistema. ¿Se mantiene el hard-delete o se pasa a soft (status `deleted`/auditoría)? *(decisión)*
-- **H-5 (menor)** — `view_count` se incrementa en cada visita sin deduplicar (infla métricas). ¿Se deja así por ahora?
-- **H-6 (limpieza)** — `_is_new_boost()` es código muerto (el boost se calcula en el pipeline). Se puede eliminar.
+- **D-1** — **`owner` se mantiene** como nombre de contacto/fantasía del negocio, distinto del nombre de la cuenta (`owner_user_id`). Se documenta como tal; no se elimina.
+- **D-2** — Se **habilita la edición de admin** sobre cualquier negocio (alinea con la matriz de permisos). → RN-9, N-2.
+- **D-3** — Eliminar negocio pasa a **soft-delete** (sin borrar de la BD; reseñas se ocultan, no se borran). → RN-13, N-3.
+- **D-4** — Se aplica `require_verified` a inscribir/editar/cambiar-estado (decisión D-2 de Auth). → RN-8, N-1.
+- **D-5** — Se valida la galería a **máx. 8** imágenes. → RN-12, N-4.
+- **D-6** — `view_count` sin deduplicar se **acepta por ahora** (H-5); se revisará si las métricas se vuelven relevantes.
+
+## Backlog derivado (decidido, pendiente de implementar)
+
+| ID | Item | Esfuerzo | Notas |
+|---|---|---|---|
+| **N-1** | `require_verified` en inscribir/editar/cambiar-estado | Bajo | = Auth B-2; la dependencia ya existe |
+| **N-2** | Permitir que el admin edite cualquier negocio (`PUT`) | Bajo | Permitir si es dueño **o** admin |
+| **N-3** | Soft-delete de negocios (status archivado + ocultar reseñas) en vez de borrado duro | Medio | Conserva auditoría; ajustar catálogo para excluir archivados |
+| **N-4** | Validar galería a máx. 8 imágenes en el modelo | Bajo | `max_length=8` en `gallery` |
+| **N-5** | Eliminar código muerto `_is_new_boost()` | Bajo | El boost se calcula en el pipeline |
+
+## Notas abiertas
+
+- `owner` documentado como **nombre de contacto** (D-1); considerar prellenarlo con el nombre del usuario al inscribir, editable.
