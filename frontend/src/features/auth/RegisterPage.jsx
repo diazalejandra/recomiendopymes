@@ -7,6 +7,7 @@ import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
 export default function RegisterPage() {
   const [form, setForm] = useState({ name: '', email: '', password: '', confirm: '' });
   const [showPwd, setShowPwd] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const { register } = useAuth();
   const navigate = useNavigate();
@@ -17,9 +18,10 @@ export default function RegisterPage() {
     e.preventDefault();
     if (form.password !== form.confirm) return toast.error('Las contraseñas no coinciden');
     if (form.password.length < 8) return toast.error('La contraseña debe tener al menos 8 caracteres');
+    if (!acceptedTerms) return toast.error('Debes aceptar los Términos y la Política de Privacidad');
     setLoading(true);
     try {
-      await register(form.email, form.password, form.name);
+      await register(form.email, form.password, form.name, acceptedTerms);
       toast.success('¡Cuenta creada! Revisa tu email para verificarla.');
       navigate('/');
     } catch (err) {
@@ -196,31 +198,42 @@ export default function RegisterPage() {
               </div>
             ))}
 
+            <label style={{
+              display: 'flex', alignItems: 'flex-start', gap: '8px',
+              fontSize: '0.82rem', color: 'var(--muted)', lineHeight: 1.5, cursor: 'pointer',
+            }}>
+              <input
+                type="checkbox" required
+                checked={acceptedTerms}
+                onChange={e => setAcceptedTerms(e.target.checked)}
+                style={{ marginTop: '2px', width: '16px', height: '16px', accentColor: 'var(--brand)', cursor: 'pointer' }}
+              />
+              <span>
+                Acepto los{' '}
+                <Link to="/terminos" target="_blank" style={{ color: 'var(--brand)', textDecoration: 'none' }}>Términos y Condiciones</Link>
+                {' '}y la{' '}
+                <Link to="/privacidad" target="_blank" style={{ color: 'var(--brand)', textDecoration: 'none' }}>Política de Privacidad</Link>.
+              </span>
+            </label>
+
             <button
-              type="submit" disabled={loading}
+              type="submit" disabled={loading || !acceptedTerms}
               style={{
                 width: '100%', padding: '13px', fontSize: '0.95rem',
                 fontWeight: 700, color: '#fff',
-                background: loading ? 'var(--muted)' : 'var(--brand)',
-                border: 'none', borderRadius: '10px', cursor: loading ? 'not-allowed' : 'pointer',
+                background: (loading || !acceptedTerms) ? 'var(--muted)' : 'var(--brand)',
+                border: 'none', borderRadius: '10px', cursor: (loading || !acceptedTerms) ? 'not-allowed' : 'pointer',
                 transition: 'background 0.2s, transform 0.1s',
                 fontFamily: 'Outfit, sans-serif',
                 marginTop: '0.25rem',
               }}
-              onMouseEnter={e => { if (!loading) e.currentTarget.style.background = 'var(--brand-hover)'; }}
-              onMouseLeave={e => { if (!loading) e.currentTarget.style.background = 'var(--brand)'; }}
-              onMouseDown={e => { if (!loading) e.currentTarget.style.transform = 'scale(0.98)'; }}
+              onMouseEnter={e => { if (!loading && acceptedTerms) e.currentTarget.style.background = 'var(--brand-hover)'; }}
+              onMouseLeave={e => { if (!loading && acceptedTerms) e.currentTarget.style.background = 'var(--brand)'; }}
+              onMouseDown={e => { if (!loading && acceptedTerms) e.currentTarget.style.transform = 'scale(0.98)'; }}
               onMouseUp={e => e.currentTarget.style.transform = 'scale(1)'}
             >
               {loading ? 'Creando cuenta...' : 'Crear cuenta gratis'}
             </button>
-
-            <p style={{ textAlign: 'center', fontSize: '0.78rem', color: 'var(--subtle)', lineHeight: 1.5 }}>
-              Al registrarte aceptas nuestros{' '}
-              <Link to="/terminos" style={{ color: 'var(--brand)', textDecoration: 'none' }}>Términos</Link>
-              {' '}y{' '}
-              <Link to="/privacidad" style={{ color: 'var(--brand)', textDecoration: 'none' }}>Privacidad</Link>
-            </p>
           </form>
 
           <p style={{
