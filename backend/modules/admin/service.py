@@ -76,6 +76,9 @@ class AdminService:
         return _business_doc(updated)
 
     async def reject_business(self, business_id: str) -> dict:
+        doc = await self.db.businesses.find_one({"_id": ObjectId(business_id)})
+        if not doc:
+            raise HTTPException(status_code=404, detail="Emprendimiento no encontrado")
         await self.db.businesses.update_one(
             {"_id": ObjectId(business_id)},
             {"$set": {"status": "inactive", "updated_at": datetime.now(timezone.utc)}}
@@ -134,6 +137,13 @@ class AdminService:
             raise HTTPException(status_code=404, detail="Usuario no encontrado")
 
         new_state = not user.get("is_active", True)
+
+        # Guarda de último admin (AD-2): no desactivar al único admin activo
+        if not new_state and user.get("role") == "admin":
+            active_admins = await self.db.users.count_documents({"role": "admin", "is_active": True})
+            if active_admins <= 1:
+                raise HTTPException(status_code=400, detail="No puedes desactivar al último administrador activo")
+
         await self.db.users.update_one(
             {"_id": ObjectId(user_id)},
             {"$set": {"is_active": new_state, "updated_at": datetime.now(timezone.utc)}}
@@ -168,6 +178,22 @@ class AdminService:
         await self.db.users.update_one(
             {"_id": ObjectId(user_id)},
             {"$set": {"role": "admin", "updated_at": datetime.now(timezone.utc)}}
+        )
+        updated = await self.db.users.find_one({"_id": ObjectId(user_id)})
+        return _user_public(updated)
+
+    async def demote_user(self, user_id: str) -> dict:
+        """Degradar admin a usuario (AD-2). No permite degradar al último admin activo."""
+        user = await self.db.users.find_one({"_id": ObjectId(user_id)})
+        if not user:
+            raise HTTPException(status_code=404, detail="Usuario no encontrado")
+        if user.get("role") == "admin":
+            active_admins = await self.db.users.count_documents({"role": "admin", "is_active": True})
+            if active_admins <= 1:
+                raise HTTPException(status_code=400, detail="No puedes degradar al último administrador activo")
+        await self.db.users.update_one(
+            {"_id": ObjectId(user_id)},
+            {"$set": {"role": "user", "updated_at": datetime.now(timezone.utc)}}
         )
         updated = await self.db.users.find_one({"_id": ObjectId(user_id)})
         return _user_public(updated)

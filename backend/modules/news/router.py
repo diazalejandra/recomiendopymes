@@ -13,7 +13,10 @@ async def webhook_create_news(
     x_api_key: str = Header(None)
 ):
     """Webhook endpoint for n8n to create a draft news article."""
-    expected_key = os.environ.get("N8N_WEBHOOK_SECRET", "super-secret-key-123")
+    expected_key = os.environ.get("N8N_WEBHOOK_SECRET")
+    if not expected_key:
+        # Fail-closed: sin secreto configurado, el webhook no acepta nada (NW-1)
+        raise HTTPException(status_code=503, detail="Webhook no configurado")
     if not x_api_key or x_api_key != expected_key:
         raise HTTPException(status_code=401, detail="Invalid or missing API Key")
     
