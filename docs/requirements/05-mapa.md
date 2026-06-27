@@ -39,12 +39,13 @@ Usa Leaflet + OpenStreetMap (sin API key) y Nominatim para geocodificar.
   - `online` (digital): **solo comuna de origen de despacho** (centroide / círculo), **nunca** dirección exacta.
   Es la regla por defecto, no un opt-in.
 - **RN-9** — El centrado en la ubicación del usuario es **explícito** (botón "ubícame"), con **fallback por comuna** y **aviso** si la geolocalización falla; el comportamiento de centrado es **consistente** entre todas las vistas de mapa.
-- **RN-10** — **"Cerca de ti"** ordena por **niveles según comuna + alcance de despacho**, no por km crudos:
+- **RN-10** — **"Cerca de ti"** ordena por **niveles según comuna + alcance de despacho**, no por km crudos (v1, sin adyacencia de comunas):
   1. En tu comuna (físicos + digitales con origen en tu comuna)
-  2. En tu región / comunas vecinas
+  2. En tu región
   3. Te llega: **envío nacional**
   4. Resto.
   Los físicos dentro de tu comuna se afinan por **distancia real (km)**. La comuna del usuario se obtiene con un **selector** (geolocalización opcional para autodetectarla).
+- **RN-11** — Un negocio aparece **una sola vez** en "cerca de ti", en el nivel más alto que le aplique (los `both`/nacionales no se duplican).
 
 ## Criterios de aceptación (= casos de QA)
 
@@ -90,7 +91,8 @@ Usa Leaflet + OpenStreetMap (sin API key) y Nominatim para geocodificar.
 - **D-5** — **Ubicación por tipo de operación** (regla, no opt-in): físico/mixto = pin exacto; digital = solo comuna de origen de despacho (sin dirección exacta). → RN-8, MP-7.
 - **D-9** — **"Cerca de ti" por niveles** (tu comuna → región → envío nacional → resto; físicos afinados por km), con **selector de comuna** + geoloc opcional. → RN-10, MP-9.
 - **D-6** — **Geolocalización con control**: botón "ubícame" + fallback comuna + aviso + distancia, con centrado consistente. → RN-9, MP-8. *(Arregla el bug observado de "no siempre centra en el usuario".)*
-- **D-7** — Agregar **"cerca de mí"** al catálogo y **evaluar demotar** el `/mapa` standalone (muchos negocios son online). → MP-9.
+- **D-7** — Se **mantiene el `/mapa` como vista destacada**; **"cerca de ti"** en el catálogo lo complementa (no se demota). → MP-9.
+- **D-10** — "Cerca de ti" v1 = comuna → región → nacional → resto (**sin "comunas vecinas"**, evita datos de adyacencia); sin duplicados (RN-11). → RN-10/RN-11.
 - **D-8** — **Geo para SEO**: coordenadas en el JSON-LD `LocalBusiness` (se ejecuta en el módulo SEO). → MP-10.
 
 ## Bug conocido (a resolver con MP-6 + MP-8)
@@ -109,5 +111,5 @@ Usa Leaflet + OpenStreetMap (sin API key) y Nominatim para geocodificar.
 | **MP-6** | Unificar el mapa en un componente reutilizable | Medio | HomePage + MapView comparten icons/popups/lógica (M-6); cierra BUG-1 |
 | **MP-7** | Enforce granularidad por `business_type` (físico=pin exacto; digital=comuna, sin dirección) + mostrar digitales como área/comuna | Medio | Regla RN-8; privacidad negocios desde casa; cruce con inscripción e `is_exact` |
 | **MP-8** | Geolocalización con control: botón "ubícame" + fallback comuna + aviso + distancia | Medio | Centrado explícito y consistente; cierra BUG-1 |
-| **MP-9** | "Cerca de ti" por niveles (comuna→región→nacional→resto) + selector de comuna; evaluar demotar `/mapa` | Medio | Modelo RN-10; cruce con Negocios y filtro de envíos |
+| **MP-9** | "Cerca de ti" por niveles (comuna→región→nacional→resto) + selector de comuna, en el catálogo | Medio | Modelo RN-10/RN-11; `/mapa` se mantiene destacado; cruce con Negocios y envíos |
 | **MP-10** | Coordenadas en JSON-LD `LocalBusiness` | Bajo | Se implementa en el módulo SEO (cruce) |
