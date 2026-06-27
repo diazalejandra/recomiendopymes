@@ -35,6 +35,10 @@ descubre el catálogo.
 - **RN-6** — El listado público es **paginado**.
 - **RN-7** — El `tag`/sección proviene de una **lista controlada** (ej. Noticia, Fondos, Recursos, Historia), no texto libre.
 - **RN-8** — La fecha mostrada es consistente (usar `published_at`, con fallback a `created_at`).
+- **RN-9** — Cada ítem tiene un **tipo**: `hosted` (artículo propio en nuestro dominio, indexable) o `link` (referencia externa curada con `external_url`, abre afuera). _(Resuelve la inconsistencia del `url` externo que ya usa el HomePage.)_
+- **RN-10** — **Nunca se republica** contenido externo copiado (anti-duplicado SEO); lo externo se **referencia** (`link`) o se **reescribe** a original. Si se sindica, usar `canonical` al origen.
+- **RN-11** — Todo ítem `link`/referenciado **cita su fuente** (atribución).
+- **RN-12** — Las **fuentes de contenido son enchufables** (manual, n8n y sugerencias de usuarios ahora; RSS como plug-in **futuro**). Todas caen en una **cola de curación** (draft/link) que el admin aprueba antes de publicar.
 
 ## Criterios de aceptación (= casos de QA)
 
@@ -75,6 +79,9 @@ descubre el catálogo.
 - **D-2** — `tag`/sección a **lista controlada** (Noticia, Fondos, Recursos, Historia…). → NW-6.
 - **D-3** — Adoptar la visión estratégica: **historias de emprendedores** con enlace a la ficha (NW-8), **recursos evergreen** (NW-9), **difusión por artículo** (NW-10) y **guardrail de contenido IA** (NW-11).
 - **D-4** — Fixes confirmados: webhook fail-closed (NW-1), slug único (NW-2), paginación (NW-3), fecha consistente (NW-7), SEO de artículo (NW-5, en módulo SEO).
+- **D-5** — **Dos tipos de contenido**: `hosted` (SEO propio) y `link` (referencia externa). → NW-12.
+- **D-6** — **Fuentes enchufables**: manual + n8n + sugerencias ahora; **RSS preparado pero no construido** (futuro). → NW-13.
+- **D-7** — **Anti-duplicado + canonical** (NW-15) y **atribución de fuente** (NW-16); **directorio de fondos/convocatorias** como contenido `link` estructurado (NW-14).
 
 ## Backlog derivado (decidido, pendiente de implementar)
 
@@ -91,3 +98,12 @@ descubre el catálogo.
 | **NW-9** | Estructurar "Recursos" evergreen vs noticias puntuales | Bajo-Medio | Mejor SEO a largo plazo |
 | **NW-10** | Difusión por artículo (notificación/anuncio + compartir) | Bajo | Cruce AD-21 / NT-7 |
 | **NW-11** | Guardrail de contenido IA (solo borradores + edición + foco útil) | Bajo | Proceso + nota; evita penalización SEO |
+| **NW-12** | Tipo de contenido `hosted` vs `link` (+ `external_url`) | Medio | Resuelve inconsistencia del `url` del HomePage; render distinto por tipo |
+| **NW-13** | Fuentes enchufables: cola de curación (manual, n8n, sugerencias) | Medio | RSS como plug-in **futuro**, no ahora |
+| **NW-14** | Directorio de fondos/convocatorias (estructurado: monto, plazo, link) | Medio | Contenido tipo `link`; alto valor para emprendedores |
+| **NW-15** | Regla anti-duplicado + `canonical` si se sindica | Bajo | Nunca republicar copia externa |
+| **NW-16** | Atribución de fuente en referenciados | Bajo | Citar el origen |
+
+## Fuera de alcance (por ahora) / futuro
+
+- **Ingesta RSS/feeds**: la arquitectura de fuentes queda preparada (NW-13), pero **no se construye la ingesta ahora**. Cuando se haga: cada ítem se vuelve `link` (referencia) o borrador a reescribir — **nunca** copia publicada (RN-10).
