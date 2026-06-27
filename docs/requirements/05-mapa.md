@@ -35,9 +35,10 @@ Usa Leaflet + OpenStreetMap (sin API key) y Nominatim para geocodificar.
 - **RN-6** — Los íconos/colores de categoría provienen de la **lista de categorías** (no hardcodeados en el front).
 - **RN-7** — Los recursos del mapa (íconos de marcador) se sirven **localmente**, sin depender de CDNs externos en runtime.
 - **RN-8** — La **granularidad de ubicación depende del tipo de operación**:
-  - `physical` / `both` (tienda física): dirección y **pin exacto**.
+  - `physical` / `both` **con local público**: dirección y **pin exacto**.
   - `online` (digital): **solo comuna de origen de despacho** (centroide / círculo), **nunca** dirección exacta.
-  Es la regla por defecto, no un opt-in.
+  - **Excepción home-based:** un `physical`/`both` que opera **desde casa** (sin local público) puede optar por **solo comuna**, aunque sea físico (privacidad/seguridad).
+  Es la regla por defecto, configurable solo en el sentido más restrictivo (de exacto a comuna).
 - **RN-9** — El centrado en la ubicación del usuario es **explícito** (botón "ubícame"), con **fallback por comuna** y **aviso** si la geolocalización falla; el comportamiento de centrado es **consistente** entre todas las vistas de mapa.
 - **RN-10** — **"Cerca de ti"** ordena por **niveles según comuna + alcance de despacho**, no por km crudos (v1, sin adyacencia de comunas):
   1. En tu comuna (físicos + digitales con origen en tu comuna)
@@ -46,6 +47,10 @@ Usa Leaflet + OpenStreetMap (sin API key) y Nominatim para geocodificar.
   4. Resto.
   Los físicos dentro de tu comuna se afinan por **distancia real (km)**. La comuna del usuario se obtiene con un **selector** (geolocalización opcional para autodetectarla).
 - **RN-11** — Un negocio aparece **una sola vez** en "cerca de ti", en el nivel más alto que le aplique (los `both`/nacionales no se duplican).
+- **RN-12** — **Dentro de cada nivel** de "cerca de ti" se aplica el **orden normal del catálogo** (featured → rating ponderado → nuevos → antigüedad). La cercanía agrupa; el ranking ordena dentro del grupo. _(El orden lo define el módulo Negocios; el Mapa solo aporta los niveles.)_
+- **RN-13** — Si el usuario **no elige comuna**, el catálogo usa su **orden normal** (sin niveles de cercanía).
+- **RN-14** — El selector de comuna del usuario debe **resolver a una región** (la lista de comunas/`meta` debe incluir región); sin ese dato el nivel "tu región" no se puede construir.
+- **RN-15** — Los **tiles** del mapa cumplen la política de uso de OpenStreetMap (atribución correcta; para producción, evaluar caché/proveedor de tiles para evitar throttling/bloqueo), igual que con Nominatim.
 
 ## Criterios de aceptación (= casos de QA)
 
@@ -61,6 +66,10 @@ Usa Leaflet + OpenStreetMap (sin API key) y Nominatim para geocodificar.
 - **CA-10** — Dada mi comuna, cuando uso "cerca de ti", entonces veo primero los de mi comuna, luego mi región, luego los de envío nacional, y al final el resto (RN-10).
 - **CA-11** — Dado un negocio `online`, cuando se muestra su ubicación, entonces aparece como **comuna/área** (nunca dirección exacta), aunque sea `both` con tienda física sí puede mostrar pin (RN-8).
 - **CA-12** — Dado un físico en mi comuna, cuando ordeno por cercanía, entonces se afina por distancia real (km) frente a otros de mi comuna.
+- **CA-13** — Dado un nivel de cercanía (ej. "tu comuna"), cuando se lista, entonces dentro del nivel mandan featured/rating/etc. (RN-12).
+- **CA-14** — Dado que no elijo comuna, cuando veo el catálogo, entonces aparece con su orden normal (RN-13).
+- **CA-15** — Dada una dirección ya geocodificada antes, cuando se vuelve a necesitar, entonces se sirve desde **caché** (sin llamar a Nominatim de nuevo) (MP-2).
+- **CA-16** — Dado un `both` home-based que eligió "solo comuna", cuando se muestra, entonces aparece como comuna/área, no con pin exacto (RN-8).
 
 ## Roadmap (futuro / Fase 2)
 
@@ -93,6 +102,13 @@ Usa Leaflet + OpenStreetMap (sin API key) y Nominatim para geocodificar.
 - **D-6** — **Geolocalización con control**: botón "ubícame" + fallback comuna + aviso + distancia, con centrado consistente. → RN-9, MP-8. *(Arregla el bug observado de "no siempre centra en el usuario".)*
 - **D-7** — Se **mantiene el `/mapa` como vista destacada**; **"cerca de ti"** en el catálogo lo complementa (no se demota). → MP-9.
 - **D-10** — "Cerca de ti" v1 = comuna → región → nacional → resto (**sin "comunas vecinas"**, evita datos de adyacencia); sin duplicados (RN-11). → RN-10/RN-11.
+- **D-11** — La cercanía **agrupa**; dentro de cada nivel manda el **orden del catálogo** (featured/rating ponderado…). El orden lo **posee el módulo Negocios**; el Mapa aporta los niveles. → RN-12.
+- **D-12** — Cerrar dependencias/riesgos: la lista de comunas debe **resolver a región** (RN-14, MP-12) y abordar la **política de tiles OSM** (RN-15, MP-11).
+- **D-13** — Excepción **home-based** (físico/both desde casa puede mostrar solo comuna) y **default sin comuna** = orden normal. → RN-8/RN-13.
+
+## Notas
+
+- El mapa es JS y **no aporta a SEO ni accesibilidad**; la **lista del catálogo** es la alternativa indexable y accesible. El valor SEO geográfico se logra con coordenadas en JSON-LD (MP-10), no con el mapa.
 - **D-8** — **Geo para SEO**: coordenadas en el JSON-LD `LocalBusiness` (se ejecuta en el módulo SEO). → MP-10.
 
 ## Bug conocido (a resolver con MP-6 + MP-8)
@@ -113,3 +129,5 @@ Usa Leaflet + OpenStreetMap (sin API key) y Nominatim para geocodificar.
 | **MP-8** | Geolocalización con control: botón "ubícame" + fallback comuna + aviso + distancia | Medio | Centrado explícito y consistente; cierra BUG-1 |
 | **MP-9** | "Cerca de ti" por niveles (comuna→región→nacional→resto) + selector de comuna, en el catálogo | Medio | Modelo RN-10/RN-11; `/mapa` se mantiene destacado; cruce con Negocios y envíos |
 | **MP-10** | Coordenadas en JSON-LD `LocalBusiness` | Bajo | Se implementa en el módulo SEO (cruce) |
+| **MP-11** | Política de tiles OSM: atribución + evaluar caché/proveedor de tiles para prod | Bajo-Medio | Riesgo gemelo de Nominatim (RN-15) |
+| **MP-12** | Asegurar que la lista de comunas (`meta`) resuelva a región | Bajo | Habilita el nivel "tu región" (RN-14; cruce módulo meta) |
