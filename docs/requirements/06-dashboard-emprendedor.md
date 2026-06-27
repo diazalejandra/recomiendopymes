@@ -101,3 +101,9 @@ visibilidad (activar/desactivar). También debería gestionar su cuenta.
 
 - **R-1 — Insights reales**: visitas semana vs. anterior, términos de búsqueda que llevaron al perfil, fuentes de tráfico (más allá del contador crudo).
 - **R-2 — Upsell contextual** (destacar/plan) en el dashboard (cruce monetización Fase 2).
+
+## Notas abiertas
+
+- **Propiedad de `/mi-cuenta`:** la gestión de cuenta es un concern de **Auth** (B-1) que se **superficie** en el dashboard; el comportamiento (cambio password/email con re-verificación) lo define el spec de Auth, la UI vive aquí.
+- **Onboarding/primer uso:** el estado vacío (0 negocios) hoy es solo un link; hay espacio para un onboarding guiado de activación (a definir).
+- **Editar en `pending`:** definir si el dueño puede editar y qué ve mientras el negocio espera aprobación (hoy hay botón "Previsualizar").
