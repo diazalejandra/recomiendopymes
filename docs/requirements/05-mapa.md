@@ -1,6 +1,6 @@
 # Spec — Mapa y Geolocalización
 
-> Estado del spec: **borrador para revisión** · Anclado al código a 2026-06-20 (rama `main`)
+> Estado del spec: **revisado y reconciliado** (decisiones D-1..D-4) · Anclado al código a 2026-06-20 (rama `main`)
 > Frontend: `features/catalog/MapView.jsx`, `HomePage.jsx` (pestaña mapa), `features/business/AddressAutocomplete.jsx`, `CityMapPicker.jsx`
 
 ## Propósito
@@ -63,12 +63,20 @@ Usa Leaflet + OpenStreetMap (sin API key) y Nominatim para geocodificar.
 | RN-6 Íconos desde categorías | ❌ | `CAT_ICONS` hardcodeado y duplicado, con nombres viejos (M-4). |
 | RN-7 Recursos locales | ❌ | Íconos de marcador desde `unpkg.com` en runtime (M-1). |
 
-## Hallazgos / decisiones pendientes
+## Decisiones tomadas (2026-06-20)
 
-- **M-1 (robustez, fix)** — Los íconos de marcador de Leaflet se cargan de `unpkg.com`. Empaquetarlos localmente. *(fix)*
-- **M-2 (decisión)** — Nominatim se llama directo desde el navegador, sin caché. ¿Pasamos a **proxy backend + caché** (cumple política, evita bloqueo) o lo dejamos directo por ahora? *(decisión)*
-- **M-3 (gap)** — El mapa no filtra por `business_type` (depende de que los online no tengan coords). Hacer explícita la regla RN-1. *(fix)*
-- **M-4 (limpieza/cruce)** — `CAT_ICONS` hardcodeado y duplicado (MapView + HomePage) con nombres viejos. Mover el ícono a la colección de categorías (cruce con C-1/C-3). *(fix)*
-- **M-5 (verificar)** — Confirmar que `is_exact` se setea correctamente (true al ubicar pin, false al usar centroide).
-- **M-6 (decisión)** — Hay **dos implementaciones de mapa** (pestaña en HomePage + `MapView`). ¿Las unificamos en un componente compartido? *(decisión)*
-- **M-7 (escala)** — Carga hasta 500 negocios al cliente y filtra en el browser (= N-7); sin clustering. A roadmap (R-1/R-2).
+- **D-1** — Geocodificación pasa a **proxy backend + caché** (cumple política de Nominatim, evita bloqueos). → RN-4, MP-2.
+- **D-2** — Se **unifican** las dos implementaciones de mapa en un componente compartido. → MP-6.
+- **D-3** — Fixes confirmados: íconos locales (MP-1), filtrar por `business_type` (MP-3), íconos de categoría desde la colección (MP-4), verificar `is_exact` (MP-5).
+- **D-4** — Clustering y carga por viewport quedan en roadmap (R-1/R-2).
+
+## Backlog derivado (decidido, pendiente de implementar)
+
+| ID | Item | Esfuerzo | Notas |
+|---|---|---|---|
+| **MP-1** | Empaquetar íconos de marcador localmente | Bajo | Quitar dependencia de `unpkg.com` en runtime (M-1) |
+| **MP-2** | Geocodificación vía proxy backend + caché (ciudad/dirección) | Medio | Cumple política Nominatim; reduce riesgo de bloqueo (M-2) |
+| **MP-3** | Filtrar el mapa por `business_type` physical/both | Bajo | Hacer explícita RN-1, no depender de ausencia de coords (M-3) |
+| **MP-4** | Íconos de categoría desde la colección de categorías | Bajo | Elimina `CAT_ICONS` hardcodeado/duplicado (cruce C-1/C-3) (M-4) |
+| **MP-5** | Verificar/asegurar `is_exact` (pin vs centroide) | Bajo | Confirmar en `CityMapPicker`/autocomplete (M-5) |
+| **MP-6** | Unificar el mapa en un componente reutilizable | Medio | HomePage + MapView comparten icons/popups/lógica (M-6) |
