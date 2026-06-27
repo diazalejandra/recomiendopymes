@@ -24,6 +24,8 @@ visibilidad (activar/desactivar). También debería gestionar su cuenta.
 - **US-5** — Como dueño, quiero ver y responder las reseñas de mi negocio.
 - **US-6** — Como dueño, quiero **desactivar** mi negocio o **solicitar su reactivación**.
 - **US-7** — Como dueño, quiero gestionar mi **cuenta** (nombre, email, contraseña).
+- **US-8** — Como dueño, quiero **difundir mi vitrina** (link directo, código QR, compartir a Instagram/WhatsApp) para traer mi audiencia social al catálogo _(ver DE-9)_.
+- **US-9** — Como dueño, quiero **enterarme** (notificación in-app/email) de nuevas reseñas y de la aprobación/rechazo de mi negocio _(ver DE-11)_.
 
 ## Reglas de negocio
 
@@ -34,6 +36,8 @@ visibilidad (activar/desactivar). También debería gestionar su cuenta.
 - **RN-5** — Transiciones del dueño: `active→inactive` (desactivar) e `inactive→pending` (solicitar reactivación).
 - **RN-6** — Responder reseña requiere **email verificado** (= RV-2); una respuesta por reseña, editable.
 - **RN-7** — Si el dueño cambia `business_type` a `online`, la ubicación se **degrada a comuna** (sin pin exacto) — privacidad (cruce MP-7).
+- **RN-8** — El kit de difusión está disponible para negocios `active` (un negocio no publicado no debería compartirse como vitrina pública).
+- **RN-9** — El dashboard prioriza **próximas acciones** (reseñas sin responder, perfil incompleto, compartir) por sobre datos pasivos, y está **optimizado para móvil**.
 
 ## Criterios de aceptación (= casos de QA)
 
@@ -70,6 +74,10 @@ visibilidad (activar/desactivar). También debería gestionar su cuenta.
 - **D-4** — Construir página **`/mi-cuenta`** (nombre/email/contraseña), que habilita Auth B-1. → DE-6.
 - **D-5** — Agregar **badge de reseñas sin responder** (DE-4) y **marcar "Visitas" como aproximada** mientras `view_count` no sea confiable (DE-8).
 - **D-6** — Al cambiar `business_type` a `online`, **degradar la ubicación a comuna** (cruce MP-7). → DE-7.
+- **D-7** — Agregar **kit de difusión** (link + QR + compartir) y un **dashboard accionable** (próximas acciones). → DE-9/DE-10.
+- **D-8** — Agregar **notificaciones** (in-app + email): nueva reseña y aprobación/rechazo del negocio (transversal; diseño 7b). → DE-11.
+- **D-9** — **Mobile-first**: optimizar dashboard y **partir el formulario de edición** en pasos/secciones. → DE-12.
+- **D-10** — **Simplificar o quitar "Oferta Destacada"** (`active_offer`) hasta validar demanda (menos complejidad en el MVP). → DE-13.
 
 ## Backlog derivado (decidido, pendiente de implementar)
 
@@ -83,3 +91,13 @@ visibilidad (activar/desactivar). También debería gestionar su cuenta.
 | **DE-6** | Página `/mi-cuenta` (nombre/email/contraseña) | Medio | Habilita Auth B-1 (email con re-verificación, password con la actual) |
 | **DE-7** | Degradar ubicación a comuna al pasar a `online` | Bajo | Privacidad; cruce MP-7 |
 | **DE-8** | Marcar "Visitas" como aproximada (o atenuar) | Bajo | Hasta resolver `view_count` (cruce Negocios) |
+| **DE-9** | Kit de difusión: link directo + código QR + compartir a redes/WhatsApp | Medio | Solo negocios `active` (RN-8); puente social→catálogo |
+| **DE-10** | Dashboard accionable: próximas acciones sugeridas | Medio | Reseñas sin responder, perfil incompleto, compartir |
+| **DE-11** | Notificaciones (in-app + email): nueva reseña, aprobación/rechazo | Alto | Transversal (cruce review/admin); diseño 7b |
+| **DE-12** | Mobile-first: dashboard + edición por pasos/secciones | Medio | Audiencia mayoritariamente móvil; el form es muy largo |
+| **DE-13** | Simplificar o quitar "Oferta Destacada" (`active_offer`) | Bajo-Medio | Cruce modelo Negocios + EditBusiness + catálogo; validar demanda primero |
+
+## Roadmap (futuro / Fase 2)
+
+- **R-1 — Insights reales**: visitas semana vs. anterior, términos de búsqueda que llevaron al perfil, fuentes de tráfico (más allá del contador crudo).
+- **R-2 — Upsell contextual** (destacar/plan) en el dashboard (cruce monetización Fase 2).
