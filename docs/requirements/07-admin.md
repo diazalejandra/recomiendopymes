@@ -26,6 +26,9 @@ gobernanza y confianza del sitio.
 - **US-6** — Como admin, quiero editar las **páginas legales** (T&C, privacidad).
 - **US-7** — Como admin, quiero **configurar parámetros** (umbral/ventana antispam, días de boost de nuevos…).
 - **US-8** — Como admin, quiero gestionar **categorías** (CRUD).
+- **US-9** — Como **fundadora**, quiero un panel con **salud del producto** (activación, retención, categorías/ciudades, conversión), no solo conteos.
+- **US-10** — Como admin, quiero responder una inscripción con **"necesita cambios"** y una nota al dueño, además de aprobar/rechazar.
+- **US-11** — Como fundadora, quiero **delegar moderación** con un rol acotado (**moderador**) sin ceder control total.
 
 ## Reglas de negocio
 
@@ -37,6 +40,12 @@ gobernanza y confianza del sitio.
 - **RN-6** — Toda acción de moderación/gestión queda en un **log de auditoría** (quién, qué, cuándo).
 - **RN-7** — `config` y `legal` solo admin; `config` se valida contra **claves conocidas** (no aceptar cualquier clave).
 - **RN-8** — Las reseñas **reportadas/sospechosas** se destacan en una cola para revisión.
+- **RN-9** — Los pendientes muestran su **antigüedad**; los de **bajo riesgo** (email verificado + perfil completo + sin flags) pueden **auto-aprobarse** con post-moderación.
+- **RN-10** — El panel permite ver inscripciones/reseñas **agrupadas por dueño** y su **velocidad** de creación (anti-spam, R7 del diseño).
+- **RN-11** — Existe el estado **"necesita cambios"**: el negocio vuelve al dueño con una **nota** del admin (no es rechazo).
+- **RN-12** — Rol **moderador**: modera negocios/reseñas pero **no** gestiona admins, config ni legales.
+- **RN-13** — Las cuentas con rol admin/moderador pueden requerir **2FA**.
+- **RN-14** — La configuración se expone como **controles específicos** (umbral/ventana antispam, días de boost…), no como editor genérico clave/valor.
 
 ## Criterios de aceptación (= casos de QA)
 
@@ -73,6 +82,10 @@ gobernanza y confianza del sitio.
 - **D-4** — **Completar métricas** del dashboard (reseñas del mes, nuevos usuarios, top categorías). → AD-5.
 - **D-5** — Admin **edita cualquier negocio** (= decisión de Negocios N-2). → US-3.
 - **D-6** — Robustez confirmada: `reject` valida existencia (AD-6) y `config` con **whitelist** de claves (AD-7).
+- **D-7** — **Cockpit de fundadora**: dashboard estratégico (activación, retención, heatmap categoría/ciudad, conversión). → AD-9.
+- **D-8** — **Escalar moderación**: auto-aprobación de bajo riesgo + post-moderación + antigüedad/SLA de pendientes (AD-10); **visibilidad anti-spam** por dueño/velocidad (AD-11).
+- **D-9** — **Moderación humana**: estado "necesita cambios" + mensajes admin→usuario (AD-12, cruce lifecycle + Notificaciones).
+- **D-10** — **Gobernanza**: rol **moderador** (AD-13, cruce Auth roles), **2FA** admin (AD-14, cruce Auth), **simplificar config** (AD-15) y **repensar editor legal** (AD-16).
 
 ## Backlog derivado (decidido, pendiente de implementar)
 
@@ -86,3 +99,17 @@ gobernanza y confianza del sitio.
 | **AD-6** | `reject_business` valida existencia (404) | Bajo | Clase N-11 |
 | **AD-7** | Whitelist de claves válidas en `config` PUT | Bajo | Evita config arbitraria |
 | **AD-8** | Edición admin de cualquier negocio | Bajo | = N-2 (permiso del `PUT`) |
+| **AD-9** | Cockpit de fundadora: activación, retención, heatmap categoría/ciudad, conversión | Alto | Dashboard estratégico; varias métricas/agregaciones |
+| **AD-10** | Auto-aprobación de bajo riesgo + post-moderación + antigüedad/SLA de pendientes | Medio-Alto | Ataca R4 (cuello de botella); define criterios de "bajo riesgo" |
+| **AD-11** | Vista anti-spam: inscripciones/reseñas por dueño + velocidad | Medio | Implementa R7 (patrón evidente) |
+| **AD-12** | Estado "necesita cambios" + mensaje admin→usuario | Medio | Cruce ciclo de vida Negocios + Notificaciones (NT) |
+| **AD-13** | Rol "moderador" (permisos acotados) | Medio | Rompe regla de 2 roles (cruce Auth RN-1) |
+| **AD-14** | 2FA para cuentas admin/moderador | Medio | Cruce Auth (hoy 2FA estaba fuera de alcance) |
+| **AD-15** | Simplificar config a controles específicos (quitar editor genérico) | Bajo | Menos footgun para fundadora no técnica |
+| **AD-16** | Repensar editor legal (más amable o fuera del panel) | Bajo | El texto legal cambia rara vez |
+
+## Priorización sugerida
+
+- **MVP / pronto:** AD-1 (rejected+motivo), AD-2 (seguridad admin), AD-6, AD-7, AD-8, AD-15.
+- **Medio plazo:** AD-3 (auditoría), AD-4 (cola reportadas), AD-5 (métricas), AD-10/AD-11 (escalar/anti-spam), AD-12 ("necesita cambios").
+- **Fase 2 / mayor:** AD-9 (cockpit completo), AD-13 (rol moderador), AD-14 (2FA admin), AD-16.
