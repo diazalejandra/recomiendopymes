@@ -23,6 +23,7 @@ reconcilia con las decisiones de producto.
 | 09 | SEO (transversal) | `09-seo.md` | ⏳ Pendiente |
 | 10 | Legales y Privacidad | [10-legales.md](./10-legales.md) | 🟡 Borradores + Ley 21.719 |
 | 11 | Imágenes / Media (transversal) | `11-media.md` | ⏳ Pendiente |
+| 12 | Notificaciones (transversal) | [12-notificaciones.md](./12-notificaciones.md) | ✅ Reconciliado |
 | — | Monetización | (roadmap Fase 2) | 🔭 Futuro |
 
 Orden de trabajo por dependencias: auth → negocios → categorías → reseñas → mapa →

@@ -75,9 +75,9 @@ visibilidad (activar/desactivar). También debería gestionar su cuenta.
 - **D-5** — Agregar **badge de reseñas sin responder** (DE-4) y **marcar "Visitas" como aproximada** mientras `view_count` no sea confiable (DE-8).
 - **D-6** — Al cambiar `business_type` a `online`, **degradar la ubicación a comuna** (cruce MP-7). → DE-7.
 - **D-7** — Agregar **kit de difusión** (link + QR + compartir) y un **dashboard accionable** (próximas acciones). → DE-9/DE-10.
-- **D-8** — Agregar **notificaciones** (in-app + email): nueva reseña y aprobación/rechazo del negocio (transversal; diseño 7b). → DE-11.
+- **D-8** — **Notificaciones** se promueven a un **spec transversal propio** (`12-notificaciones.md`), no una línea del dashboard. → DE-11 / NT-*.
 - **D-9** — **Mobile-first**: optimizar dashboard y **partir el formulario de edición** en pasos/secciones. → DE-12.
-- **D-10** — **Simplificar o quitar "Oferta Destacada"** (`active_offer`) hasta validar demanda (menos complejidad en el MVP). → DE-13.
+- **D-10** — **Quitar "Oferta Destacada"** (`active_offer`) del MVP hasta validar demanda (modelo + edición + catálogo). → DE-13 (cruce Negocios).
 
 ## Backlog derivado (decidido, pendiente de implementar)
 
@@ -93,9 +93,9 @@ visibilidad (activar/desactivar). También debería gestionar su cuenta.
 | **DE-8** | Marcar "Visitas" como aproximada (o atenuar) | Bajo | Hasta resolver `view_count` (cruce Negocios) |
 | **DE-9** | Kit de difusión: link directo + código QR + compartir a redes/WhatsApp | Medio | Solo negocios `active` (RN-8); puente social→catálogo |
 | **DE-10** | Dashboard accionable: próximas acciones sugeridas | Medio | Reseñas sin responder, perfil incompleto, compartir |
-| **DE-11** | Notificaciones (in-app + email): nueva reseña, aprobación/rechazo | Alto | Transversal (cruce review/admin); diseño 7b |
+| **DE-11** | Notificaciones | — | **Promovido a spec propio** `12-notificaciones.md` (NT-1..NT-6) |
 | **DE-12** | Mobile-first: dashboard + edición por pasos/secciones | Medio | Audiencia mayoritariamente móvil; el form es muy largo |
-| **DE-13** | Simplificar o quitar "Oferta Destacada" (`active_offer`) | Bajo-Medio | Cruce modelo Negocios + EditBusiness + catálogo; validar demanda primero |
+| **DE-13** | **Quitar "Oferta Destacada"** (`active_offer`) del MVP | Bajo-Medio | Remover de modelo Negocios + EditBusiness + catálogo; reintroducir si se valida demanda (cruce N-13) |
 
 ## Roadmap (futuro / Fase 2)
 

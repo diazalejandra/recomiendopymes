@@ -123,6 +123,7 @@ Es el núcleo de valor del producto.
 | **N-10** | Reintentar slug ante `DuplicateKeyError` (P-5) | Bajo | El índice único protege la BD; hoy da 500 en carrera |
 | **N-11** | ID inválido → 404 en `update`/`status`/`delete` (P-6) | Bajo | Hoy `ObjectId(id)` mal formado da 500 |
 | **N-12** | Validar rango de `coordinates` y exigir coords en physical/both (P-7) | Bajo | Un físico sin coords no aparece en el mapa |
+| **N-13** | **Quitar `active_offer`** ("Oferta Destacada") del MVP | Bajo-Medio | Decisión del Dashboard (DE-13); remover de modelo + edición + catálogo hasta validar demanda |
 
 ## Notas abiertas
 
