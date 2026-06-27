@@ -130,4 +130,4 @@ Usa Leaflet + OpenStreetMap (sin API key) y Nominatim para geocodificar.
 | **MP-9** | "Cerca de ti" por niveles (comuna→región→nacional→resto) + selector de comuna, en el catálogo | Medio | Modelo RN-10/RN-11; `/mapa` se mantiene destacado; cruce con Negocios y envíos |
 | **MP-10** | Coordenadas en JSON-LD `LocalBusiness` | Bajo | Se implementa en el módulo SEO (cruce) |
 | **MP-11** | Política de tiles OSM: atribución + evaluar caché/proveedor de tiles para prod | Bajo-Medio | Riesgo gemelo de Nominatim (RN-15) |
-| **MP-12** | Asegurar que la lista de comunas (`meta`) resuelva a región | Bajo | Habilita el nivel "tu región" (RN-14; cruce módulo meta) |
+| **MP-12** | Exponer/usar el mapeo **comuna→región** para el nivel "tu región" | Bajo | **Reconciliación C5:** `REGIONS_DATA` (región→comunas) **ya existe** en `meta/router.py`; solo falta el inverso (RN-14) |

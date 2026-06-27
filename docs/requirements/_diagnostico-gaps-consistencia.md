@@ -35,6 +35,8 @@
 
 ## Parte 2 — Inconsistencias entre specs
 
+> **Estado: C1–C7 reconciliadas el 2026-06-20** (ediciones aplicadas en los specs respectivos).
+
 | ID | Inconsistencia | Specs en conflicto | Reconciliación propuesta |
 |---|---|---|---|
 | **C1** | **Orden del catálogo definido en 3 lugares.** Negocios RN-10 describe `featured→nuevos→rating→antigüedad`, pero no absorbe la **cercanía** (Mapa RN-12) ni el **rating ponderado** (Reseñas RV-10). | 02 (RN-10), 05 (RN-12), 04 (RV-10) | **Negocios es el dueño del orden**: actualizar RN-10 para que integre cercanía (niveles) + rating ponderado + tiebreaker `_id` (N-6) en **una** definición. |
