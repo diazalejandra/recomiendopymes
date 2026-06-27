@@ -1,6 +1,6 @@
 # Spec — Panel de Administración
 
-> Estado del spec: **borrador para revisión** · Anclado al código a 2026-06-20 (rama `main`)
+> Estado del spec: **revisado y reconciliado** (decisiones D-1..D-6) · Anclado al código a 2026-06-20 (rama `main`)
 > Backend: `modules/admin/` (+ moderación de reseñas en `review`, CRUD categorías en `meta`)
 > Frontend: `features/admin/` (AdminLayout, DashboardPage, BusinessesTable, ReviewsTable, UsersTable, CategoriesManager, ConfigPanel, LegalEditor, NewsPage)
 
@@ -65,12 +65,24 @@ gobernanza y confianza del sitio.
 | US-8 Categorías | 🟡 | CRUD vive en `meta` (cruce C); proteger borrado en uso (C-4). |
 | RN-6 Auditoría | ❌ | No hay log de acciones de admin (AD-3). |
 
-## Hallazgos / decisiones pendientes
+## Decisiones tomadas (2026-06-20)
 
-- **AD-1 (decisión)** — Rechazar no guarda **motivo** y reutiliza `inactive`. ¿Agregamos estado **`rejected`** + motivo (y notificación)? *(decisión; toca el ciclo de vida de Negocios)*
-- **AD-2 (seguridad, must-fix)** — Sin guarda contra **lockout de admin** (desactivar/auto-desactivar al último admin) y sin **degradar** admin. *(decisión + fix)*
-- **AD-3 (gap)** — Sin **log de auditoría** de acciones de admin. ¿Lo agregamos? *(decisión)*
-- **AD-4 (cruce)** — Sin cola de reseñas **reportadas/sospechosas** (depende de RV-8). 
-- **AD-5 (mejora)** — Métricas del dashboard incompletas vs diseño (reseñas del mes, nuevos usuarios, top categorías).
-- **AD-6 (robustez)** — `reject_business` no valida existencia (404→500; clase N-11).
-- **AD-7 (robustez)** — `config` PUT acepta cualquier clave; conviene **whitelist** de parámetros válidos.
+- **D-1** — Rechazar usa estado dedicado **`rejected`** + **motivo**, y notifica al dueño (NT-2). Toca el ciclo de vida de Negocios (cruce N-14). → AD-1.
+- **D-2** — **Seguridad de admin**: guarda contra lockout (no desactivar/auto-desactivar/degradar al último admin) + agregar **degradar** admin→user. → AD-2.
+- **D-3** — Agregar **log de auditoría** de acciones de admin. → AD-3.
+- **D-4** — **Completar métricas** del dashboard (reseñas del mes, nuevos usuarios, top categorías). → AD-5.
+- **D-5** — Admin **edita cualquier negocio** (= decisión de Negocios N-2). → US-3.
+- **D-6** — Robustez confirmada: `reject` valida existencia (AD-6) y `config` con **whitelist** de claves (AD-7).
+
+## Backlog derivado (decidido, pendiente de implementar)
+
+| ID | Item | Esfuerzo | Notas |
+|---|---|---|---|
+| **AD-1** | Estado `rejected` + motivo en rechazo (+ notificación) | Medio | Cruce ciclo de vida Negocios (N-14) y Notificaciones (NT-2) |
+| **AD-2** | Guarda de último admin (no lockout/auto-desactivación) + degradar admin→user | Bajo-Medio | Seguridad; contar admins activos antes de desactivar/degradar |
+| **AD-3** | Log de auditoría de acciones de admin (quién/qué/cuándo) | Medio | Colección `audit_log`; rendición de cuentas |
+| **AD-4** | Cola de reseñas reportadas/sospechosas en el panel | Medio | Cruce RV-8 (reporte de reseñas) |
+| **AD-5** | Completar métricas (reseñas del mes, nuevos usuarios, top categorías) | Bajo-Medio | Ampliar `get_dashboard` |
+| **AD-6** | `reject_business` valida existencia (404) | Bajo | Clase N-11 |
+| **AD-7** | Whitelist de claves válidas en `config` PUT | Bajo | Evita config arbitraria |
+| **AD-8** | Edición admin de cualquier negocio | Bajo | = N-2 (permiso del `PUT`) |

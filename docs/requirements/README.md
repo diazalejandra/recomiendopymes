@@ -18,7 +18,7 @@ reconcilia con las decisiones de producto.
 | 04 | Reseñas | [04-resenas.md](./04-resenas.md) | ✅ Reconciliado |
 | 05 | Mapa | [05-mapa.md](./05-mapa.md) | ✅ Reconciliado |
 | 06 | Dashboard del emprendedor | [06-dashboard-emprendedor.md](./06-dashboard-emprendedor.md) | ✅ Reconciliado |
-| 07 | Panel de administración | `07-admin.md` | ⏳ Pendiente |
+| 07 | Panel de administración | [07-admin.md](./07-admin.md) | ✅ Reconciliado |
 | 08 | Noticias | `08-noticias.md` | ⏳ Pendiente |
 | 09 | SEO (transversal) | `09-seo.md` | ⏳ Pendiente |
 | 10 | Legales y Privacidad | [10-legales.md](./10-legales.md) | 🟡 Borradores + Ley 21.719 |

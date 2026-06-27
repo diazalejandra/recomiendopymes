@@ -124,6 +124,7 @@ Es el núcleo de valor del producto.
 | **N-11** | ID inválido → 404 en `update`/`status`/`delete` (P-6) | Bajo | Hoy `ObjectId(id)` mal formado da 500 |
 | **N-12** | Validar rango de `coordinates` y exigir coords en physical/both (P-7) | Bajo | Un físico sin coords no aparece en el mapa |
 | **N-13** | **Quitar `active_offer`** ("Oferta Destacada") del MVP | Bajo-Medio | Decisión del Dashboard (DE-13); remover de modelo + edición + catálogo hasta validar demanda |
+| **N-14** | Agregar estado `rejected` al ciclo de vida (distinto de `inactive`) | Bajo | Decisión del Admin (AD-1); excluir `rejected` del catálogo como ya se excluye no-active |
 
 ## Notas abiertas
 
