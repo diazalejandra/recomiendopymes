@@ -1,6 +1,6 @@
 # Spec — SEO (transversal)
 
-> Estado del spec: **borrador para revisión** · Anclado al código a 2026-06-20 (rama `main`)
+> Estado del spec: **revisado y reconciliado** (decisión central: migrar a Next.js) · Anclado al código a 2026-06-20 (rama `main`)
 > Transversal: toca catálogo/negocios, noticias, meta y el shell del frontend.
 
 ## Propósito
@@ -74,12 +74,29 @@ y la **decisión central** de este módulo.
 | Páginas categoría/ciudad | ❌ | Catálogo filtra por `?category=`, sin URL propia indexable (SE-6). |
 | Renderizado para crawlers | ❌ | SPA client-side; scrapers sociales no ven meta (SE-1). |
 
-## Hallazgos / decisiones pendientes
+## Decisión central (2026-06-20)
 
-- **SE-1 (decisión central)** — Renderizado para crawlers: el SPA sirve meta por JS. ¿Estrategia? *(decisión: SSR/Next, prerender, dynamic rendering, o status quo)*
-- **SE-2 (fix)** — Implementar `sitemap.xml` dinámico + `robots.txt`.
-- **SE-3 (cruce)** — Categorías servidas **hardcodeadas** en `meta/router.py` (aún con "Clothing y Moda"), no desde DB; afecta páginas de categoría y contradice módulo 3 (C-1/C-3). *(reconciliar)*
-- **SE-4 (cruce)** — Agregar **geo coordinates** al JSON-LD `LocalBusiness` (MP-10).
-- **SE-5 (fix)** — Canonical por página + canonicalización de query params.
-- **SE-6 (decisión)** — Crear **páginas de categoría/ciudad** indexables (alto valor SEO local). *(decisión)*
-- **SE-7 (menor)** — `lang=es`, Core Web Vitals, unificar el approach de meta (Helmet en todo, no JS crudo en noticias).
+- **D-1 — Migrar el frontend a Next.js (SSR/SSG/ISR).** Es la base correcta para un producto
+  SEO-first; el backend **FastAPI se mantiene** como API. Decisión de fundaciones tomada
+  pre-lanzamiento (datos dummy, specs como red de seguridad). **Amerita un ADR.** → SE-1.
+  - **Absorbe nativo:** preview social/meta server-side (NW-18), `canonical` (SE-5), JSON-LD
+    server-side (SE-4, Article NW-5), `sitemap` (SE-2), páginas categoría/ciudad (SE-6), CWV.
+  - **Implica:** rework de auth para SSR (cookies `httpOnly`, no `localStorage`), `dynamic(ssr:false)`
+    para Leaflet, migración de routing y data-fetching. No toca modelo de datos ni backend.
+- **D-2 — Páginas de categoría y categoría+ciudad** indexables con URL propia (rutas dinámicas en Next). → SE-6.
+- **D-3 — Reconciliar categorías**: hoy `/api/categories` es hardcodeado (con "Clothing y Moda"); alinear con la lista curada del módulo 3 (C-1/C-3). → SE-3.
+
+## Backlog derivado
+
+| ID | Item | Esfuerzo | Notas |
+|---|---|---|---|
+| **SE-1** | Migración del frontend a **Next.js** (SSR/SSG/ISR) | **Alto** | Reescritura del frontend; ADR; rework de auth para SSR; absorbe SE-2/SE-4/SE-5/NW-18 |
+| **SE-2** | `sitemap.xml` dinámico + `robots.txt` | Bajo | Negocios active + noticias published + páginas categoría; bloquear /admin,/mi-negocio,/api |
+| **SE-3** | Categorías desde fuente única (no hardcode) + corregir "Clothing y Moda" | Bajo | Cruce módulo 3 (C-1/C-3) |
+| **SE-4** | `geo` coordinates en JSON-LD `LocalBusiness` + JSON-LD `Article` en noticias | Bajo | Cruce MP-10 / NW-5 |
+| **SE-5** | Canonical por página + canonicalización de query params | Bajo | Nativo en Next |
+| **SE-6** | Páginas de categoría + categoría/ciudad indexables | Medio | Rutas dinámicas; alto valor SEO local |
+| **SE-7** | `lang=es`, Core Web Vitals, unificar approach de meta | Bajo | Helmet/metadata en todo, no JS crudo |
+
+> Muchos SE-* se vuelven triviales o nativos una vez hecha la migración (SE-1); por eso SE-1
+> es el habilitador y debería ir primero o junto con el resto.

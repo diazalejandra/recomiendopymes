@@ -20,7 +20,7 @@ reconcilia con las decisiones de producto.
 | 06 | Dashboard del emprendedor | [06-dashboard-emprendedor.md](./06-dashboard-emprendedor.md) | ✅ Reconciliado |
 | 07 | Panel de administración | [07-admin.md](./07-admin.md) | ✅ Reconciliado |
 | 08 | Noticias / Blog | [08-noticias.md](./08-noticias.md) | ✅ Reconciliado |
-| 09 | SEO (transversal) | `09-seo.md` | ⏳ Pendiente |
+| 09 | SEO (transversal) | [09-seo.md](./09-seo.md) | ✅ Reconciliado (→ Next.js, ADR) |
 | 10 | Legales y Privacidad | [10-legales.md](./10-legales.md) | 🟡 Borradores + Ley 21.719 |
 | 11 | Imágenes / Media (transversal) | `11-media.md` | ⏳ Pendiente |
 | 12 | Notificaciones (transversal) | [12-notificaciones.md](./12-notificaciones.md) | ✅ Reconciliado |
