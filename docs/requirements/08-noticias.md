@@ -1,6 +1,6 @@
 # Spec — Noticias / Blog / Recursos
 
-> Estado del spec: **borrador para revisión** · Anclado al código a 2026-06-20 (rama `main`)
+> Estado del spec: **revisado y reconciliado** (decisiones D-1..D-4) · Anclado al código a 2026-06-20 (rama `main`)
 > Backend: `modules/news/` · Frontend: `features/news/` (NewsGrid, NewsDetail), `features/admin/NewsPage`
 
 ## Propósito
@@ -69,13 +69,25 @@ descubre el catálogo.
 | RN-8 Fecha consistente | 🟡 | Grid usa `created_at`, detalle `published_at` (NW-7). |
 | Publicación programada | ❌ | `published_at` existe pero no se usa para programar (NW-4). |
 
-## Hallazgos / decisiones pendientes
+## Decisiones tomadas (2026-06-20)
 
-- **NW-1 (seguridad, must-fix)** — Webhook con secreto por defecto. Falla cerrado, sin default. *(fix)*
-- **NW-2 (gap)** — Slug único + dedupe en backend. *(fix)*
-- **NW-3 (gap)** — Paginación del listado público. *(fix)*
-- **NW-4 (decisión)** — `published_at`: ¿implementar **publicación programada** o quitar el campo? *(decisión)*
-- **NW-5 (cruce)** — JSON-LD `Article` + sitemap de noticias (módulo SEO).
-- **NW-6 (decisión)** — `tag` a **lista controlada** de secciones. *(decisión)*
-- **NW-7 (menor)** — Unificar la fecha mostrada (`published_at` con fallback).
-- **NW-8 (estratégico)** — Ver Visión estratégica (E-1..E-5): historias de emprendedores, evergreen, difusión, guardrail IA.
+- **D-1** — Implementar **publicación programada** (`published_at` futuro se publica solo al llegar la fecha). → NW-4.
+- **D-2** — `tag`/sección a **lista controlada** (Noticia, Fondos, Recursos, Historia…). → NW-6.
+- **D-3** — Adoptar la visión estratégica: **historias de emprendedores** con enlace a la ficha (NW-8), **recursos evergreen** (NW-9), **difusión por artículo** (NW-10) y **guardrail de contenido IA** (NW-11).
+- **D-4** — Fixes confirmados: webhook fail-closed (NW-1), slug único (NW-2), paginación (NW-3), fecha consistente (NW-7), SEO de artículo (NW-5, en módulo SEO).
+
+## Backlog derivado (decidido, pendiente de implementar)
+
+| ID | Item | Esfuerzo | Notas |
+|---|---|---|---|
+| **NW-1** | Webhook fail-closed (sin secreto default) | Bajo | Rechazar si `N8N_WEBHOOK_SECRET` no está configurado |
+| **NW-2** | Slug único + dedupe en backend | Bajo | Índice único + sufijo (como negocios) |
+| **NW-3** | Paginación del listado público | Bajo | `page`/`limit` + total |
+| **NW-4** | Publicación programada (`published_at <= now`) | Medio | Filtrar por fecha; setear al programar |
+| **NW-5** | JSON-LD `Article` + noticias en el sitemap | Bajo | Se implementa en el módulo SEO |
+| **NW-6** | `tag`/sección como lista controlada | Bajo | Secciones fijas; filtrable |
+| **NW-7** | Fecha mostrada consistente (`published_at` con fallback) | Bajo | Grid y detalle iguales |
+| **NW-8** | Historias de emprendedores con enlace a la ficha | Medio | Comunidad + enlace interno SEO catálogo↔blog |
+| **NW-9** | Estructurar "Recursos" evergreen vs noticias puntuales | Bajo-Medio | Mejor SEO a largo plazo |
+| **NW-10** | Difusión por artículo (notificación/anuncio + compartir) | Bajo | Cruce AD-21 / NT-7 |
+| **NW-11** | Guardrail de contenido IA (solo borradores + edición + foco útil) | Bajo | Proceso + nota; evita penalización SEO |
