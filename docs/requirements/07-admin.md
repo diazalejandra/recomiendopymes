@@ -29,6 +29,9 @@ gobernanza y confianza del sitio.
 - **US-9** — Como **fundadora**, quiero un panel con **salud del producto** (activación, retención, categorías/ciudades, conversión), no solo conteos.
 - **US-10** — Como admin, quiero responder una inscripción con **"necesita cambios"** y una nota al dueño, además de aprobar/rechazar.
 - **US-11** — Como fundadora, quiero **delegar moderación** con un rol acotado (**moderador**) sin ceder control total.
+- **US-12** — Como admin, quiero recibir y gestionar los **mensajes de contacto** del sitio.
+- **US-13** — Como fundadora, quiero **difundir anuncios** a emprendedores/usuarios.
+- **US-14** — Como fundadora, quiero ver el **uso vs. límites** de mi infraestructura free-tier.
 
 ## Reglas de negocio
 
@@ -46,6 +49,9 @@ gobernanza y confianza del sitio.
 - **RN-12** — Rol **moderador**: modera negocios/reseñas pero **no** gestiona admins, config ni legales.
 - **RN-13** — Las cuentas con rol admin/moderador pueden requerir **2FA**.
 - **RN-14** — La configuración se expone como **controles específicos** (umbral/ventana antispam, días de boost…), no como editor genérico clave/valor.
+- **RN-15** — El **contacto** se envía desde un formulario **público** (footer) y los mensajes llegan al **panel admin** (bandeja); no vive en el panel del emprendedor.
+- **RN-16** — La **difusión** del admin llega al **centro de notificaciones in-app**; el email se usa solo para anuncios importantes (cruce Notificaciones).
+- **RN-17** — El **monitor de cupos** muestra el uso de Mongo (cálculo barato vía `db.stats()`) + una **tarjeta de límites** con enlaces a cada proveedor; **sin integraciones pesadas** a sus APIs.
 
 ## Criterios de aceptación (= casos de QA)
 
@@ -86,7 +92,9 @@ gobernanza y confianza del sitio.
 - **D-8** — **Escalar moderación**: auto-aprobación de bajo riesgo + post-moderación + antigüedad/SLA de pendientes (AD-10); **visibilidad anti-spam** por dueño/velocidad (AD-11).
 - **D-9** — **Moderación humana**: estado "necesita cambios" + mensajes admin→usuario (AD-12, cruce lifecycle + Notificaciones).
 - **D-10** — **Gobernanza**: rol **moderador** (AD-13, cruce Auth roles), **2FA** admin (AD-14, cruce Auth), **simplificar config** (AD-15) y **repensar editor legal** (AD-16).
-- **D-11** — Operación: **vista "tareas de hoy"** (AD-17), **export/backup** (AD-18) y **control destacado/verificado** (AD-19). _Pendientes de definir flujo: sembrar negocios, bandeja de contacto, difusión y monitor de cupos._
+- **D-11** — Operación: **vista "tareas de hoy"** (AD-17), **export/backup** (AD-18) y **control destacado/verificado** (AD-19).
+- **D-12** — **Bandeja de contacto** (formulario público → panel admin) (AD-20); **difusión in-app** + email opcional (AD-21, cruce Notificaciones NT-7); **monitor de cupos** versión simple (uso de Mongo + tarjeta de límites) (AD-22).
+- **D-13** — **Admin crea negocio por el emprendedor** (diseño Opción B): **fuera de alcance por ahora**; se reevaluará cuando sembrar oferta sea prioridad.
 
 ## Backlog derivado (decidido, pendiente de implementar)
 
@@ -111,9 +119,17 @@ gobernanza y confianza del sitio.
 | **AD-17** | Vista "tareas de hoy" (cola accionable) | Medio | Pendientes + reportadas + sospechosos + soporte en un solo lugar |
 | **AD-18** | Export/backup de datos (negocios/usuarios/reseñas) | Bajo-Medio | Red de seguridad en M0 (sin backups gestionados) |
 | **AD-19** | Control de `featured`/`is_verified`/`plan` desde el admin | Bajo | Campos ya existen; palanca de Fase 2 (monetización) |
+| **AD-20** | Bandeja de soporte: formulario público (footer) → mensajes en el panel admin | Medio | Toca sitio público + admin; opción de responder por email |
+| **AD-21** | Difusión/anuncios in-app (+ email opcional) | Medio | Cruce Notificaciones (NT-7, tipo broadcast) |
+| **AD-22** | Monitor de cupos: uso de Mongo (`db.stats()`) + tarjeta de límites con links | Bajo | Sin integraciones pesadas a Cloudinary/Resend/Render |
 
 ## Priorización sugerida
 
 - **MVP / pronto:** AD-1 (rejected+motivo), AD-2 (seguridad admin), AD-6, AD-7, AD-8, AD-15.
 - **Medio plazo:** AD-3 (auditoría), AD-4 (cola reportadas), AD-5 (métricas), AD-10/AD-11 (escalar/anti-spam), AD-12 ("necesita cambios").
-- **Fase 2 / mayor:** AD-9 (cockpit completo), AD-13 (rol moderador), AD-14 (2FA admin), AD-16.
+- **Fase 2 / mayor:** AD-9 (cockpit completo), AD-13 (rol moderador), AD-14 (2FA admin), AD-16, AD-19.
+- **Operación (cuando aporte):** AD-17 (tareas de hoy), AD-18 (export), AD-20 (soporte), AD-21 (difusión), AD-22 (cupos).
+
+## Fuera de alcance (por ahora)
+
+- **Admin crea negocio por el emprendedor** (diseño Opción B, con invitación/claim por email). Se difiere hasta que sembrar oferta sea prioridad (D-13).

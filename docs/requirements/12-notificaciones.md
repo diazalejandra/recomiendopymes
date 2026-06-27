@@ -61,6 +61,7 @@ revisar manualmente. Es la pieza que sostiene la retención del emprendedor.
 | **NT-4** | Disparador de respuesta del dueño al autor de la reseña | Bajo | in-app |
 | **NT-5** | Señales para el admin (pendientes, reportes, sospechosos) | Medio | in-app |
 | **NT-6** | Preferencias de notificación (opt-out de no esenciales) | Bajo-Medio | Respeta transaccionales críticos |
+| **NT-7** | Difusión/anuncios (broadcast) del admin a emprendedores/usuarios | Medio | in-app + email opcional; lo dispara el admin (cruce AD-21) |
 
 ## Roadmap (futuro)
 
