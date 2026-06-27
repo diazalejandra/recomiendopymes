@@ -24,7 +24,10 @@ reconcilia con las decisiones de producto.
 | 10 | Legales y Privacidad | [10-legales.md](./10-legales.md) | ✅ Revisado (borradores + L-1..L-11) |
 | 11 | Imágenes / Media (transversal) | [11-media.md](./11-media.md) | ✅ Reconciliado |
 | 12 | Notificaciones (transversal) | [12-notificaciones.md](./12-notificaciones.md) | ✅ Reconciliado |
-| — | Monetización | (roadmap Fase 2) | 🔭 Futuro |
+| 13 | Monetización (Fase 2) | [13-monetizacion.md](./13-monetizacion.md) | ✅ Borrador estratégico |
+| 14 | Calidad y Operación (transversal) | [14-calidad-operacion.md](./14-calidad-operacion.md) | ✅ Borrador |
+
+Diagnóstico transversal (gaps + consistencia): [_diagnostico-gaps-consistencia.md](./_diagnostico-gaps-consistencia.md).
 
 Orden de trabajo por dependencias: auth → negocios → categorías → reseñas → mapa →
 dashboards → admin → noticias → transversales (SEO, media) → legales.
