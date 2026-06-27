@@ -22,6 +22,8 @@ Usa Leaflet + OpenStreetMap (sin API key) y Nominatim para geocodificar.
 - **US-2** — Como visitante, quiero filtrar el mapa por ciudad, categoría y búsqueda.
 - **US-3** — Como visitante, quiero abrir un popup con mini-ficha (foto, nombre, categoría, ciudad, rating) y entrar al perfil.
 - **US-4** — Como emprendedor, quiero ubicar mi negocio escribiendo la dirección (autocompletado) y/o ajustando el pin, para fijar sus coordenadas.
+- **US-5** — Como emprendedor **desde casa**, quiero mostrar solo mi **zona/comuna** y no mi dirección exacta _(privacidad; ver MP-7)_.
+- **US-6** — Como visitante, quiero **centrar el mapa en mi ubicación cuando yo lo pida** y ver **distancias** a los negocios _(ver MP-8)_.
 
 ## Reglas de negocio
 
@@ -32,6 +34,8 @@ Usa Leaflet + OpenStreetMap (sin API key) y Nominatim para geocodificar.
 - **RN-5** — `coordinates.is_exact`: `true` si el dueño ubicó el pin; `false` si es el centroide de la ciudad.
 - **RN-6** — Los íconos/colores de categoría provienen de la **lista de categorías** (no hardcodeados en el front).
 - **RN-7** — Los recursos del mapa (íconos de marcador) se sirven **localmente**, sin depender de CDNs externos en runtime.
+- **RN-8** — El dueño puede optar por mostrar **ubicación aproximada** (zona/comuna, círculo) en vez de pin exacto; los negocios desde casa **no** exponen el domicilio exacto por defecto.
+- **RN-9** — El centrado en la ubicación del usuario es **explícito** (botón "ubícame"), con **fallback por comuna** y **aviso** si la geolocalización falla; el comportamiento de centrado es **consistente** entre todas las vistas de mapa.
 
 ## Criterios de aceptación (= casos de QA)
 
@@ -42,6 +46,9 @@ Usa Leaflet + OpenStreetMap (sin API key) y Nominatim para geocodificar.
 - **CA-5** — Dado que inscribo un negocio físico y escribo una dirección, cuando la selecciono, entonces se fijan coordenadas (`is_exact: true`); sin dirección, queda el centroide de la ciudad (`is_exact: false`).
 - **CA-6** — Dado que el CDN de íconos no está disponible (p. ej. red restringida), cuando abro el mapa, entonces los marcadores se ven igual (recursos locales).
 - **CA-7** — Dado un negocio `physical` sin coordenadas, cuando se intenta mostrar, entonces no rompe el mapa (y se invita a completar ubicación) — ver N-12.
+- **CA-8** — Dado un negocio con ubicación **aproximada**, cuando se muestra, entonces aparece como zona/círculo, no como pin exacto en el domicilio (RN-8).
+- **CA-9** — Dado que presiono "ubícame" y acepto, cuando carga, entonces el mapa centra en mí; si la rechazo o falla, recibo **aviso** y puedo elegir mi comuna (RN-9).
+- **CA-10** — Dada mi ubicación conocida, cuando veo un negocio, entonces se muestra la **distancia aproximada**.
 
 ## Roadmap (futuro / Fase 2)
 
@@ -69,6 +76,14 @@ Usa Leaflet + OpenStreetMap (sin API key) y Nominatim para geocodificar.
 - **D-2** — Se **unifican** las dos implementaciones de mapa en un componente compartido. → MP-6.
 - **D-3** — Fixes confirmados: íconos locales (MP-1), filtrar por `business_type` (MP-3), íconos de categoría desde la colección (MP-4), verificar `is_exact` (MP-5).
 - **D-4** — Clustering y carga por viewport quedan en roadmap (R-1/R-2).
+- **D-5** — **Privacidad de ubicación**: opción de mostrar zona/comuna aproximada en vez de pin exacto (negocios desde casa). → RN-8, MP-7.
+- **D-6** — **Geolocalización con control**: botón "ubícame" + fallback comuna + aviso + distancia, con centrado consistente. → RN-9, MP-8. *(Arregla el bug observado de "no siempre centra en el usuario".)*
+- **D-7** — Agregar **"cerca de mí"** al catálogo y **evaluar demotar** el `/mapa` standalone (muchos negocios son online). → MP-9.
+- **D-8** — **Geo para SEO**: coordenadas en el JSON-LD `LocalBusiness` (se ejecuta en el módulo SEO). → MP-10.
+
+## Bug conocido (a resolver con MP-6 + MP-8)
+
+- **BUG-1** — El centrado en la ubicación del usuario "a veces no funciona": la pestaña Mapa del catálogo (HomePage) hace `fitBounds` a todos los pines y **no** geolocaliza, mientras que `/mapa` (MapView) sí vuela al usuario; además la geolocalización falla en silencio (timeout/denegación). Causa raíz: las **dos implementaciones divergentes** (M-6) + sin feedback. Se cierra al unificar (MP-6) y con el centrado explícito (MP-8).
 
 ## Backlog derivado (decidido, pendiente de implementar)
 
@@ -79,4 +94,8 @@ Usa Leaflet + OpenStreetMap (sin API key) y Nominatim para geocodificar.
 | **MP-3** | Filtrar el mapa por `business_type` physical/both | Bajo | Hacer explícita RN-1, no depender de ausencia de coords (M-3) |
 | **MP-4** | Íconos de categoría desde la colección de categorías | Bajo | Elimina `CAT_ICONS` hardcodeado/duplicado (cruce C-1/C-3) (M-4) |
 | **MP-5** | Verificar/asegurar `is_exact` (pin vs centroide) | Bajo | Confirmar en `CityMapPicker`/autocomplete (M-5) |
-| **MP-6** | Unificar el mapa en un componente reutilizable | Medio | HomePage + MapView comparten icons/popups/lógica (M-6) |
+| **MP-6** | Unificar el mapa en un componente reutilizable | Medio | HomePage + MapView comparten icons/popups/lógica (M-6); cierra BUG-1 |
+| **MP-7** | Ubicación aproximada (zona/comuna, círculo) opcional vs pin exacto | Medio | Privacidad/seguridad negocios desde casa; cruce con inscripción e `is_exact` |
+| **MP-8** | Geolocalización con control: botón "ubícame" + fallback comuna + aviso + distancia | Medio | Centrado explícito y consistente; cierra BUG-1 |
+| **MP-9** | "Cerca de mí" (orden por proximidad) en el catálogo; evaluar demotar `/mapa` | Medio | Cruce con Negocios; muchos negocios son online |
+| **MP-10** | Coordenadas en JSON-LD `LocalBusiness` | Bajo | Se implementa en el módulo SEO (cruce) |
