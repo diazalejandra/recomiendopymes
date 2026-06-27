@@ -1,6 +1,6 @@
 # Spec — Dashboard del Emprendedor
 
-> Estado del spec: **borrador para revisión** · Anclado al código a 2026-06-20 (rama `main`)
+> Estado del spec: **revisado y reconciliado** (decisiones D-1..D-6) · Anclado al código a 2026-06-20 (rama `main`)
 > Frontend: `features/entrepreneur/` (Dashboard, EditBusiness, MyReviews), `features/business/CloudinaryUpload`
 
 ## Propósito
@@ -62,12 +62,24 @@ visibilidad (activar/desactivar). También debería gestionar su cuenta.
 | Badge "sin responder" | ❌ | El diseño (7b) lo pedía (DE-4). |
 | Métrica "Visitas" | 🟡 | Usa `view_count` inflado (cruce Negocios H-5/R-6). |
 
-## Hallazgos / decisiones pendientes
+## Decisiones tomadas (2026-06-20)
 
-- **DE-1 (gap UX, must-fix)** — El nombre se muestra editable pero el backend lo ignora. Hacerlo **solo lectura** con nota ("el nombre no se puede cambiar"). *(fix)*
-- **DE-2 / DE-3 (gap)** — Editar y responder no exigen verificación (= N-1 / RV-2). *(backlog)*
-- **DE-4 (mejora)** — Badge de **reseñas sin responder** en el dashboard (diseño 7b). *(decisión)*
-- **DE-5 (gap)** — Falta UI para **desactivar / solicitar reactivación** (el backend ya lo soporta). *(decisión: dónde — tarjeta del dashboard o edición)*
-- **DE-6 (gap)** — Falta **gestión de cuenta** (nombre/email/contraseña), que además habilita Auth B-1. *(decisión: construir página `/mi-cuenta`)*
-- **DE-7 (cruce)** — Al cambiar a `online`, degradar la ubicación a comuna (privacidad, MP-7). *(fix)*
-- **DE-8 (menor)** — La métrica "Visitas" es poco confiable hasta resolver el `view_count` (cruce Negocios). Considerar ocultarla o marcarla como aproximada mientras tanto.
+- **D-1** — Nombre **solo lectura** en la edición (no-op hoy; afecta slug). → DE-1.
+- **D-2** — Editar/cambiar estado y responder exigen **email verificado**. → DE-2/DE-3 (= N-1/RV-2).
+- **D-3** — Botón **desactivar / solicitar reactivación** en la **tarjeta del dashboard** (con confirmación). → DE-5.
+- **D-4** — Construir página **`/mi-cuenta`** (nombre/email/contraseña), que habilita Auth B-1. → DE-6.
+- **D-5** — Agregar **badge de reseñas sin responder** (DE-4) y **marcar "Visitas" como aproximada** mientras `view_count` no sea confiable (DE-8).
+- **D-6** — Al cambiar `business_type` a `online`, **degradar la ubicación a comuna** (cruce MP-7). → DE-7.
+
+## Backlog derivado (decidido, pendiente de implementar)
+
+| ID | Item | Esfuerzo | Notas |
+|---|---|---|---|
+| **DE-1** | Nombre como solo lectura en la edición (con nota) | Bajo | Hoy es editable pero el backend lo ignora |
+| **DE-2** | `require_verified` al editar negocio | Bajo | = N-1 (router business) |
+| **DE-3** | `require_verified` al responder reseña | Bajo | = RV-2 (router review) |
+| **DE-4** | Badge de reseñas sin responder en el dashboard | Bajo | Diseño 7b; contar reseñas sin `owner_response` |
+| **DE-5** | Botón desactivar / solicitar reactivación en la tarjeta | Bajo | Usa `PATCH /status` con confirmación |
+| **DE-6** | Página `/mi-cuenta` (nombre/email/contraseña) | Medio | Habilita Auth B-1 (email con re-verificación, password con la actual) |
+| **DE-7** | Degradar ubicación a comuna al pasar a `online` | Bajo | Privacidad; cruce MP-7 |
+| **DE-8** | Marcar "Visitas" como aproximada (o atenuar) | Bajo | Hasta resolver `view_count` (cruce Negocios) |

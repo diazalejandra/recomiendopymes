@@ -17,7 +17,7 @@ reconcilia con las decisiones de producto.
 | 03 | Categorías (taxonomía) | [03-categorias.md](./03-categorias.md) | ✅ Reconciliado |
 | 04 | Reseñas | [04-resenas.md](./04-resenas.md) | ✅ Reconciliado |
 | 05 | Mapa | [05-mapa.md](./05-mapa.md) | ✅ Reconciliado |
-| 06 | Dashboard del emprendedor | `06-dashboard-emprendedor.md` | ⏳ Pendiente |
+| 06 | Dashboard del emprendedor | [06-dashboard-emprendedor.md](./06-dashboard-emprendedor.md) | ✅ Reconciliado |
 | 07 | Panel de administración | `07-admin.md` | ⏳ Pendiente |
 | 08 | Noticias | `08-noticias.md` | ⏳ Pendiente |
 | 09 | SEO (transversal) | `09-seo.md` | ⏳ Pendiente |
