@@ -1,6 +1,6 @@
 # Spec — Imágenes / Media (transversal)
 
-> Estado del spec: **borrador para revisión** · Anclado al código a 2026-06-20 (rama `main`)
+> Estado del spec: **revisado y reconciliado** (decisiones D-1..D-3) · Anclado al código a 2026-06-20 (rama `main`)
 > Backend: `modules/media/` · Frontend: `features/business/CloudinaryUpload.jsx`
 
 ## Propósito
@@ -54,14 +54,22 @@ servidor, sin que el binario pase por el backend, y entrega optimizada (resize, 
 | RN-7 Validar URLs | ❌ | `image`/`gallery` aceptan cualquier string (ME-4). |
 | Noticias usan este uploader | ❌ | Noticias usa URL pegada (NW-17). |
 
-## Hallazgos / decisiones pendientes
+## Decisiones tomadas (2026-06-20)
 
-- **ME-1 (seguridad, must-fix)** — El endpoint de firma es **público** → abuso de cupo. Requerir autenticación. *(fix)*
-- **ME-2 (decisión)** — Imágenes **huérfanas** (R2): ¿borrado al quitar/eliminar + limpieza periódica, o se acepta como deuda técnica en free-tier por ahora? *(decisión)*
-- **ME-3 (fix)** — Validar **tamaño/tipo** de archivo.
-- **ME-4 (fix)** — Validar que las URLs guardadas sean del **Cloudinary del proyecto**.
-- **ME-5 (cruce)** — Unificar carga de imágenes de noticias con este uploader (NW-17).
-- **ME-6 (cruce)** — Exponer el uso de Cloudinary en el monitor de cupos (AD-22).
+- **D-1** — La firma de subida **requiere autenticación** (no pública). → ME-1.
+- **D-2** — Imágenes huérfanas: **borrado al quitar/eliminar + limpieza periódica** de huérfanas sin dueño. → ME-2.
+- **D-3** — Validar **tamaño/tipo** (ME-3) y que las URLs sean del **Cloudinary del proyecto** (ME-4).
+
+## Backlog derivado
+
+| ID | Item | Esfuerzo | Notas |
+|---|---|---|---|
+| **ME-1** | Autenticar `/api/media/upload-signature` | Bajo | Hoy público → abuso de cupo; usar `get_current_user` |
+| **ME-2** | Borrado de assets al quitar/eliminar + job de limpieza de huérfanas | Medio | Eliminar en Cloudinary; job periódico para huérfanas (R2) |
+| **ME-3** | Validar tamaño/tipo de archivo server-side | Bajo | No solo `accept` en el front |
+| **ME-4** | Validar que `image`/`gallery` sean URLs del Cloudinary del proyecto | Bajo | Evita URLs arbitrarias |
+| **ME-5** | Unificar carga de imágenes de noticias con este uploader | Bajo | = NW-17 |
+| **ME-6** | Exponer uso de Cloudinary en el monitor de cupos | Bajo | = AD-22 |
 
 ## Roadmap (futuro)
 

@@ -22,7 +22,7 @@ reconcilia con las decisiones de producto.
 | 08 | Noticias / Blog | [08-noticias.md](./08-noticias.md) | ✅ Reconciliado |
 | 09 | SEO (transversal) | [09-seo.md](./09-seo.md) | ✅ Reconciliado (→ Next.js, ADR) |
 | 10 | Legales y Privacidad | [10-legales.md](./10-legales.md) | ✅ Revisado (borradores + L-1..L-11) |
-| 11 | Imágenes / Media (transversal) | `11-media.md` | ⏳ Pendiente |
+| 11 | Imágenes / Media (transversal) | [11-media.md](./11-media.md) | ✅ Reconciliado |
 | 12 | Notificaciones (transversal) | [12-notificaciones.md](./12-notificaciones.md) | ✅ Reconciliado |
 | — | Monetización | (roadmap Fase 2) | 🔭 Futuro |
 
