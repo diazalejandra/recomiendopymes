@@ -82,6 +82,7 @@ descubre el catálogo.
 - **D-5** — **Dos tipos de contenido**: `hosted` (SEO propio) y `link` (referencia externa). → NW-12.
 - **D-6** — **Fuentes enchufables**: manual + n8n + sugerencias ahora; **RSS preparado pero no construido** (futuro). → NW-13.
 - **D-7** — **Anti-duplicado + canonical** (NW-15) y **atribución de fuente** (NW-16); **directorio de fondos/convocatorias** como contenido `link` estructurado (NW-14).
+- **D-8** — Imagen de artículo vía **Cloudinary** (alinear con negocios) → NW-17. Los **links fijos** (Sercotec/convocatorias) quedan **a futuro** (NW-12/NW-14, no MVP). El **preview social** (meta server-side) se aborda en SEO → NW-18.
 
 ## Backlog derivado (decidido, pendiente de implementar)
 
@@ -103,6 +104,8 @@ descubre el catálogo.
 | **NW-14** | Directorio de fondos/convocatorias (estructurado: monto, plazo, link) | Medio | Contenido tipo `link`; alto valor para emprendedores |
 | **NW-15** | Regla anti-duplicado + `canonical` si se sindica | Bajo | Nunca republicar copia externa |
 | **NW-16** | Atribución de fuente en referenciados | Bajo | Citar el origen |
+| **NW-17** | Imagen de artículo vía Cloudinary (subir, no pegar URL) | Bajo | Alinear con negocios (`CloudinaryUpload`); hoy es `image_url` pegado |
+| **NW-18** | Preview social de artículos (meta server-side / prerender) | Medio | Hoy los meta se setean por JS → WhatsApp/FB no los leen (mismo bug del `og`); se resuelve en SEO |
 
 ## Fuera de alcance (por ahora) / futuro
 
