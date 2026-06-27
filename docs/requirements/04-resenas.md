@@ -1,6 +1,6 @@
 # Spec — Reseñas
 
-> Estado del spec: **borrador para revisión** · Anclado al código a 2026-06-20 (rama `main`)
+> Estado del spec: **revisado y reconciliado** (decisiones D-1..D-5) · Anclado al código a 2026-06-20 (rama `main`)
 > Módulo backend: `modules/review/` · Frontend: `features/business/` (ReviewForm, ReviewItem), `features/entrepreneur/MyReviews`
 
 ## Propósito
@@ -25,6 +25,7 @@ reseñas alimentan el `rating` que ordena el catálogo.
 - **US-3** — Como dueño, quiero responder una reseña de mi negocio (una respuesta, editable).
 - **US-4** — Como admin, quiero ocultar/mostrar una reseña sin borrarla (auditoría).
 - **US-5** — Como sistema, quiero detectar comportamiento sospechoso y marcar al usuario para revisión del admin.
+- **US-6** — Como autor, quiero editar o eliminar mi propia reseña _(decidido; ver RV-5)_.
 
 ## Reglas de negocio
 
@@ -53,6 +54,7 @@ reseñas alimentan el `rating` que ordena el catálogo.
 - **CA-10** — Dada una respuesta del dueño vacía o >500, cuando se envía, entonces error de validación (RN-8).
 - **CA-11** — Dado un admin, cuando oculta una reseña, entonces desaparece del perfil público y el `rating` se recalcula; al mostrarla, vuelve.
 - **CA-12** — Dado un usuario que supera el umbral configurado en la ventana, cuando reseña, entonces queda marcado como sospechoso para el admin.
+- **CA-13** — Dado el autor de una reseña, cuando la edita o la elimina, entonces el cambio se refleja y el `rating` del negocio se recalcula (RV-5).
 
 ## Roadmap (futuro / Fase 2)
 
@@ -78,11 +80,21 @@ reseñas alimentan el `rating` que ordena el catálogo.
 | RN-9 Moderación + recálculo | ✅ | Sobre reseñas visibles. |
 | RN-10 Sospechosos configurable | 🟡 | Umbral configurable (`config.review_rate_limit`); **ventana hardcodeada** 24h (RV-4). |
 
-## Hallazgos / decisiones pendientes
+## Decisiones tomadas (2026-06-20)
 
-- **H-1 (gap, must-fix)** — `create()` no impide que el **dueño reseñe su propio negocio** (RN-2). Debe validarse contra `owner_user_id`. → RV-1.
-- **H-2 (gap)** — Responder reseña no exige email verificado (= decisión D-2). → RV-2.
-- **H-3 (gap)** — La respuesta del dueño no valida longitud (vacía/gigante). → RV-3.
-- **H-4 (decisión)** — La detección de sospechosos solo **cuenta** reseñas en 24h (ventana fija) y marca al *usuario*; el diseño pedía "mismo rating en negocios distintos", ventana configurable y `flagged` por reseña. ¿Se mantiene simple o se alinea al diseño? *(decisión)*
-- **H-5 (decisión)** — No existe **editar/eliminar la propia reseña** (hay `ReviewUpdate` sin endpoint). ¿Permitimos al usuario editar/eliminar su reseña? *(decisión)*
-- **H-6 (menor)** — La verificación "una reseña por negocio" puede dar 500 ante carrera (índice único); conviene capturar `DuplicateKeyError` (mismo patrón que N-10).
+- **D-1** — **Bloquear auto-reseña**: el dueño no puede reseñar su propio negocio (must-fix). → RV-1.
+- **D-2** — **Responder requiere email verificado** (alinea con D-2 de Auth). → RV-2.
+- **D-3** — **Validar** la respuesta del dueño (1–500). → RV-3.
+- **D-4** — Antispam: se mantiene el **conteo simple** pero con **ventana configurable** (como el umbral); la lógica fina (mismo rating en negocios distintos + `flagged` por reseña) queda en roadmap R-2. → RV-4.
+- **D-5** — El usuario puede **editar y eliminar** su propia reseña (recalcula rating; apoya derecho de supresión ARCO). → RV-5.
+
+## Backlog derivado (decidido, pendiente de implementar)
+
+| ID | Item | Esfuerzo | Notas |
+|---|---|---|---|
+| **RV-1** | Bloquear auto-reseña (validar `owner_user_id`) | Bajo | Must-fix; el dueño no puede reseñarse |
+| **RV-2** | `require_verified` en responder reseña | Bajo | = Auth B-2 / Negocios N-1 |
+| **RV-3** | Validar texto de respuesta del dueño (1–500) | Bajo | `OwnerResponseRequest` sin min/max hoy |
+| **RV-4** | Ventana de detección configurable | Bajo | El umbral ya lo es; falta la ventana |
+| **RV-5** | Editar y eliminar reseña propia (endpoints + recalc rating + UI) | Medio | Usa `ReviewUpdate`; borrar recalcula rating |
+| **RV-6** | Capturar `DuplicateKeyError` en crear reseña | Bajo | Evita 500 en carrera (índice único) |
