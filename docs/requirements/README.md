@@ -28,6 +28,7 @@ reconcilia con las decisiones de producto.
 | 14 | Calidad y Operación (transversal) | [14-calidad-operacion.md](./14-calidad-operacion.md) | ✅ Borrador |
 
 Diagnóstico transversal (gaps + consistencia): [_diagnostico-gaps-consistencia.md](./_diagnostico-gaps-consistencia.md).
+Backlog consolidado y priorizado (orden de ataque): [_backlog-consolidado.md](./_backlog-consolidado.md).
 
 Orden de trabajo por dependencias: auth → negocios → categorías → reseñas → mapa →
 dashboards → admin → noticias → transversales (SEO, media) → legales.
