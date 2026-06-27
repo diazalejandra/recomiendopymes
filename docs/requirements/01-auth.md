@@ -31,7 +31,7 @@ de confianza (reseñas) y el acceso a paneles (emprendedor, admin).
 
 ## Reglas de negocio
 
-- **RN-1** — Solo existen dos roles: `admin` y `user`. "Dueño de negocio" no es un rol.
+- **RN-1** — Roles: `admin` y `user`. _(Reconciliación C2: se evalúa un tercer rol **`moderador`** con permisos acotados — ver Admin AD-13; de adoptarse, este RN se amplía a 3 roles.)_ "Dueño de negocio" no es un rol.
 - **RN-2** — El registro público siempre crea `role: "user"`, `is_active: true`, `is_email_verified: false`, sin importar lo que envíe el cliente.
 - **RN-3** — La contraseña debe tener mínimo 8 caracteres; el nombre entre 2 y 100; el email con formato válido.
 - **RN-4** — No se puede registrar dos veces el mismo email.
@@ -135,6 +135,6 @@ de confianza (reseñas) y el acceso a paneles (emprendedor, admin).
 | **B-4** | Separar modelo de entrada de registro (no heredar `role`/`is_active`/`is_email_verified`) | Bajo | Higiene; evita modelo de entrada engañoso |
 | ~~**B-5**~~ | ✅ Rate limiting en login | Bajo | Hecho: `/login` 10/min por IP (rama `fix/auth-login-ratelimit`, pendiente merge) |
 | ~~**B-6**~~ | ✅ Registrar consentimiento T&C/Privacidad al registrarse | Bajo | Hecho: checkbox + `accepted_terms`/`terms_accepted_at`/`terms_version` (pendiente merge) |
-| **B-7** | Borrado de cuenta (derecho ARCO) | Medio-Alto | Definir cascada vs. anonimización de negocios/reseñas; legal |
+| **B-7** | Borrado de cuenta (derecho ARCO) | Medio-Alto | Cascada (reconciliación C6): reseñas se **anonimizan** (RV-7), negocios se **archivan/anonimizan** (Negocios RN-16); legal |
 | **B-8** | Respuesta uniforme en registro (RN-17) + revocación de tokens (RN-18) | Medio | logout/cambio de contraseña invalidan sesiones |
 | **B-9** | Homologar UI de ForgotPassword/ResetPassword al estilo de LoginPage | Bajo | Tokens + logo "Recomiendo/Pymes"; destino ya existe |

@@ -34,17 +34,29 @@ Es el núcleo de valor del producto.
 - **RN-1** — El **nombre no es editable** tras crear (afecta el slug SEO). El modelo de update no lo incluye.
 - **RN-2** — El **slug** es único, generado del nombre al crear; ante colisión agrega sufijo numérico (`-2`, `-3`); no se regenera.
 - **RN-3** — Un negocio nace en `pending`; solo un admin lo pasa a `active`.
-- **RN-4** — Solo los negocios `active` aparecen en el catálogo/listado público y suman `view_count`.
+- **RN-4** — Solo los negocios `active` aparecen en el catálogo/listado público (se **excluyen** `pending`, `inactive`, `rejected` y `archived`) y solo `active` suma `view_count`.
 - **RN-5** — Negocios `pending`/`inactive` solo son visibles por su dueño o admin (404 al resto). _(implementado en 1.1.0)_
 - **RN-6** — `activated_at` se fija en la **primera** activación; alimenta el badge "🆕 Nuevo" por 30 días.
 - **RN-7** — Transiciones de estado: el **dueño** puede `active→inactive` e `inactive→pending`; el **admin**, cualquiera.
 - **RN-8** — **Inscribir y editar** un negocio requieren **email verificado** _(decisión D-2 del módulo Auth; ver B-2)_.
 - **RN-9** — Editar un negocio: lo puede hacer el **dueño** y el **admin** (matriz de permisos del diseño).
-- **RN-10** — Orden del catálogo: `featured` desc → nuevos (≤30 días) desc → `rating` desc → antigüedad.
+- **RN-10** — **El orden del catálogo lo define este módulo (fuente única).** Composición:
+  1. *(si el usuario eligió ubicación)* **nivel de cercanía** — tu comuna → tu región → envío nacional → resto (Mapa RN-10/RN-12);
+  2. dentro de cada nivel: `featured` **vigente** (`featured_until > now`) → nuevos (≤ boost días) → **rating ponderado** (Reseñas RV-10) → antigüedad → `_id` (tiebreaker estable, N-6).
+  Sin ubicación elegida, se omite el paso 1. _(Reconciliación C1: Mapa y Reseñas aportan insumos; el orden final vive aquí.)_
 - **RN-11** — Filtro "envíos nacionales": junto a una ciudad, incluye los negocios de esa ciudad **y** los de `delivery_scope: nationwide`.
 - **RN-12** — La galería admite **máximo 8 imágenes**.
 - **RN-13** — Eliminar un negocio es exclusivo de **admin** y elimina también sus reseñas.
 - **RN-14** — El `rating` y `review_count` se recalculan desde las reseñas **visibles**.
+- **RN-15 — Máquina de estados (fuente única, reconciliación C3):**
+  `pending` (nuevo, espera aprobación) → `active` ⇄ `inactive` (desactivado por dueño/admin);
+  `rejected` (admin rechaza, con motivo — AD-1); `archived` (soft-delete — N-3).
+  **Solo `active` es público**; `rejected`/`archived` no vuelven al catálogo. Transiciones del
+  dueño: `active→inactive`, `inactive→pending`; el admin puede todas.
+- **RN-16 — Borrado de cuenta (reconciliación C6):** al borrar la cuenta del dueño (Auth B-7),
+  sus negocios se **archivan/anonimizan** (no quedan públicos ni huérfanos).
+- **RN-17 — `tags` (reconciliación C7):** el negocio tiene `tags` libres (de Categorías C-2),
+  lista normalizada, máx. 8; complementan la categoría canónica para descubrimiento.
 
 ## Criterios de aceptación (= casos de QA)
 
@@ -123,6 +135,11 @@ Es el núcleo de valor del producto.
 | **N-10** | Reintentar slug ante `DuplicateKeyError` (P-5) | Bajo | El índice único protege la BD; hoy da 500 en carrera |
 | **N-11** | ID inválido → 404 en `update`/`status`/`delete` (P-6) | Bajo | Hoy `ObjectId(id)` mal formado da 500 |
 | **N-12** | Validar rango de `coordinates` y exigir coords en physical/both (P-7) | Bajo | Un físico sin coords no aparece en el mapa |
+| **N-13** | **Quitar `active_offer`** ("Oferta Destacada") del MVP | Bajo-Medio | Decisión del Dashboard (DE-13); remover de modelo + edición + catálogo hasta validar demanda |
+| **N-14** | Agregar estado `rejected` al ciclo de vida (distinto de `inactive`) | Bajo | Decisión del Admin (AD-1); excluir `rejected` del catálogo como ya se excluye no-active |
+| **N-15** | Medir **leads/conversión**: clics a WhatsApp/Instagram/web/mapa desde la ficha | Medio | El valor real para el emprendedor; hoy solo `view_count` (G2) |
+| **N-16** | **Horarios** de atención + `LocalBusiness` rico (openingHours, priceRange) | Medio | Negocio (físicos) + rich results SEO (G4) |
+| **N-17** | Soportar `archived` (soft-delete) y `rejected` en el modelo y filtros | Bajo | Implementa la máquina de estados RN-15 |
 
 ## Notas abiertas
 

@@ -35,7 +35,7 @@ Moda`, mezcla inglés/español). El vocabulario controlado las evita.
 
 - **RN-1** — Al inscribir/editar, `category` debe pertenecer a la lista de categorías activas; si no, se rechaza.
 - **RN-2** — Los `tags` son libres pero se normalizan (minúsculas, sin espacios extra) y tienen un máximo (ej. 8 por negocio).
-- **RN-3** — Solo el admin crea/edita/elimina categorías (CRUD ya existe en el panel).
+- **RN-3** — Solo el admin crea/edita/elimina categorías. _(Hoy la lista es hardcodeada; mover a fuente única editable — C-3/SE-3.)_
 - **RN-4** — Eliminar una categoría en uso debe bloquearse o reasignar los negocios afectados (no dejar negocios huérfanos).
 - **RN-5** — Cada categoría tiene `slug` único para su página/lista SEO.
 
@@ -71,7 +71,7 @@ Consolidación del seed + cobertura típica de micro-emprendimiento chileno. Íc
 
 | Item | Estado | Nota |
 |---|---|---|
-| Colección de categorías + CRUD admin | ✅ | `modules/meta/`, `/api/categories`. |
+| Fuente de categorías | ⚠️ | **Reconciliación C4:** hoy `/api/categories` está **hardcodeado** en `meta/router.py` (con "Clothing y Moda"), NO es colección con CRUD. El `CategoriesManager` del admin puede no estar conectado a una colección real. Decidir mover a fuente única editable (C-3/SE-3). |
 | Categoría validada al inscribir/editar | ❌ | `business.category` es texto libre (N-9). |
 | `tags` por negocio | ❌ | Campo no existe (C-2). |
 | Seed de categorías curado | 🟡 | El seed tiene inconsistencias (`Clothing y Moda`) (C-1). |
