@@ -39,7 +39,7 @@ async def create_review(
 async def add_owner_response(
     review_id: str,
     body: OwnerResponseRequest,
-    current_user: dict = Depends(get_current_user),
+    current_user: dict = Depends(require_verified),
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     service = ReviewService(db)

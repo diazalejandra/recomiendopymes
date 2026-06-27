@@ -38,6 +38,10 @@ class ReviewService:
         if not business:
             raise HTTPException(status_code=404, detail="Emprendimiento no encontrado")
 
+        # No se puede reseñar el propio negocio (RV-1)
+        if str(business.get("owner_user_id")) == str(author["_id"]):
+            raise HTTPException(status_code=400, detail="No puedes reseñar tu propio emprendimiento")
+
         # Verificar que el autor no haya reseñado ya este negocio
         existing = await self.db.reviews.find_one({
             "business_id": ObjectId(business_id),

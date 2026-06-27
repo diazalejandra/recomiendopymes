@@ -52,17 +52,24 @@ async def logout(response: Response):
 
 
 @router.post("/refresh")
-async def refresh_token(refresh_token: str = Cookie(None)):
+async def refresh_token(refresh_token: str = Cookie(None), db: AsyncIOMotorDatabase = Depends(get_db)):
     if not refresh_token:
         raise HTTPException(status_code=401, detail="No hay sesión activa")
     try:
         payload = decode_token(refresh_token)
         user_id = payload["sub"]
-        role = payload.get("role", "user")
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Sesión inválida")
 
-    access_token = create_access_token({"sub": user_id, "role": role})
+    # Revalidar la cuenta: una cuenta desactivada no puede refrescar (B-3)
+    from bson import ObjectId
+    user = await db.users.find_one({"_id": ObjectId(user_id)})
+    if not user:
+        raise HTTPException(status_code=401, detail="Sesión inválida")
+    if not user.get("is_active", True):
+        raise HTTPException(status_code=403, detail="Cuenta desactivada")
+
+    access_token = create_access_token({"sub": user_id, "role": user.get("role", "user")})
     return {"access_token": access_token, "token_type": "bearer"}
 
 

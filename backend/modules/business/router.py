@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Query
 from typing import Optional
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from core.database import get_db
-from modules.auth.dependencies import get_current_user, require_admin, get_current_user_optional
+from modules.auth.dependencies import get_current_user, require_admin, get_current_user_optional, require_verified
 from modules.business.service import BusinessService
 from modules.business.models import BusinessCreate, BusinessUpdate
 from modules.review.service import ReviewService
@@ -54,7 +54,7 @@ async def get_business(
 @router.post("")
 async def create_business(
     data: BusinessCreate,
-    current_user: dict = Depends(get_current_user),
+    current_user: dict = Depends(require_verified),
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     service = BusinessService(db)
@@ -65,7 +65,7 @@ async def create_business(
 async def update_business(
     business_id: str,
     data: BusinessUpdate,
-    current_user: dict = Depends(get_current_user),
+    current_user: dict = Depends(require_verified),
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     service = BusinessService(db)

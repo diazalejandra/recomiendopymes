@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, HTTPException
 from typing import Optional
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from core.database import get_db
@@ -103,6 +103,16 @@ async def promote_user(
     return await service.promote_user(user_id)
 
 
+@router.patch("/users/{user_id}/demote")
+async def demote_user(
+    user_id: str,
+    current_user: dict = Depends(require_admin),
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    service = AdminService(db)
+    return await service.demote_user(user_id)
+
+
 @router.patch("/users/{user_id}/clear-suspicious")
 async def clear_suspicious(
     user_id: str,
@@ -148,6 +158,14 @@ async def get_config(
     return {"config": [{"key": doc["key"], "value": doc["value"]} async for doc in cursor]}
 
 
+# Claves de configuración permitidas (AD-7: whitelist, no aceptar cualquier clave)
+ALLOWED_CONFIG_KEYS = {
+    "review_rate_limit",       # umbral de reseñas sospechosas
+    "review_window_hours",     # ventana de detección (RV-4)
+    "new_business_boost_days", # días de boost de negocios nuevos
+}
+
+
 @router.put("/config/{key}")
 async def update_config(
     key: str,
@@ -155,6 +173,8 @@ async def update_config(
     current_user: dict = Depends(require_admin),
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
+    if key not in ALLOWED_CONFIG_KEYS:
+        raise HTTPException(status_code=400, detail=f"Clave de configuración no permitida: {key}")
     from datetime import datetime, timezone
     await db.config.update_one(
         {"key": key},
