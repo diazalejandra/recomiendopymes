@@ -86,6 +86,7 @@ gobernanza y confianza del sitio.
 - **D-8** — **Escalar moderación**: auto-aprobación de bajo riesgo + post-moderación + antigüedad/SLA de pendientes (AD-10); **visibilidad anti-spam** por dueño/velocidad (AD-11).
 - **D-9** — **Moderación humana**: estado "necesita cambios" + mensajes admin→usuario (AD-12, cruce lifecycle + Notificaciones).
 - **D-10** — **Gobernanza**: rol **moderador** (AD-13, cruce Auth roles), **2FA** admin (AD-14, cruce Auth), **simplificar config** (AD-15) y **repensar editor legal** (AD-16).
+- **D-11** — Operación: **vista "tareas de hoy"** (AD-17), **export/backup** (AD-18) y **control destacado/verificado** (AD-19). _Pendientes de definir flujo: sembrar negocios, bandeja de contacto, difusión y monitor de cupos._
 
 ## Backlog derivado (decidido, pendiente de implementar)
 
@@ -107,6 +108,9 @@ gobernanza y confianza del sitio.
 | **AD-14** | 2FA para cuentas admin/moderador | Medio | Cruce Auth (hoy 2FA estaba fuera de alcance) |
 | **AD-15** | Simplificar config a controles específicos (quitar editor genérico) | Bajo | Menos footgun para fundadora no técnica |
 | **AD-16** | Repensar editor legal (más amable o fuera del panel) | Bajo | El texto legal cambia rara vez |
+| **AD-17** | Vista "tareas de hoy" (cola accionable) | Medio | Pendientes + reportadas + sospechosos + soporte en un solo lugar |
+| **AD-18** | Export/backup de datos (negocios/usuarios/reseñas) | Bajo-Medio | Red de seguridad en M0 (sin backups gestionados) |
+| **AD-19** | Control de `featured`/`is_verified`/`plan` desde el admin | Bajo | Campos ya existen; palanca de Fase 2 (monetización) |
 
 ## Priorización sugerida
 
