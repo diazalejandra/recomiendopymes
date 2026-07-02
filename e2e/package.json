@@ -1,0 +1,14 @@
+{
+  "name": "recomiendopymes-e2e",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Malla fina de tests e2e (Playwright). Framework-agnóstica: apunta al SPA Vite actual o al futuro Next.js cambiando PLAYWRIGHT_BASE_URL.",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0"
+  }
+}

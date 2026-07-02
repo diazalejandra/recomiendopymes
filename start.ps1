@@ -68,7 +68,7 @@ while ($waited -lt $maxWait) {
     Start-Sleep -Seconds 1
     $waited++
     try {
-        $r = Invoke-WebRequest -Uri "http://localhost:8000/health" -TimeoutSec 1 -ErrorAction Stop
+        $r = Invoke-WebRequest -Uri "http://localhost:8000/api/health" -TimeoutSec 1 -ErrorAction Stop
         $backendReady = $true
         break
     } catch { }
