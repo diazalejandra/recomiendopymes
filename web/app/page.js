@@ -36,6 +36,12 @@ function href(params) {
   return s ? `/?${s}` : '/';
 }
 
+// Link de control del catálogo: cambia la URL PERO sin saltar al top (scroll={false}),
+// para que filtrar/paginar/cambiar vista se sienta fluido (no reinicia el scroll).
+function NavLink(props) {
+  return <Link scroll={false} {...props} />;
+}
+
 export default async function HomePage({ searchParams }) {
   const sp = await searchParams;
   const search = sp.search || '';
@@ -57,7 +63,6 @@ export default async function HomePage({ searchParams }) {
   const hasFilters = Boolean(search || city || category);
   const topCats = (categories || []).slice(0, 8);
 
-  // Estado base para construir los links de filtros (grid y sin página = defaults omitidos).
   const base = {
     search,
     city,
@@ -110,7 +115,7 @@ export default async function HomePage({ searchParams }) {
             {topCats.map((cat) => {
               const active = category === cat;
               return (
-                <Link
+                <NavLink
                   key={cat}
                   href={active ? href({ ...base, category: '' }) : href({ ...base, category: cat })}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all border"
@@ -122,7 +127,7 @@ export default async function HomePage({ searchParams }) {
                 >
                   <span>{CAT_ICONS[cat] || '📦'}</span>
                   {cat.split(' y ')[0].split(' de ')[0]}
-                </Link>
+                </NavLink>
               );
             })}
           </div>
@@ -153,24 +158,24 @@ export default async function HomePage({ searchParams }) {
             {hasFilters && (
               <div className="flex items-center gap-2 flex-wrap">
                 {search && (
-                  <Link href={href({ ...base, search: '' })} className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium" style={{ background: 'var(--brand-light)', color: 'var(--brand)' }}>
+                  <NavLink href={href({ ...base, search: '' })} className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium" style={{ background: 'var(--brand-light)', color: 'var(--brand)' }}>
                     &quot;{search}&quot; <X size={12} />
-                  </Link>
+                  </NavLink>
                 )}
                 {city && (
-                  <Link href={href({ ...base, city: '' })} className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium" style={{ background: 'var(--brand-light)', color: 'var(--brand)' }}>
+                  <NavLink href={href({ ...base, city: '' })} className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium" style={{ background: 'var(--brand-light)', color: 'var(--brand)' }}>
                     📍 {city} <X size={12} />
-                  </Link>
+                  </NavLink>
                 )}
                 {category && (
-                  <Link href={href({ ...base, category: '' })} className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium" style={{ background: 'var(--brand-light)', color: 'var(--brand)' }}>
+                  <NavLink href={href({ ...base, category: '' })} className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium" style={{ background: 'var(--brand-light)', color: 'var(--brand)' }}>
                     {CAT_ICONS[category]} {category} <X size={12} />
-                  </Link>
+                  </NavLink>
                 )}
-                <Link href="/" className="text-xs px-2.5 py-1 rounded-full border" style={{ borderColor: 'var(--border)', color: 'var(--muted)' }}>
+                <NavLink href="/" className="text-xs px-2.5 py-1 rounded-full border" style={{ borderColor: 'var(--border)', color: 'var(--muted)' }}>
                   Limpiar todo
-                </Link>
-                <Link
+                </NavLink>
+                <NavLink
                   href={href({ ...base, nationwide: nationwide ? '' : 'true' })}
                   className="flex items-center gap-1.5 px-3 py-1 ml-2 rounded-full border text-xs font-medium"
                   style={{
@@ -180,13 +185,13 @@ export default async function HomePage({ searchParams }) {
                   }}
                 >
                   {nationwide ? '☑' : '☐'} Incluir envíos nacionales
-                </Link>
+                </NavLink>
               </div>
             )}
 
             {/* View toggle */}
             <div className="flex items-center rounded-lg overflow-hidden ml-auto flex-shrink-0" style={{ border: '1px solid var(--border)', background: 'var(--surface)' }}>
-              <Link
+              <NavLink
                 href={href({ ...base, view: '' })}
                 title="Cuadrícula"
                 className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium"
@@ -194,8 +199,8 @@ export default async function HomePage({ searchParams }) {
               >
                 <LayoutGrid size={14} />
                 <span className="hidden sm:inline">Cuadrícula</span>
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink
                 href={href({ ...base, view: 'list' })}
                 title="Lista"
                 className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium"
@@ -203,7 +208,7 @@ export default async function HomePage({ searchParams }) {
               >
                 <List size={14} />
                 <span className="hidden sm:inline">Lista</span>
-              </Link>
+              </NavLink>
             </div>
           </div>
 
@@ -212,7 +217,7 @@ export default async function HomePage({ searchParams }) {
             <div className="text-center py-20">
               <p className="text-lg font-semibold mb-2" style={{ color: 'var(--ink)' }}>Sin resultados</p>
               <p className="text-sm mb-4" style={{ color: 'var(--muted)' }}>Prueba con otros filtros o limpia la búsqueda.</p>
-              <Link href="/" className="text-sm font-semibold" style={{ color: 'var(--brand)' }}>Limpiar filtros</Link>
+              <NavLink href="/" className="text-sm font-semibold" style={{ color: 'var(--brand)' }}>Limpiar filtros</NavLink>
             </div>
           ) : (
             <>
@@ -230,15 +235,15 @@ export default async function HomePage({ searchParams }) {
               {totalPages > 1 && (
                 <div className="flex items-center justify-center gap-2 mt-10">
                   {page > 1 && (
-                    <Link href={href({ ...base, page: page - 1 })} className="px-3 py-1.5 rounded-lg text-sm border" style={{ borderColor: 'var(--border)', color: 'var(--ink)' }}>
+                    <NavLink href={href({ ...base, page: page - 1 })} className="px-3 py-1.5 rounded-lg text-sm border" style={{ borderColor: 'var(--border)', color: 'var(--ink)' }}>
                       ← Anterior
-                    </Link>
+                    </NavLink>
                   )}
                   <span className="text-sm px-2" style={{ color: 'var(--muted)' }}>Página {page} de {totalPages}</span>
                   {page < totalPages && (
-                    <Link href={href({ ...base, page: page + 1 })} className="px-3 py-1.5 rounded-lg text-sm border" style={{ borderColor: 'var(--border)', color: 'var(--ink)' }}>
+                    <NavLink href={href({ ...base, page: page + 1 })} className="px-3 py-1.5 rounded-lg text-sm border" style={{ borderColor: 'var(--border)', color: 'var(--ink)' }}>
                       Siguiente →
-                    </Link>
+                    </NavLink>
                   )}
                 </div>
               )}
