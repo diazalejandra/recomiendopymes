@@ -103,7 +103,7 @@ de confianza (reseñas) y el acceso a paneles (emprendedor, admin).
 | US-6 Recuperar contraseña | ✅ | `forgot-password` + `reset-password`. |
 | US-7 Editar perfil | 🟡 | Solo **nombre** (`PUT /me`). Falta contraseña y email con re-verificación (B-1). |
 | US-8 Restricción admin | ✅ | `require_admin` en dependencias. |
-| RN-11 Verificación en acciones | 🟡 | Solo **reseñar** la exige hoy; falta gatear inscribir/editar/responder (B-2). |
+| RN-11 Verificación en acciones | ✅ | `require_verified` aplicado a reseñar, inscribir, editar y responder (sprint P0). Falta UX 403 en el front. |
 | RN-14 Login rate limiting | ✅ | `/login` a 10/min por IP (B-5; pendiente de merge a `main`). |
 | RN-15 Consentimiento T&C | ✅ | Checkbox obligatorio + `accepted_terms`/`terms_accepted_at`/`terms_version` (B-6; texto aún borrador, pendiente de merge). |
 | RN-16 Borrado de cuenta (ARCO) | ❌ | No existe; legal (B-7). |
@@ -131,8 +131,8 @@ de confianza (reseñas) y el acceso a paneles (emprendedor, admin).
 |---|---|---|---|
 | **B-1** | Endpoint(s) de cambio de contraseña (usa `ChangePasswordRequest`) y de email con re-verificación; UI en perfil | Medio | Validar contraseña actual; al cambiar email → `is_email_verified:false` + enviar verificación |
 | **B-2** | Aplicar `require_verified` a inscribir/editar negocio y responder reseña | Bajo | La dependencia ya existe; falta usarla en los routers de `business` y `review` (se reflejará en sus specs) |
-| **B-3** | `/refresh` revalida `is_active` | Bajo | Leer el usuario y rechazar si `is_active:false` |
-| **B-4** | Separar modelo de entrada de registro (no heredar `role`/`is_active`/`is_email_verified`) | Bajo | Higiene; evita modelo de entrada engañoso |
+| ~~**B-3**~~ | ✅ `/refresh` revalida `is_active` | Bajo | Hecho: lee el usuario y rechaza 401/403 si no existe o `is_active:false` |
+| ~~**B-4**~~ | ✅ Separar modelo de entrada de registro (no heredar `role`/`is_active`/`is_email_verified`) | Bajo | **Hecho (2026-07-02).** `UserCreate` solo expone email/name/password/accepted_terms |
 | ~~**B-5**~~ | ✅ Rate limiting en login | Bajo | Hecho: `/login` 10/min por IP (rama `fix/auth-login-ratelimit`, pendiente merge) |
 | ~~**B-6**~~ | ✅ Registrar consentimiento T&C/Privacidad al registrarse | Bajo | Hecho: checkbox + `accepted_terms`/`terms_accepted_at`/`terms_version` (pendiente merge) |
 | **B-7** | Borrado de cuenta (derecho ARCO) | Medio-Alto | Cascada (reconciliación C6): reseñas se **anonimizan** (RV-7), negocios se **archivan/anonimizan** (Negocios RN-16); legal |

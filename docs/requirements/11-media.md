@@ -47,11 +47,11 @@ servidor, sin que el binario pase por el backend, y entrega optimizada (resize, 
 | Item | Estado | Nota |
 |---|---|---|
 | Subida firmada + directa | ✅ | `/api/media/upload-signature` + upload directo; transform 800×800 q_auto f_auto. |
-| RN-2 Firma autenticada | ❌ | Endpoint **público** ("temporalmente para Inscribir") (ME-1). |
-| RN-4 Límite tamaño/tipo | ❌ | Solo `accept="image/*"` en el front (ME-3). |
+| RN-2 Firma autenticada | ✅ | `get_current_user` en `/api/media/upload-signature` (sprint P0, ME-1). |
+| RN-4 Límite tamaño/tipo | ❌ | Solo `accept="image/*"` en el front (ME-3, diferido — ver Backlog). |
 | RN-5 Galería máx 8 | 🟡 | Validado en el front; backend no (N-4). |
 | RN-6 Borrado/huérfanas | ❌ | No se borran assets al quitar/eliminar; sin limpieza (ME-2). |
-| RN-7 Validar URLs | ❌ | `image`/`gallery` aceptan cualquier string (ME-4). |
+| RN-7 Validar URLs | ✅ | `image`/`gallery` validan host `res.cloudinary.com` + cloud del proyecto (2026-07-02, ME-4). |
 | Noticias usan este uploader | ❌ | Noticias usa URL pegada (NW-17). |
 
 ## Decisiones tomadas (2026-06-20)
@@ -64,10 +64,10 @@ servidor, sin que el binario pase por el backend, y entrega optimizada (resize, 
 
 | ID | Item | Esfuerzo | Notas |
 |---|---|---|---|
-| **ME-1** | Autenticar `/api/media/upload-signature` | Bajo | Hoy público → abuso de cupo; usar `get_current_user` |
+| ~~**ME-1**~~ | ✅ Autenticar `/api/media/upload-signature` | Bajo | Hecho (sprint P0): `get_current_user` |
 | **ME-2** | Borrado de assets al quitar/eliminar + job de limpieza de huérfanas | Medio | Eliminar en Cloudinary; job periódico para huérfanas (R2) |
-| **ME-3** | Validar tamaño/tipo de archivo server-side | Bajo | No solo `accept` en el front |
-| **ME-4** | Validar que `image`/`gallery` sean URLs del Cloudinary del proyecto | Bajo | Evita URLs arbitrarias |
+| **ME-3** | Validar tamaño/tipo de archivo server-side | Bajo | **Diferido a la migración Next.js.** Con subida firmada directa, forzar tipo/tamaño exige incluir `allowed_formats`/límites **en los params firmados**, lo que obliga a que el cliente los envíe (si no, la firma no valida y la subida se rompe). Es un cambio de contrato front+back; hacerlo junto con el rework del uploader. Mientras tanto, ME-4 acota el riesgo (solo URLs de nuestro Cloudinary). |
+| **ME-4** | ✅ Validar que `image`/`gallery` sean URLs del Cloudinary del proyecto | Bajo | **Hecho (2026-07-02).** `field_validator` en `BusinessCreate`/`BusinessUpdate`; rechaza host ajeno y `javascript:` |
 | **ME-5** | Unificar carga de imágenes de noticias con este uploader | Bajo | = NW-17 |
 | **ME-6** | Exponer uso de Cloudinary en el monitor de cupos | Bajo | = AD-22 |
 

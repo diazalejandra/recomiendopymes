@@ -127,13 +127,13 @@ Es el núcleo de valor del producto.
 | **N-2** | Permitir que el admin edite cualquier negocio (`PUT`) | Bajo | Permitir si es dueño **o** admin |
 | **N-3** | Soft-delete de negocios (status archivado + ocultar reseñas) en vez de borrado duro | Medio | Conserva auditoría; ajustar catálogo para excluir archivados |
 | **N-4** | Validar galería a máx. 8 imágenes en el modelo | Bajo | `max_length=8` en `gallery` |
-| **N-5** | Eliminar código muerto `_is_new_boost()` | Bajo | El boost se calcula en el pipeline |
+| **N-5** | ✅ Eliminar código muerto `_is_new_boost()` | Bajo | **Hecho (2026-07-02).** El boost se calcula en el pipeline |
 | **N-6** | Orden estable: `_id` como último criterio de sort (P-1) | Bajo | Evita repetir/saltar ítems entre páginas |
 | **N-7** | Capar `limit` público (~60–100); mapa con límite propio (P-2) | Bajo | Hoy permite 500 en ruta pública |
 | **N-8** | Búsqueda con índice de texto + colación sin acentos (P-4) | Medio | Hoy `$regex` hace scan y distingue acentos |
 | **N-9** | Validar `category` contra la colección de categorías (P-8) | Bajo-Medio | Evita categorías que el filtro nunca muestra |
-| **N-10** | Reintentar slug ante `DuplicateKeyError` (P-5) | Bajo | El índice único protege la BD; hoy da 500 en carrera |
-| **N-11** | ID inválido → 404 en `update`/`status`/`delete` (P-6) | Bajo | Hoy `ObjectId(id)` mal formado da 500 |
+| **N-10** | ✅ Reintentar slug ante `DuplicateKeyError` (P-5) | Bajo | **Hecho (2026-07-02).** `create()` reintenta 5 veces con slug fresco; si no, 409 |
+| **N-11** | ✅ ID inválido → 404 en `get`/`update`/`status`/`delete` (P-6) | Bajo | **Hecho (2026-07-02).** Helper `to_object_id()` compartido (negocios + reseñas) |
 | **N-12** | Validar rango de `coordinates` y exigir coords en physical/both (P-7) | Bajo | Un físico sin coords no aparece en el mapa |
 | **N-13** | **Quitar `active_offer`** ("Oferta Destacada") del MVP | Bajo-Medio | Decisión del Dashboard (DE-13); remover de modelo + edición + catálogo hasta validar demanda |
 | **N-14** | Agregar estado `rejected` al ciclo de vida (distinto de `inactive`) | Bajo | Decisión del Admin (AD-1); excluir `rejected` del catálogo como ya se excluye no-active |
