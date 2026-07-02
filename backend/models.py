@@ -1,6 +1,20 @@
 from pydantic_core import core_schema
 from typing import Any
 from bson import ObjectId
+from bson.errors import InvalidId
+from fastapi import HTTPException
+
+
+def to_object_id(value: str, detail: str = "Recurso no encontrado") -> ObjectId:
+    """Convierte un string a ObjectId; si es inválido, responde 404 en lugar de 500 (N-11).
+
+    Un id malformado en la URL es indistinguible para el cliente de un recurso
+    inexistente, así que devolvemos 404 con el mismo mensaje que usan los servicios.
+    """
+    try:
+        return ObjectId(value)
+    except (InvalidId, TypeError):
+        raise HTTPException(status_code=404, detail=detail)
 
 
 class PyObjectId(ObjectId):

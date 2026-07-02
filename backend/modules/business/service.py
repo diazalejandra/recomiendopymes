@@ -1,11 +1,15 @@
 import re
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from typing import Optional
 from fastapi import HTTPException
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from bson import ObjectId
+from pymongo.errors import DuplicateKeyError
 from slugify import slugify
+from models import to_object_id
 from modules.business.models import BusinessCreate, BusinessUpdate, BusinessPublic
+
+BUSINESS_NOT_FOUND = "Emprendimiento no encontrado"
 
 
 def _doc_to_public(doc: dict) -> dict:
@@ -33,13 +37,6 @@ async def _generate_unique_slug(db: AsyncIOMotorDatabase, name: str, exclude_id:
             return candidate
         candidate = f"{base}-{counter}"
         counter += 1
-
-
-def _is_new_boost(activated_at: Optional[datetime], boost_days: int = 30) -> bool:
-    """Retorna True si el negocio fue aprobado hace menos de boost_days días."""
-    if not activated_at:
-        return False
-    return (datetime.now(timezone.utc) - activated_at).days <= boost_days
 
 
 class BusinessService:
@@ -148,9 +145,9 @@ class BusinessService:
         return _doc_to_public(doc)
 
     async def get_by_id(self, business_id: str, current_user: Optional[dict] = None) -> dict:
-        doc = await self.db.businesses.find_one({"_id": ObjectId(business_id)})
+        doc = await self.db.businesses.find_one({"_id": to_object_id(business_id, BUSINESS_NOT_FOUND)})
         if not doc:
-            raise HTTPException(status_code=404, detail="Emprendimiento no encontrado")
+            raise HTTPException(status_code=404, detail=BUSINESS_NOT_FOUND)
             
         if doc.get("status") != "active":
             if not current_user:
@@ -167,10 +164,8 @@ class BusinessService:
         return [_doc_to_public(doc) async for doc in cursor]
 
     async def create(self, data: BusinessCreate, user_id: str) -> dict:
-        slug = await _generate_unique_slug(self.db, data.name)
         doc = {
             **data.model_dump(exclude_none=True),
-            "slug": slug,
             "owner_user_id": ObjectId(user_id),
             "status": "pending",
             "featured": False,
@@ -188,14 +183,25 @@ class BusinessService:
         if data.coordinates:
             doc["coordinates"] = data.coordinates.model_dump()
 
-        result = await self.db.businesses.insert_one(doc)
-        created = await self.db.businesses.find_one({"_id": result.inserted_id})
-        return _doc_to_public(created)
+        # El índice único en `slug` es la fuente de verdad. `_generate_unique_slug` evita
+        # colisiones en el caso normal, pero dos altas concurrentes con el mismo nombre
+        # pueden pasar la verificación y chocar en el insert (TOCTOU). Reintentamos con un
+        # slug fresco ante DuplicateKeyError en vez de devolver 500 (N-10).
+        for attempt in range(5):
+            doc["slug"] = await _generate_unique_slug(self.db, data.name)
+            try:
+                result = await self.db.businesses.insert_one(doc)
+                created = await self.db.businesses.find_one({"_id": result.inserted_id})
+                return _doc_to_public(created)
+            except DuplicateKeyError:
+                continue
+        raise HTTPException(status_code=409, detail="No se pudo generar un identificador único, reintenta")
 
     async def update(self, business_id: str, data: BusinessUpdate, user_id: str) -> dict:
-        doc = await self.db.businesses.find_one({"_id": ObjectId(business_id)})
+        oid = to_object_id(business_id, BUSINESS_NOT_FOUND)
+        doc = await self.db.businesses.find_one({"_id": oid})
         if not doc:
-            raise HTTPException(status_code=404, detail="Emprendimiento no encontrado")
+            raise HTTPException(status_code=404, detail=BUSINESS_NOT_FOUND)
         if str(doc.get("owner_user_id")) != user_id:
             raise HTTPException(status_code=403, detail="No tienes permisos para editar este emprendimiento")
 
@@ -206,15 +212,16 @@ class BusinessService:
             update_data["coordinates"] = data.coordinates.model_dump()
         update_data["updated_at"] = datetime.now(timezone.utc)
 
-        await self.db.businesses.update_one({"_id": ObjectId(business_id)}, {"$set": update_data})
-        updated = await self.db.businesses.find_one({"_id": ObjectId(business_id)})
+        await self.db.businesses.update_one({"_id": oid}, {"$set": update_data})
+        updated = await self.db.businesses.find_one({"_id": oid})
         return _doc_to_public(updated)
 
     async def change_status(self, business_id: str, new_status: str, by_admin: bool = False, owner_id: Optional[str] = None) -> dict:
         """Cambia el estado de un negocio. Admin puede aprobar, dueño puede desactivar o solicitar reactivación."""
-        doc = await self.db.businesses.find_one({"_id": ObjectId(business_id)})
+        oid = to_object_id(business_id, BUSINESS_NOT_FOUND)
+        doc = await self.db.businesses.find_one({"_id": oid})
         if not doc:
-            raise HTTPException(status_code=404, detail="Emprendimiento no encontrado")
+            raise HTTPException(status_code=404, detail=BUSINESS_NOT_FOUND)
 
         if not by_admin and owner_id:
             if str(doc.get("owner_user_id")) != owner_id:
@@ -230,17 +237,18 @@ class BusinessService:
         if new_status == "active" and not doc.get("activated_at"):
             update["activated_at"] = datetime.now(timezone.utc)
 
-        await self.db.businesses.update_one({"_id": ObjectId(business_id)}, {"$set": update})
-        updated = await self.db.businesses.find_one({"_id": ObjectId(business_id)})
+        await self.db.businesses.update_one({"_id": oid}, {"$set": update})
+        updated = await self.db.businesses.find_one({"_id": oid})
         return _doc_to_public(updated)
 
     async def delete(self, business_id: str) -> dict:
-        doc = await self.db.businesses.find_one({"_id": ObjectId(business_id)})
+        oid = to_object_id(business_id, BUSINESS_NOT_FOUND)
+        doc = await self.db.businesses.find_one({"_id": oid})
         if not doc:
-            raise HTTPException(status_code=404, detail="Emprendimiento no encontrado")
-        await self.db.businesses.delete_one({"_id": ObjectId(business_id)})
+            raise HTTPException(status_code=404, detail=BUSINESS_NOT_FOUND)
+        await self.db.businesses.delete_one({"_id": oid})
         # Eliminar también sus reseñas
-        await self.db.reviews.delete_many({"business_id": ObjectId(business_id)})
+        await self.db.reviews.delete_many({"business_id": oid})
         return {"message": f"Emprendimiento '{doc['name']}' eliminado correctamente"}
 
     async def recalculate_rating(self, business_id: str):

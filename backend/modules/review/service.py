@@ -2,6 +2,8 @@ from datetime import datetime, timedelta, timezone
 from fastapi import HTTPException
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from bson import ObjectId
+from pymongo.errors import DuplicateKeyError
+from models import to_object_id
 from modules.review.models import ReviewCreate, ReviewPublic, ReviewResponse
 
 # Import at module level to avoid circular import anti-pattern
@@ -10,6 +12,9 @@ from modules.business.service import BusinessService
 
 SUSPICIOUS_THRESHOLD = 5  # reseñas en la misma ventana de tiempo
 SUSPICIOUS_WINDOW_HOURS = 24
+REVIEW_NOT_FOUND = "Reseña no encontrada"
+BUSINESS_NOT_FOUND = "Emprendimiento no encontrado"
+ALREADY_REVIEWED = "Ya dejaste una reseña en este emprendimiento"
 
 
 def _doc_to_public(doc: dict) -> dict:
@@ -25,7 +30,7 @@ class ReviewService:
         self.db = db
 
     async def get_business_reviews(self, business_id: str, page: int = 1, limit: int = 10) -> dict:
-        query = {"business_id": ObjectId(business_id), "is_visible": True}
+        query = {"business_id": to_object_id(business_id, BUSINESS_NOT_FOUND), "is_visible": True}
         total = await self.db.reviews.count_documents(query)
         skip = (page - 1) * limit
         cursor = self.db.reviews.find(query).sort("created_at", -1).skip(skip).limit(limit)
@@ -33,10 +38,11 @@ class ReviewService:
         return {"reviews": reviews, "total": total, "page": page, "total_pages": max(1, -(-total // limit))}
 
     async def create(self, business_id: str, data: ReviewCreate, author: dict) -> dict:
+        bid = to_object_id(business_id, BUSINESS_NOT_FOUND)
         # Verificar que el negocio existe y está activo
-        business = await self.db.businesses.find_one({"_id": ObjectId(business_id), "status": "active"})
+        business = await self.db.businesses.find_one({"_id": bid, "status": "active"})
         if not business:
-            raise HTTPException(status_code=404, detail="Emprendimiento no encontrado")
+            raise HTTPException(status_code=404, detail=BUSINESS_NOT_FOUND)
 
         # No se puede reseñar el propio negocio (RV-1)
         if str(business.get("owner_user_id")) == str(author["_id"]):
@@ -44,11 +50,11 @@ class ReviewService:
 
         # Verificar que el autor no haya reseñado ya este negocio
         existing = await self.db.reviews.find_one({
-            "business_id": ObjectId(business_id),
+            "business_id": bid,
             "author_id": author["_id"]
         })
         if existing:
-            raise HTTPException(status_code=400, detail="Ya dejaste una reseña en este emprendimiento")
+            raise HTTPException(status_code=400, detail=ALREADY_REVIEWED)
 
         # Detección de comportamiento sospechoso (configurable vía admin)
         config = await self.db.config.find_one({"key": "review_rate_limit"})
@@ -67,7 +73,7 @@ class ReviewService:
 
         # La reseña se publica inmediatamente (no hay moderación previa)
         doc = {
-            "business_id": ObjectId(business_id),
+            "business_id": bid,
             "author_id": author["_id"],
             "author_name": author["name"],
             "rating": data.rating,
@@ -77,7 +83,13 @@ class ReviewService:
             "created_at": datetime.now(timezone.utc),
             "updated_at": datetime.now(timezone.utc)
         }
-        result = await self.db.reviews.insert_one(doc)
+        # El índice único (business_id, author_id) es la fuente de verdad. El find_one de
+        # arriba cubre el caso normal, pero dos envíos concurrentes pueden pasar ambos y
+        # chocar en el insert. Capturamos DuplicateKeyError y respondemos 400 en vez de 500 (RV-6).
+        try:
+            result = await self.db.reviews.insert_one(doc)
+        except DuplicateKeyError:
+            raise HTTPException(status_code=400, detail=ALREADY_REVIEWED)
 
         # Recalcular rating del negocio
         bs = BusinessService(self.db)
@@ -88,9 +100,10 @@ class ReviewService:
 
     async def add_owner_response(self, review_id: str, text: str, owner: dict) -> dict:
         """El dueño del negocio responde a una reseña."""
-        review = await self.db.reviews.find_one({"_id": ObjectId(review_id)})
+        rid = to_object_id(review_id, REVIEW_NOT_FOUND)
+        review = await self.db.reviews.find_one({"_id": rid})
         if not review:
-            raise HTTPException(status_code=404, detail="Reseña no encontrada")
+            raise HTTPException(status_code=404, detail=REVIEW_NOT_FOUND)
 
         # Verificar que el usuario es dueño del negocio al que pertenece la reseña
         business = await self.db.businesses.find_one({"_id": review["business_id"]})
@@ -103,25 +116,26 @@ class ReviewService:
             "created_at": datetime.now(timezone.utc)
         }
         await self.db.reviews.update_one(
-            {"_id": ObjectId(review_id)},
+            {"_id": rid},
             {"$set": {"owner_response": response, "updated_at": datetime.now(timezone.utc)}}
         )
-        updated = await self.db.reviews.find_one({"_id": ObjectId(review_id)})
+        updated = await self.db.reviews.find_one({"_id": rid})
         return _doc_to_public(updated)
 
     async def toggle_visibility(self, review_id: str) -> dict:
         """Admin: ocultar/mostrar una reseña."""
-        review = await self.db.reviews.find_one({"_id": ObjectId(review_id)})
+        rid = to_object_id(review_id, REVIEW_NOT_FOUND)
+        review = await self.db.reviews.find_one({"_id": rid})
         if not review:
-            raise HTTPException(status_code=404, detail="Reseña no encontrada")
+            raise HTTPException(status_code=404, detail=REVIEW_NOT_FOUND)
         new_vis = not review.get("is_visible", True)
         await self.db.reviews.update_one(
-            {"_id": ObjectId(review_id)},
+            {"_id": rid},
             {"$set": {"is_visible": new_vis, "updated_at": datetime.now(timezone.utc)}}
         )
         # Recalcular rating del negocio tras el cambio de visibilidad
         bs = BusinessService(self.db)
         await bs.recalculate_rating(str(review["business_id"]))
 
-        updated = await self.db.reviews.find_one({"_id": ObjectId(review_id)})
+        updated = await self.db.reviews.find_one({"_id": rid})
         return _doc_to_public(updated)
