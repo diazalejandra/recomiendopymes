@@ -26,6 +26,12 @@ cambio es un riesgo; sin observabilidad, los errores en producción son invisibl
   **monitoreo de uptime** (p. ej. UptimeRobot) — relevante por el **cold-start de Render**.
 - **RN-5 — Calidad de código:** linter/formato (ESLint/Prettier en front; ruff/black en
   back) y las convenciones del `CLAUDE.md`.
+- **RN-8 — Seguridad de dependencias:** mantener las dependencias sin vulnerabilidades
+  conocidas de severidad alta. Revisar `npm audit` (front) / `pip-audit` (back)
+  periódicamente y en CI; aplicar parches semver-compatibles pronto y planificar los
+  cambios mayores. Distinguir vulnerabilidades **de runtime** (exposición real en
+  producción, p. ej. `axios`) de las **solo-dev/build** (p. ej. dev-server de `vite`),
+  que no exponen producción pero igual se corrigen.
 - **RN-6 — Migración de datos:** todo cambio de modelo (estados `rejected`/`archived`,
   quitar `active_offer`, tz-aware, `tipo` de noticias, `tags`) define cómo se **migran los
   datos existentes** (script idempotente o default seguro).
@@ -50,6 +56,7 @@ cambio es un riesgo; sin observabilidad, los errores en producción son invisibl
 | Observabilidad | ❌ | Sin error tracking ni uptime monitor. |
 | Lint/formato | ❓ | Verificar configuración existente. |
 | Migración de datos | ❌ | Sin enfoque para cambios de modelo. |
+| Seguridad de deps | 🟡 | `npm audit` reporta 8 (5 altas): axios, react-router, vite, postcss, form-data, follow-redirects, @babel/core. Todas con fix semver-compatible. |
 
 ## Backlog
 
@@ -61,6 +68,7 @@ cambio es un riesgo; sin observabilidad, los errores en producción son invisibl
 | **QA-4** | Observabilidad: Sentry + uptime monitor | Bajo | Cold-start de Render |
 | **QA-5** | Estándar de migración de datos + scripts por cambio de modelo | Medio | Estados, active_offer, tz, tags |
 | **QA-6** | Presupuesto de performance / CWV | Bajo | Cruce SEO SE-7 |
+| **QA-7** | Auditoría de dependencias (`npm audit` / `pip-audit`) + parche | Bajo | 8 vulns (5 altas) hoy; fix semver-compatible. Sumar `npm audit` como paso no bloqueante en CI |
 
 > **Prioridad:** QA-1/QA-2/QA-3 **antes o junto con** la migración a Next.js — son la red de
 > seguridad que el ADR-0001 asume.
