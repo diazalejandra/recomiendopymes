@@ -41,9 +41,11 @@ export function getBusinesses(params = {}) {
 }
 
 export async function getCategories() {
-  return (await apiGet('/categories')) || [];
+  const data = await apiGet('/categories');
+  return data?.categories || [];
 }
 
 export async function getCities() {
-  return (await apiGet('/cities')) || [];
+  const data = await apiGet('/cities');
+  return data?.cities || [];
 }
