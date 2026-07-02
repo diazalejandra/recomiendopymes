@@ -69,12 +69,12 @@ jobs:
       - name: Sembrar MongoDB
         working-directory: backend
         run: python seed_data.py
-      - name: Arrancar backend (background) y esperar /health
+      - name: Arrancar backend (background) y esperar /api/health
         working-directory: backend
         run: |
           nohup python -m uvicorn server:app --port 8000 --host 127.0.0.1 > backend.log 2>&1 &
           for i in $(seq 1 30); do
-            if curl -sf http://127.0.0.1:8000/health > /dev/null; then
+            if curl -sf http://127.0.0.1:8000/api/health > /dev/null; then
               echo "Backend listo"; exit 0
             fi
             sleep 1
