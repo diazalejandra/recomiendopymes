@@ -1,8 +1,38 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from typing import Optional, List
 from datetime import datetime, timezone
+from urllib.parse import urlparse
 from bson import ObjectId
 from models import PyObjectId, MONGO_MODEL_CONFIG
+from core.config import settings
+
+CLOUDINARY_DELIVERY_HOST = "res.cloudinary.com"
+
+
+def _validate_cloudinary_url(url: Optional[str]) -> Optional[str]:
+    """Solo acepta URLs de entrega de Cloudinary de nuestra cuenta (ME-4).
+
+    Evita que se guarden URLs arbitrarias vía API (hotlinking, pseudo-URLs `javascript:`,
+    imágenes externas de terceros). Las imágenes legítimas se suben a Cloudinary con firma
+    (ME-1) y quedan como `https://res.cloudinary.com/<cloud>/...`.
+    """
+    if not url:
+        return url
+    parsed = urlparse(url)
+    if parsed.scheme != "https" or parsed.netloc != CLOUDINARY_DELIVERY_HOST:
+        raise ValueError("La imagen debe ser una URL de Cloudinary (https://res.cloudinary.com/...)")
+    cloud = settings.CLOUDINARY_CLOUD_NAME
+    if cloud:
+        segments = [s for s in parsed.path.split("/") if s]
+        if not segments or segments[0] != cloud:
+            raise ValueError("La imagen no pertenece a la cuenta de Cloudinary configurada")
+    return url
+
+
+def _validate_gallery(gallery: Optional[List[str]]) -> Optional[List[str]]:
+    if not gallery:
+        return gallery
+    return [_validate_cloudinary_url(u) for u in gallery]
 
 
 class SocialLinks(BaseModel):
@@ -51,6 +81,9 @@ class BusinessCreate(BaseModel):
     gallery: Optional[List[str]] = Field(default_factory=list)
     established: Optional[str] = None
 
+    _v_image = field_validator("image")(_validate_cloudinary_url)
+    _v_gallery = field_validator("gallery")(_validate_gallery)
+
 
 class BusinessUpdate(BaseModel):
     category: Optional[str] = Field(None, min_length=2, max_length=80)
@@ -70,6 +103,9 @@ class BusinessUpdate(BaseModel):
     image: Optional[str] = None
     gallery: Optional[List[str]] = None
     established: Optional[str] = None
+
+    _v_image = field_validator("image")(_validate_cloudinary_url)
+    _v_gallery = field_validator("gallery")(_validate_gallery)
 
 
 class Business(BaseModel):

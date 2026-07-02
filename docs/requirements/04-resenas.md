@@ -119,7 +119,7 @@ reseñas alimentan el `rating` que ordena el catálogo.
 | **RV-3** | Validar texto de respuesta del dueño (1–500) | Bajo | `OwnerResponseRequest` sin min/max hoy |
 | **RV-4** | Ventana de detección configurable | Bajo | El umbral ya lo es; falta la ventana |
 | **RV-5** | Editar y eliminar reseña propia (endpoints + recalc rating + UI) | Medio | Usa `ReviewUpdate`; borrar recalcula rating |
-| **RV-6** | Capturar `DuplicateKeyError` en crear reseña | Bajo | Evita 500 en carrera (índice único) |
+| **RV-6** | ✅ Capturar `DuplicateKeyError` en crear reseña | Bajo | **Hecho (2026-07-02).** 400 en carrera (índice único (business_id, author_id)) |
 | **RV-7** | Anonimizar reseñas al borrar cuenta + ocultar al archivar negocio | Medio | Consistencia con Auth B-7 y Negocios N-3 (RN-13) |
 | **RV-8** | Flujo de reportar reseña → cola de revisión admin | Medio | Para dueño y usuarios (RN-11) |
 | **RV-9** | Filtro básico de contenido al publicar (groserías/links) | Medio | Bloquear o marcar (RN-12) |
