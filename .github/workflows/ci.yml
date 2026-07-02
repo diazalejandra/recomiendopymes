@@ -39,6 +39,20 @@ jobs:
       - run: npm ci
       - run: npm run build
 
+  web:
+    name: Web Next.js (build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm ci
+      - run: npm run build
+
   e2e:
     name: E2E (Playwright)
     runs-on: ubuntu-latest

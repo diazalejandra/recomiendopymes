@@ -1,0 +1,117 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Portado 1:1 desde frontend/src/index.css. Única diferencia: la fuente 'Outfit'
+   se carga vía next/font (layout.js) y se expone como var(--font-outfit). */
+
+/* ── Design tokens ─────────────────────────────────── */
+:root {
+  /* Brand */
+  --brand:        #2563EB;
+  --brand-hover:  #1D4ED8;
+  --brand-light:  #EFF6FF;
+  --brand-mid:    #BFDBFE;
+
+  /* Neutrals */
+  --ink:          #0F172A;
+  --ink-2:        #1E293B;
+  --muted:        #64748B;
+  --subtle:       #94A3B8;
+
+  /* Surfaces */
+  --bg:           #F8FAFC;
+  --surface:      #FFFFFF;
+  --border:       #E2E8F0;
+  --border-focus: #93C5FD;
+
+  /* State */
+  --success:      #059669;
+  --success-bg:   #ECFDF5;
+  --warning:      #D97706;
+  --warning-bg:   #FFFBEB;
+}
+/* Nota: --primary lo define el bloque shadcn (@layer base) como triplete HSL,
+   porque Tailwind lo consume vía hsl(var(--primary)). No redefinir aquí con un
+   color hex o se rompe bg-primary/text-primary en toda la app. */
+
+/* ── Base ───────────────────────────────────────────── */
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { background: var(--bg); color: var(--ink); scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-outfit), 'Outfit', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: var(--font-outfit), 'Outfit', system-ui, sans-serif;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+/* ── Shadcn CSS vars ────────────────────────────────── */
+@layer base {
+  :root {
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 221 83% 53%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222 47% 11%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 221 83% 53%;
+    --radius: 0.625rem;
+  }
+}
+
+/* ── Scrollbar ──────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--subtle); }
+
+/* ── Leaflet overrides ──────────────────────────────── */
+.leaflet-container { font-family: var(--font-outfit), 'Outfit', sans-serif !important; }
+.leaflet-popup-content-wrapper {
+  border-radius: 12px !important;
+  box-shadow: 0 4px 24px rgba(15,23,42,0.12) !important;
+  border: 1px solid var(--border);
+  padding: 0 !important;
+  overflow: hidden;
+}
+.leaflet-popup-content { margin: 0 !important; }
+.leaflet-popup-tip { background: #fff !important; }
+
+/* ── User location pulse ───────────────────────────── */
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(59,130,246,0.5), 0 2px 6px rgba(0,0,0,.2); }
+  70% { box-shadow: 0 0 0 14px rgba(59,130,246,0), 0 2px 6px rgba(0,0,0,.2); }
+  100% { box-shadow: 0 0 0 0 rgba(59,130,246,0), 0 2px 6px rgba(0,0,0,.2); }
+}
