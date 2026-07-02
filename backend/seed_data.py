@@ -19,7 +19,7 @@ async def seed():
     print("[SEED] Iniciando seed data para RecomiendoPymes...")
 
     # ─── Limpiar colecciones (solo en dev) ───────────────────────────
-    for col in ["users", "businesses", "reviews", "legal", "config"]:
+    for col in ["users", "businesses", "reviews", "legal", "config", "news"]:
         await db[col].drop()
     print("[OK] Colecciones limpiadas")
 
@@ -503,6 +503,38 @@ async def seed():
         {"key": "maintenance_mode", "value": False, "description": "Activa modo mantenimiento"},
     ])
     print("[OK] Configuración inicial creada")
+
+    # ─── Noticias ─────────────────────────────────────────────────────
+    now = datetime.now(timezone.utc)
+    await db.news.insert_many([
+        {
+            "slug": "fondos-sercotec-2026",
+            "title": "Abren postulaciones a fondos Sercotec 2026",
+            "content": "Sercotec lanzó su convocatoria anual de capital semilla para micro y pequeñas empresas. Las postulaciones estarán abiertas durante todo el mes y priorizan proyectos con enfoque digital.",
+            "excerpt": "Capital semilla para micro y pequeñas empresas: postulaciones abiertas todo el mes.",
+            "image_url": None,
+            "tag": "Fondos",
+            "status": "published",
+            "source": "manual",
+            "published_at": now,
+            "created_at": now,
+            "updated_at": now,
+        },
+        {
+            "slug": "guia-vender-por-instagram",
+            "title": "Guía: cómo vender más por Instagram siendo emprendedor",
+            "content": "Recopilamos consejos prácticos para emprendedores que venden por redes sociales: catálogo ordenado, fotos con buena luz, respuesta rápida y uso de reseñas para generar confianza.",
+            "excerpt": "Consejos prácticos para ordenar tu catálogo y generar confianza en redes.",
+            "image_url": None,
+            "tag": "Recursos",
+            "status": "published",
+            "source": "manual",
+            "published_at": now - timedelta(days=2),
+            "created_at": now - timedelta(days=2),
+            "updated_at": now - timedelta(days=2),
+        },
+    ])
+    print("[OK] Noticias de ejemplo creadas")
 
     # ─── Índices ──────────────────────────────────────────────────────
     await db.users.create_index("email", unique=True)
