@@ -23,3 +23,27 @@ async function apiGet(path, { revalidate = DEFAULT_REVALIDATE } = {}) {
 export function getBusiness(slug) {
   return apiGet(`/businesses/${encodeURIComponent(slug)}`);
 }
+
+/**
+ * Listado público de negocios con filtros.
+ * @param {{search?:string, city?:string, category?:string, page?:number, limit?:number, nationwide?:boolean}} params
+ * @returns {Promise<{businesses:object[], total:number, page:number, total_pages:number}>}
+ */
+export function getBusinesses(params = {}) {
+  const qs = new URLSearchParams();
+  if (params.search) qs.set('search', params.search);
+  if (params.city) qs.set('city', params.city);
+  if (params.category) qs.set('category', params.category);
+  if (params.nationwide) qs.set('nationwide', 'true');
+  qs.set('page', String(params.page || 1));
+  qs.set('limit', String(params.limit || 12));
+  return apiGet(`/businesses?${qs.toString()}`);
+}
+
+export async function getCategories() {
+  return (await apiGet('/categories')) || [];
+}
+
+export async function getCities() {
+  return (await apiGet('/cities')) || [];
+}
