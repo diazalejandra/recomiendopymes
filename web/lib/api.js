@@ -59,3 +59,21 @@ export async function getNews(limit = 50) {
 export function getNewsBySlug(slug) {
   return apiGet(`/news/public/${encodeURIComponent(slug)}`);
 }
+
+/**
+ * Todos los negocios activos (paginando; el endpoint capa limit a 500). Para el sitemap.
+ * Nota: con catálogos muy grandes conviene un endpoint dedicado de slugs.
+ */
+export async function getAllActiveBusinesses() {
+  const all = [];
+  let page = 1;
+  for (let i = 0; i < 50; i++) {
+    const data = await getBusinesses({ page, limit: 500 });
+    const items = data?.businesses || [];
+    all.push(...items);
+    const totalPages = data?.total_pages || 1;
+    if (page >= totalPages || items.length === 0) break;
+    page += 1;
+  }
+  return all;
+}
