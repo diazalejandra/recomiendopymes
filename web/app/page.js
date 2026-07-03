@@ -231,19 +231,28 @@ export default async function HomePage({ searchParams }) {
                 </div>
               )}
 
-              {/* Paginación (Links) */}
+              {/* Paginación — ambos botones siempre; el no disponible queda deshabilitado
+                  (opacity-40), igual que el SPA. */}
               {totalPages > 1 && (
-                <div className="flex items-center justify-center gap-2 mt-10">
-                  {page > 1 && (
-                    <NavLink href={href({ ...base, page: page - 1 })} className="px-3 py-1.5 rounded-lg text-sm border" style={{ borderColor: 'var(--border)', color: 'var(--ink)' }}>
+                <div className="flex justify-center items-center gap-2 mt-10">
+                  {page > 1 ? (
+                    <NavLink href={href({ ...base, page: page - 1 })} className="px-4 py-2 rounded-lg text-sm font-medium border transition-all" style={{ borderColor: 'var(--border)', color: 'var(--ink)', background: 'var(--surface)' }}>
                       ← Anterior
                     </NavLink>
+                  ) : (
+                    <span className="px-4 py-2 rounded-lg text-sm font-medium border opacity-40 select-none" style={{ borderColor: 'var(--border)', color: 'var(--ink)', background: 'var(--surface)' }}>
+                      ← Anterior
+                    </span>
                   )}
-                  <span className="text-sm px-2" style={{ color: 'var(--muted)' }}>Página {page} de {totalPages}</span>
-                  {page < totalPages && (
-                    <NavLink href={href({ ...base, page: page + 1 })} className="px-3 py-1.5 rounded-lg text-sm border" style={{ borderColor: 'var(--border)', color: 'var(--ink)' }}>
+                  <span className="px-4 py-2 text-sm" style={{ color: 'var(--muted)' }}>{page} / {totalPages}</span>
+                  {page < totalPages ? (
+                    <NavLink href={href({ ...base, page: page + 1 })} className="px-4 py-2 rounded-lg text-sm font-medium border transition-all" style={{ borderColor: 'var(--border)', color: 'var(--ink)', background: 'var(--surface)' }}>
                       Siguiente →
                     </NavLink>
+                  ) : (
+                    <span className="px-4 py-2 rounded-lg text-sm font-medium border opacity-40 select-none" style={{ borderColor: 'var(--border)', color: 'var(--ink)', background: 'var(--surface)' }}>
+                      Siguiente →
+                    </span>
                   )}
                 </div>
               )}
