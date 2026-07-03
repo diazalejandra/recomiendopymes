@@ -91,12 +91,13 @@ y la **decisión central** de este módulo.
 | ID | Item | Esfuerzo | Notas |
 |---|---|---|---|
 | **SE-1** | Migración del frontend a **Next.js** (SSR/SSG/ISR) | **Alto** | Reescritura del frontend; ADR; rework de auth para SSR; absorbe SE-2/SE-4/SE-5/NW-18 |
-| **SE-2** | `sitemap.xml` dinámico + `robots.txt` | Bajo | Negocios active + noticias published + páginas categoría; bloquear /admin,/mi-negocio,/api |
+| **SE-2** | ✅ `sitemap.xml` dinámico + `robots.txt` | Bajo | **Hecho (2026-07-02, Next).** `app/sitemap.js` (force-dynamic) + `app/robots.js`. Paginación → SE-8 |
 | **SE-3** | Categorías desde fuente única (no hardcode) + corregir "Clothing y Moda" | Bajo | Cruce módulo 3 (C-1/C-3) |
-| **SE-4** | `geo` coordinates en JSON-LD `LocalBusiness` + JSON-LD `Article` en noticias | Bajo | Cruce MP-10 / NW-5 |
-| **SE-5** | Canonical por página + canonicalización de query params | Bajo | Nativo en Next |
+| **SE-4** | ✅ `geo` coordinates en JSON-LD `LocalBusiness` + JSON-LD `Article` en noticias | Bajo | **Hecho (2026-07-02, Next).** Cruce MP-10 / NW-5 |
+| **SE-5** | ✅ Canonical por página + canonicalización de query params | Bajo | **Hecho (2026-07-02, Next).** `alternates.canonical`; home filtrado canonicaliza a `/` |
 | **SE-6** | Páginas de categoría + categoría/ciudad indexables | Medio | Rutas dinámicas; alto valor SEO local |
 | **SE-7** | `lang=es`, Core Web Vitals, unificar approach de meta | Bajo | Helmet/metadata en todo, no JS crudo |
+| **SE-8** | Paginar el sitemap cuando el catálogo/noticias crezcan | Bajo | Hoy toma noticias con el endpoint público **capado a 50** (negocios ya pagina, cap 500). Con >50 noticias faltarían URLs → endpoint dedicado de slugs o paginación. También fijar `NEXT_PUBLIC_SITE_URL` en Vercel (hoy default `recomiendopymes.cl`) |
 
 > Muchos SE-* se vuelven triviales o nativos una vez hecha la migración (SE-1); por eso SE-1
 > es el habilitador y debería ir primero o junto con el resto.
