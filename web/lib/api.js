@@ -49,3 +49,13 @@ export async function getCities() {
   const data = await apiGet('/cities');
   return data?.cities || [];
 }
+
+/** Listado de noticias públicas (publicadas). Devuelve un array. */
+export async function getNews(limit = 50) {
+  return (await apiGet(`/news/public?limit=${limit}`)) || [];
+}
+
+/** Noticia pública por slug. null si no existe/no publicada. */
+export function getNewsBySlug(slug) {
+  return apiGet(`/news/public/${encodeURIComponent(slug)}`);
+}
