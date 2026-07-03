@@ -109,6 +109,27 @@
 .leaflet-popup-content { margin: 0 !important; }
 .leaflet-popup-tip { background: #fff !important; }
 
+/* ── Tarjetas de catálogo (hover en CSS para no volverlas client components) ── */
+.biz-grid-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+.biz-grid-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.10);
+  border-color: #93C5FD;
+}
+.biz-list-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.biz-list-card:hover {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px var(--brand-light);
+}
+
 /* ── User location pulse ───────────────────────────── */
 @keyframes pulse-ring {
   0% { box-shadow: 0 0 0 0 rgba(59,130,246,0.5), 0 2px 6px rgba(0,0,0,.2); }

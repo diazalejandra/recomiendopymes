@@ -140,6 +140,7 @@ Es el núcleo de valor del producto.
 | **N-15** | Medir **leads/conversión**: clics a WhatsApp/Instagram/web/mapa desde la ficha | Medio | El valor real para el emprendedor; hoy solo `view_count` (G2) |
 | **N-16** | **Horarios** de atención + `LocalBusiness` rico (openingHours, priceRange) | Medio | Negocio (físicos) + rich results SEO (G4) |
 | **N-17** | Soportar `archived` (soft-delete) y `rejected` en el modelo y filtros | Bajo | Implementa la máquina de estados RN-15 |
+| **N-18** | Buscador de ciudad: mostrar solo comunas **con negocios activos**, no todas las de Chile | Bajo-Medio | Hoy `/api/cities` devuelve todas las comunas de `REGIONS_DATA` → lista larguísima con ciudades sin catálogo. Derivar de `distinct(city)` sobre negocios `active` (o marcar/ordenar las que tienen resultados). Afecta el buscador del home y filtros. Está también en el SPA estable. _(detectado 2026-07-02 en QA de la migración)_ |
 
 ## Notas abiertas
 
