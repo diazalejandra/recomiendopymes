@@ -1,9 +1,8 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowLeft, Calendar, User } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import { getNewsBySlug } from '@/lib/api';
+import MarkdownContent from '@/components/news/MarkdownContent';
 
 const DEFAULT_DESC = 'Catálogo de emprendedores chilenos. Descubre y apoya micro-emprendimientos de toda Chile.';
 
@@ -95,7 +94,7 @@ export default async function NewsDetailPage({ params }) {
       )}
 
       <div className="prose prose-lg prose-blue max-w-none prose-headings:font-bold prose-h2:text-3xl prose-h3:text-2xl prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-img:rounded-2xl prose-img:shadow-sm">
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>{article.content}</ReactMarkdown>
+        <MarkdownContent>{article.content}</MarkdownContent>
       </div>
     </article>
   );
