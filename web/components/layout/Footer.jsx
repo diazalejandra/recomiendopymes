@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { HIDE_CHROME_ROUTES } from '@/components/layout/chrome';
 
 // Portado desde frontend/src/components/AppLayout.jsx (footer).
 const RESOURCES = [
@@ -15,6 +16,7 @@ const RESOURCES = [
 
 export default function Footer() {
   const pathname = usePathname();
+  if (HIDE_CHROME_ROUTES.includes(pathname)) return null;
   const isHome = pathname === '/';
 
   return (
