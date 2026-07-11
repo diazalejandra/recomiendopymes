@@ -5,7 +5,7 @@ import {
   Globe, Mail, MessageCircle, MapPin, ExternalLink, Zap, Star,
 } from 'lucide-react';
 import { getBusiness } from '@/lib/api';
-import ReviewItem from '@/components/business/ReviewItem';
+import ReviewsSection from '@/components/business/ReviewsSection';
 
 const DEFAULT_DESC = 'Catálogo de emprendedores chilenos. Descubre y apoya micro-emprendimientos de toda Chile.';
 
@@ -270,28 +270,8 @@ export default async function BusinessDetailPage({ params }) {
         </section>
       )}
 
-      {/* Reseñas */}
-      <section>
-        <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center justify-between">
-          <span>
-            Reseñas {reviews.length > 0 && <span className="text-gray-400 font-medium ml-1">({reviews.length})</span>}
-          </span>
-        </h2>
-        <div className="space-y-4 mb-8">
-          {reviews.length === 0 ? (
-            <p className="text-gray-500 text-sm py-8 text-center bg-gray-50 rounded-xl border border-dashed border-gray-200">
-              Aún no hay reseñas. ¡Sé el primero en calificar tu experiencia!
-            </p>
-          ) : (
-            reviews.map((r) => <ReviewItem key={r._id || r.id} review={r} />)
-          )}
-        </div>
-
-        {/* Fase 2: sin sesión aún. El formulario para dejar reseña llega en la Fase 3. */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 text-center text-sm text-gray-500">
-          Para dejar una reseña necesitas iniciar sesión. (Disponible próximamente en esta versión.)
-        </div>
-      </section>
+      {/* Reseñas — lista SSR (indexable) + interacción client (dejar reseña / responder) */}
+      <ReviewsSection businessId={business.id} ownerUserId={business.owner_user_id} initialReviews={reviews} />
     </div>
   );
 }
