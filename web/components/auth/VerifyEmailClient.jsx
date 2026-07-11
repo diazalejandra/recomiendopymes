@@ -5,6 +5,16 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { authApi } from '@/utils/api';
 import { useAuth } from '@/hooks/useAuth';
+import { authButton, authShellStyle, authCardStyle } from '@/components/auth/authStyles';
+
+function Logo() {
+  return (
+    <Link href="/" className="inline-flex items-center gap-1 mb-6" style={{ textDecoration: 'none' }}>
+      <span style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--ink)', fontFamily: 'Outfit' }}>Recomiendo</span>
+      <span style={{ fontSize: '1.25rem', fontWeight: 800, color: '#fff', background: 'var(--brand)', padding: '1px 8px', borderRadius: '6px', fontFamily: 'Outfit' }}>Pymes</span>
+    </Link>
+  );
+}
 
 export default function VerifyEmailClient() {
   const searchParams = useSearchParams();
@@ -26,33 +36,30 @@ export default function VerifyEmailClient() {
       .catch(() => setStatus('error'));
   }, [token, refreshUser]);
 
-  if (status === 'loading') {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4" style={{ borderColor: 'var(--brand)' }} />
-          <p className="text-gray-500">Verificando tu email...</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full text-center p-8 bg-white rounded-xl shadow">
-        {status === 'success' ? (
+    <div style={authShellStyle}>
+      <div style={authCardStyle}>
+        <Logo />
+        {status === 'loading' && (
           <>
-            <div className="text-5xl mb-4">✅</div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">¡Email verificado!</h2>
-            <p className="text-gray-600 mb-6">Ya puedes dejar reseñas en el catálogo.</p>
-            <Link href="/" className="bg-primary text-white px-6 py-2 rounded-md hover:bg-primary/90">Ir al catálogo</Link>
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 mx-auto mb-4" style={{ borderColor: 'var(--brand)' }} />
+            <p style={{ color: 'var(--muted)' }}>Verificando tu email...</p>
           </>
-        ) : (
+        )}
+        {status === 'success' && (
           <>
-            <div className="text-5xl mb-4">❌</div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Enlace inválido o expirado</h2>
-            <p className="text-gray-600 mb-6">El enlace de verificación no es válido o ya expiró.</p>
-            <Link href="/login" className="text-primary hover:underline">Volver al inicio de sesión</Link>
+            <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>✅</div>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--ink)', marginBottom: '0.5rem' }}>¡Email verificado!</h2>
+            <p style={{ color: 'var(--muted)', fontSize: '0.95rem', marginBottom: '1.5rem' }}>Ya puedes dejar reseñas en el catálogo.</p>
+            <Link href="/" style={{ ...authButton(false), display: 'inline-block', width: 'auto', padding: '11px 24px', textDecoration: 'none' }}>Ir al catálogo</Link>
+          </>
+        )}
+        {status === 'error' && (
+          <>
+            <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>❌</div>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--ink)', marginBottom: '0.5rem' }}>Enlace inválido o expirado</h2>
+            <p style={{ color: 'var(--muted)', fontSize: '0.95rem', marginBottom: '1.5rem' }}>El enlace de verificación no es válido o ya expiró.</p>
+            <Link href="/login" style={{ color: 'var(--brand)', fontWeight: 600, textDecoration: 'none', fontSize: '0.9rem' }}>Volver al inicio de sesión</Link>
           </>
         )}
       </div>

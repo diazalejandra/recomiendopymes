@@ -3,7 +3,18 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { toast } from 'sonner';
+import { ArrowLeft } from 'lucide-react';
 import { authApi } from '@/utils/api';
+import { authInput, authButton, authShellStyle, authCardStyle } from '@/components/auth/authStyles';
+
+function Logo() {
+  return (
+    <Link href="/" className="inline-flex items-center gap-1 mb-6" style={{ textDecoration: 'none' }}>
+      <span style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--ink)', fontFamily: 'Outfit' }}>Recomiendo</span>
+      <span style={{ fontSize: '1.25rem', fontWeight: 800, color: '#fff', background: 'var(--brand)', padding: '1px 8px', borderRadius: '6px', fontFamily: 'Outfit' }}>Pymes</span>
+    </Link>
+  );
+}
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -23,47 +34,41 @@ export default function ForgotPasswordPage() {
     }
   };
 
-  if (sent) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="max-w-md w-full text-center p-8 bg-white rounded-xl shadow">
-          <div className="text-5xl mb-4">📧</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Revisa tu email</h2>
-          <p className="text-gray-600 mb-6">
-            Si el email existe en nuestro sistema, recibirás las instrucciones para restablecer tu contraseña.
-          </p>
-          <Link href="/login" className="text-primary hover:underline">Volver al inicio de sesión</Link>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
-      <div className="max-w-md w-full space-y-8 relative pt-4">
-        <Link href="/" className="absolute top-0 left-0 flex items-center gap-2 text-sm font-medium" style={{ color: 'var(--brand)', background: 'var(--brand-light)', padding: '6px 12px', borderRadius: '999px', textDecoration: 'none' }}>
-          <span>←</span> Volver al inicio
-        </Link>
-
-        <div className="pt-8">
-          <Link href="/" className="text-2xl font-bold text-primary block text-center">RecomiendoPymes</Link>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Recuperar contraseña</h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Ingresa tu email y te enviaremos un enlace para restablecer tu contraseña.
-          </p>
-        </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" placeholder="tu@email.cl" />
-          </div>
-          <button type="submit" disabled={loading} className="w-full py-3 bg-primary text-white font-medium rounded-md hover:bg-primary/90 disabled:opacity-50">
-            {loading ? 'Enviando...' : 'Enviar instrucciones'}
-          </button>
-          <div className="text-center">
-            <Link href="/login" className="text-sm text-primary hover:underline">Volver al inicio de sesión</Link>
-          </div>
-        </form>
+    <div style={authShellStyle}>
+      <div style={authCardStyle}>
+        <Logo />
+        {sent ? (
+          <>
+            <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>📧</div>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--ink)', marginBottom: '0.5rem' }}>Revisa tu email</h2>
+            <p style={{ color: 'var(--muted)', fontSize: '0.95rem', marginBottom: '1.5rem', lineHeight: 1.6 }}>
+              Si el email existe en nuestro sistema, recibirás las instrucciones para restablecer tu contraseña.
+            </p>
+            <Link href="/login" style={{ color: 'var(--brand)', fontWeight: 600, textDecoration: 'none', fontSize: '0.9rem' }}>Volver al inicio de sesión</Link>
+          </>
+        ) : (
+          <>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--ink)', marginBottom: '0.5rem' }}>Recuperar contraseña</h2>
+            <p style={{ color: 'var(--muted)', fontSize: '0.95rem', marginBottom: '1.75rem', lineHeight: 1.6 }}>
+              Ingresa tu email y te enviaremos un enlace para restablecer tu contraseña.
+            </p>
+            <form onSubmit={handleSubmit} style={{ textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div>
+                <label htmlFor="email" style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--ink)', marginBottom: '6px' }}>Correo electrónico</label>
+                <input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="tu@email.cl" style={authInput} />
+              </div>
+              <button type="submit" disabled={loading} style={authButton(loading)}>
+                {loading ? 'Enviando...' : 'Enviar instrucciones'}
+              </button>
+            </form>
+            <div style={{ marginTop: '1.5rem' }}>
+              <Link href="/login" className="inline-flex items-center gap-1.5" style={{ color: 'var(--muted)', fontSize: '0.85rem', textDecoration: 'none' }}>
+                <ArrowLeft size={14} /> Volver al inicio de sesión
+              </Link>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

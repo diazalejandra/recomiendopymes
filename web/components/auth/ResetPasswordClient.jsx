@@ -5,6 +5,16 @@ import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { authApi } from '@/utils/api';
+import { authInput, authButton, authShellStyle, authCardStyle } from '@/components/auth/authStyles';
+
+function Logo() {
+  return (
+    <Link href="/" className="inline-flex items-center gap-1 mb-6" style={{ textDecoration: 'none' }}>
+      <span style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--ink)', fontFamily: 'Outfit' }}>Recomiendo</span>
+      <span style={{ fontSize: '1.25rem', fontWeight: 800, color: '#fff', background: 'var(--brand)', padding: '1px 8px', borderRadius: '6px', fontFamily: 'Outfit' }}>Pymes</span>
+    </Link>
+  );
+}
 
 export default function ResetPasswordClient() {
   const searchParams = useSearchParams();
@@ -32,38 +42,34 @@ export default function ResetPasswordClient() {
 
   if (!token) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center p-8">
-          <p className="text-red-500 mb-4">Enlace inválido o expirado</p>
-          <Link href="/recuperar-contrasena" className="text-primary hover:underline">Solicitar nuevo enlace</Link>
+      <div style={authShellStyle}>
+        <div style={authCardStyle}>
+          <Logo />
+          <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>❌</div>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--ink)', marginBottom: '0.5rem' }}>Enlace inválido o expirado</h2>
+          <p style={{ color: 'var(--muted)', fontSize: '0.95rem', marginBottom: '1.5rem' }}>El enlace no es válido. Solicita uno nuevo.</p>
+          <Link href="/recuperar-contrasena" style={{ color: 'var(--brand)', fontWeight: 600, textDecoration: 'none', fontSize: '0.9rem' }}>Solicitar nuevo enlace</Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <Link href="/" className="text-2xl font-bold text-primary block text-center">RecomiendoPymes</Link>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Nueva contraseña</h2>
-        </div>
-        <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
+    <div style={authShellStyle}>
+      <div style={authCardStyle}>
+        <Logo />
+        <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--ink)', marginBottom: '1.5rem' }}>Nueva contraseña</h2>
+        <form onSubmit={handleSubmit} style={{ textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {[
             { id: 'password', label: 'Nueva contraseña', placeholder: 'Mínimo 8 caracteres' },
             { id: 'confirm', label: 'Confirmar contraseña', placeholder: '••••••••' },
           ].map(({ id, label, placeholder }) => (
             <div key={id}>
-              <label htmlFor={id} className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
-              <input
-                id={id} name={id} type="password" required
-                value={form[id]} onChange={(e) => setForm((f) => ({ ...f, [e.target.name]: e.target.value }))}
-                placeholder={placeholder}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-              />
+              <label htmlFor={id} style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--ink)', marginBottom: '6px' }}>{label}</label>
+              <input id={id} name={id} type="password" required value={form[id]} onChange={(e) => setForm((f) => ({ ...f, [e.target.name]: e.target.value }))} placeholder={placeholder} style={authInput} />
             </div>
           ))}
-          <button type="submit" disabled={loading} className="w-full py-3 bg-primary text-white font-medium rounded-md hover:bg-primary/90 disabled:opacity-50">
+          <button type="submit" disabled={loading} style={authButton(loading)}>
             {loading ? 'Actualizando...' : 'Actualizar contraseña'}
           </button>
         </form>
