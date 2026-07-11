@@ -1,5 +1,7 @@
 import { Outfit } from 'next/font/google';
+import { Toaster } from 'sonner';
 import './globals.css';
+import { AuthProvider } from '@/hooks/useAuth';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 
@@ -40,11 +42,14 @@ export default function RootLayout({ children }) {
   return (
     <html lang="es" className={outfit.variable}>
       <body>
-        <div className="min-h-screen flex flex-col" style={{ background: 'var(--bg)' }}>
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </div>
+        <AuthProvider>
+          <div className="min-h-screen flex flex-col" style={{ background: 'var(--bg)' }}>
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </div>
+          <Toaster position="top-right" richColors />
+        </AuthProvider>
       </body>
     </html>
   );
