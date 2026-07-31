@@ -70,6 +70,7 @@ servidor, sin que el binario pase por el backend, y entrega optimizada (resize, 
 | **ME-4** | ✅ Validar que `image`/`gallery` sean URLs del Cloudinary del proyecto | Bajo | **Hecho (2026-07-02).** `field_validator` en `BusinessCreate`/`BusinessUpdate`; rechaza host ajeno y `javascript:` |
 | **ME-5** | Unificar carga de imágenes de noticias con este uploader | Bajo | = NW-17 |
 | **ME-6** | Exponer uso de Cloudinary en el monitor de cupos | Bajo | = AD-22 |
+| **ME-7** | Reordenar el wizard de `/inscribir`: autenticar **antes** del paso de imágenes | Bajo | Hoy el paso de imágenes (3) va antes del registro/login (4), pero la firma de subida requiere sesión (ME-1) → un invitado que suba imágenes recibe error. Logueado funciona. Mover el paso de auth antes de imágenes (o exigir sesión al entrar al wizard). _(detectado 2026-07-12 en la migración, hito C)_ |
 
 ## Roadmap (futuro)
 
