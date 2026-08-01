@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { toast } from 'sonner';
-import { businessApi, metaApi } from '@/utils/api';
+import { businessApi, metaApi, apiErrorMessage } from '@/utils/api';
 import { useAuth } from '@/hooks/useAuth';
 import CityMapPicker from '@/components/business/CityMapPickerDynamic';
 import CloudinaryUpload from '@/components/business/CloudinaryUpload';
@@ -111,7 +111,7 @@ export default function ListBusinessPage() {
       setSubmitted(true);
       toast.success(authMode === 'register' ? 'Cuenta creada y negocio inscrito' : 'Negocio inscrito exitosamente');
     } catch (err) {
-      toast.error(err.response?.data?.detail || 'Error en el proceso. Revisa tus datos.');
+      toast.error(apiErrorMessage(err, 'Error en el proceso. Revisa tus datos.'));
     } finally {
       setLoading(false);
     }

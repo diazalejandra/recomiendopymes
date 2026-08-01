@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { businessApi, metaApi } from '@/utils/api';
+import { businessApi, metaApi, apiErrorMessage } from '@/utils/api';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import CityMapPicker from '@/components/business/CityMapPickerDynamic';
 import CloudinaryUpload from '@/components/business/CloudinaryUpload';
@@ -123,7 +123,7 @@ function EditBusinessContent() {
       toast.success('Emprendimiento actualizado exitosamente');
       router.push('/mi-negocio');
     } catch (err) {
-      toast.error(err.response?.data?.detail || 'Error al actualizar el negocio');
+      toast.error(apiErrorMessage(err, 'Error al actualizar el negocio'));
     } finally {
       setSaving(false);
     }

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
-import { reviewApi, authApi } from '@/utils/api';
+import { reviewApi, authApi, apiErrorMessage } from '@/utils/api';
 
 export default function ReviewForm({ businessId, onReviewAdded }) {
   const { isLoggedIn, isEmailVerified } = useAuth();
@@ -60,7 +60,7 @@ export default function ReviewForm({ businessId, onReviewAdded }) {
       setComment('');
       if (onReviewAdded) onReviewAdded(review);
     } catch (err) {
-      toast.error(err.response?.data?.detail || 'Error al publicar la reseña');
+      toast.error(apiErrorMessage(err, 'Error al publicar la reseña'));
     } finally {
       setLoading(false);
     }

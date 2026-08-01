@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
-import { reviewApi } from '@/utils/api';
+import { reviewApi, apiErrorMessage } from '@/utils/api';
 
 function StarDisplay({ rating }) {
   return (
@@ -39,7 +39,7 @@ export default function ReviewItem({ review, isOwner, onResponseAdded }) {
       setShowResponseForm(false);
       if (onResponseAdded) onResponseAdded(updated);
     } catch (err) {
-      toast.error(err.response?.data?.detail || 'Error al publicar la respuesta');
+      toast.error(apiErrorMessage(err, 'Error al publicar la respuesta'));
     } finally {
       setLoading(false);
     }
