@@ -107,11 +107,12 @@ function DashboardContent() {
               <div className="flex gap-2 flex-shrink-0">
                 <Link href={`/mi-negocio/editar/${b.id}`} className="text-xs border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50">Editar</Link>
                 <Link href={`/mi-negocio/resenas/${b.id}`} className="text-xs border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50">Reseñas</Link>
-                {b.slug && (
-                  <Link href={`/emprendimiento/${b.slug}`} className={`text-xs px-3 py-1.5 rounded-lg transition-colors ${b.status === 'active' ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}>
-                    {b.status === 'active' ? 'Ver perfil' : 'Previsualizar'}
-                  </Link>
-                )}
+                <Link
+                  href={b.status === 'active' ? `/emprendimiento/${b.slug}` : `/mi-negocio/preview/${b.id}`}
+                  className={`text-xs px-3 py-1.5 rounded-lg transition-colors ${b.status === 'active' ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+                >
+                  {b.status === 'active' ? 'Ver perfil' : 'Previsualizar'}
+                </Link>
               </div>
             </div>
           ))}
