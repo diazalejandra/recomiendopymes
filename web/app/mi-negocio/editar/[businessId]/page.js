@@ -230,6 +230,10 @@ function EditBusinessContent() {
               <p className="text-sm text-gray-500 mb-2 px-2">Ajusta el pin en el centro comercial / calle exacta:</p>
               <CityMapPicker city={form.city} onCoordinatesChange={(coords) => set('coordinates', coords)} initialCoordinates={form.coordinates} />
             </div>
+          ) : showMapStep && !form.city ? (
+            <div style={{ height: 300 }} className="mb-6 rounded-xl border border-dashed border-gray-300 bg-gray-50 flex items-center justify-center text-sm text-gray-500 px-4 text-center">
+              Selecciona una comuna para ubicar tu negocio en el mapa.
+            </div>
           ) : !showMapStep && form.city ? (
             <div className="mb-6 bg-blue-50 border border-blue-200 rounded-xl p-4 text-center">
               <p className="text-blue-700 text-sm">Tu negocio es 100% en línea — tu comuna base sirve para resultados locales, pero no aparecerás con pin en el mapa.</p>

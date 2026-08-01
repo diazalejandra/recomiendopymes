@@ -271,7 +271,9 @@ export default function ListBusinessPage() {
               <p className="text-blue-700 text-sm">Tu negocio es 100% en línea — tu comuna base sirve para resultados locales, pero no aparecerás con pin en el mapa.</p>
             </div>
           ) : !form.city ? (
-            <p className="text-amber-600 text-sm mt-4">Selecciona primero tu comuna para trazar el mapa.</p>
+            <div style={{ height: 300 }} className="mt-4 rounded-xl border border-dashed border-gray-300 bg-gray-50 flex items-center justify-center text-sm text-gray-500 px-4 text-center">
+              Selecciona primero tu comuna para trazar el mapa.
+            </div>
           ) : (
             <div className="mt-4">
               <p className="text-sm font-medium text-gray-700 mb-2">Ajusta el pin en el mapa:</p>
