@@ -207,28 +207,28 @@ function EditBusinessContent() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Región base *</label>
-              <select value={form.region} onChange={(e) => { set('region', e.target.value); set('city', ''); }} required className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+              <select value={form.region} onChange={(e) => { set('region', e.target.value); set('city', ''); set('location', ''); set('coordinates', null); }} required className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
                 <option value="">Selecciona tu región</option>
                 {Object.keys(regionsData).map((r) => <option key={r} value={r}>{r}</option>)}
               </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Comuna base *</label>
-              <select value={form.city} onChange={(e) => set('city', e.target.value)} disabled={!form.region} required className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 disabled:opacity-50">
+              <select value={form.city} onChange={(e) => { set('city', e.target.value); set('location', ''); set('coordinates', null); }} disabled={!form.region} required className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 disabled:opacity-50">
                 <option value="">Selecciona tu comuna</option>
                 {(regionsData[form.region] || []).map((c) => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-1">Dirección exacta o referencia</label>
-              <AddressAutocomplete value={form.location} onChange={(text) => set('location', text)} onSelect={(coords) => set('coordinates', coords)} />
+              <AddressAutocomplete value={form.location} onChange={(text) => set('location', text)} onSelect={(coords) => set('coordinates', { ...coords, is_exact: true })} />
             </div>
           </div>
 
           {showMapStep && form.city ? (
             <div className="mb-6 border rounded-lg p-2 bg-gray-50">
               <p className="text-sm text-gray-500 mb-2 px-2">Ajusta el pin en el centro comercial / calle exacta:</p>
-              <CityMapPicker city={form.city} onCoordinatesChange={(coords) => set('coordinates', coords)} initialCoordinates={form.coordinates} />
+              <CityMapPicker city={form.city} region={form.region} onCoordinatesChange={(coords) => set('coordinates', coords)} initialCoordinates={form.coordinates} />
             </div>
           ) : showMapStep && !form.city ? (
             <div style={{ height: 300 }} className="mb-6 rounded-xl border border-dashed border-gray-300 bg-gray-50 flex items-center justify-center text-sm text-gray-500 px-4 text-center">
