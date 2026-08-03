@@ -9,6 +9,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import CityMapPicker from '@/components/business/CityMapPickerDynamic';
 import CloudinaryUpload from '@/components/business/CloudinaryUpload';
 import AddressAutocomplete from '@/components/business/AddressAutocomplete';
+import { matchRegionCity } from '@/lib/geo';
 
 const BUSINESS_TYPES = [
   { value: 'online', label: 'Solo digital (redes sociales, web)' },
@@ -221,7 +222,16 @@ function EditBusinessContent() {
             </div>
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-1">Dirección exacta o referencia</label>
-              <AddressAutocomplete value={form.location} onChange={(text) => set('location', text)} onSelect={(coords) => set('coordinates', { ...coords, is_exact: true })} />
+              <AddressAutocomplete
+                value={form.location}
+                onChange={(text) => set('location', text)}
+                onSelect={(res) => {
+                  set('coordinates', { lat: res.lat, lng: res.lng, is_exact: true });
+                  const m = matchRegionCity(res.address, regionsData);
+                  if (m?.region) set('region', m.region);
+                  if (m?.city) set('city', m.city);
+                }}
+              />
             </div>
           </div>
 

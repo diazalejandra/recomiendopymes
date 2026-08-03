@@ -33,7 +33,7 @@ export default function AddressAutocomplete({ value, onChange, onSelect }) {
     }
     setLoading(true);
     try {
-      const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchText)}&countrycodes=cl&limit=5`);
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&q=${encodeURIComponent(searchText)}&countrycodes=cl&limit=5`);
       const data = await res.json();
       setResults(data);
       setOpen(true);
@@ -56,7 +56,7 @@ export default function AddressAutocomplete({ value, onChange, onSelect }) {
     setQuery(item.display_name);
     onChange(item.display_name);
     setOpen(false);
-    if (onSelect) onSelect({ lat: parseFloat(item.lat), lng: parseFloat(item.lon) });
+    if (onSelect) onSelect({ lat: parseFloat(item.lat), lng: parseFloat(item.lon), address: item.address });
   };
 
   return (
