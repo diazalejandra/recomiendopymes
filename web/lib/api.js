@@ -60,6 +60,12 @@ export function getNewsBySlug(slug) {
   return apiGet(`/news/public/${encodeURIComponent(slug)}`);
 }
 
+/** Contenido legal público (key: 'terms' | 'privacy'). Devuelve el Markdown (string). */
+export async function getLegal(key) {
+  const data = await apiGet(`/legal/${key}`);
+  return data?.content || '';
+}
+
 /**
  * Todos los negocios activos (paginando; el endpoint capa limit a 500). Para el sitemap.
  * Nota: con catálogos muy grandes conviene un endpoint dedicado de slugs.
