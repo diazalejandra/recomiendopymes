@@ -90,6 +90,7 @@ export const adminApi = {
   toggleUser: (id) => client.patch(`/admin/users/${id}/toggle-active`).then((r) => r.data),
   clearSuspicious: (id) => client.patch(`/admin/users/${id}/clear-suspicious`).then((r) => r.data),
   promoteUser: (id) => client.patch(`/admin/users/${id}/promote`).then((r) => r.data),
+  demoteUser: (id) => client.patch(`/admin/users/${id}/demote`).then((r) => r.data),
   getLegal: (key) => client.get(`/admin/legal/${key}`).then((r) => r.data),
   updateLegal: (key, content) => client.put(`/admin/legal/${key}`, { content }).then((r) => r.data),
   getConfig: () => client.get('/admin/config').then((r) => r.data),

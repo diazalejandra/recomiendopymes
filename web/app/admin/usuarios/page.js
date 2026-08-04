@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
-import { Search, Users, Shield, ShieldAlert, UserX, UserCheck } from 'lucide-react';
-import { adminApi } from '@/utils/api';
+import { Search, Users, Shield, ShieldAlert, ShieldOff, ShieldCheck, UserX, UserCheck } from 'lucide-react';
+import { adminApi, apiErrorMessage } from '@/utils/api';
 
 const TABS = [
   { id: 'all', label: 'Todos' },
@@ -31,7 +31,19 @@ export default function UsersTable() {
 
   const toggle = async (id) => {
     try { await adminApi.toggleUser(id); toast.success('Estado del usuario actualizado'); load(); }
-    catch { toast.error('Error al actualizar estado'); }
+    catch (e) { toast.error(apiErrorMessage(e, 'Error al actualizar estado')); }
+  };
+  const promote = async (id) => {
+    try { await adminApi.promoteUser(id); toast.success('Usuario promovido a admin'); load(); }
+    catch (e) { toast.error(apiErrorMessage(e, 'Error al promover')); }
+  };
+  const demote = async (id) => {
+    try { await adminApi.demoteUser(id); toast.success('Admin degradado a usuario'); load(); }
+    catch (e) { toast.error(apiErrorMessage(e, 'Error al degradar')); }
+  };
+  const clearSuspicious = async (id) => {
+    try { await adminApi.clearSuspicious(id); toast.success('Marca de sospechoso eliminada'); load(); }
+    catch (e) { toast.error(apiErrorMessage(e, 'Error al limpiar la marca')); }
   };
 
   const filteredUsers = useMemo(() => {
@@ -125,9 +137,19 @@ export default function UsersTable() {
                       <span className="font-medium text-gray-700 bg-gray-100 px-2 py-1 rounded-lg">{u.business_count ?? 0}</span>
                     </td>
                     <td className="px-6 py-4 text-right whitespace-nowrap">
-                      <button onClick={() => toggle(u.id)} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors ml-auto ${u.is_active ? 'border-red-200 text-red-600 hover:bg-red-50' : 'border-emerald-200 text-emerald-600 hover:bg-emerald-50'}`}>
-                        {u.is_active ? <><UserX size={14} /> Banear</> : <><UserCheck size={14} /> Activar</>}
-                      </button>
+                      <div className="flex items-center justify-end gap-2">
+                        {u.is_suspicious && (
+                          <button onClick={() => clearSuspicious(u.id)} title="Quitar marca de sospechoso" className="p-1.5 text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"><ShieldCheck size={18} /></button>
+                        )}
+                        {u.role === 'admin' ? (
+                          <button onClick={() => demote(u.id)} title="Degradar a usuario" className="p-1.5 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"><ShieldOff size={18} /></button>
+                        ) : (
+                          <button onClick={() => promote(u.id)} title="Promover a admin" className="p-1.5 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"><Shield size={18} /></button>
+                        )}
+                        <button onClick={() => toggle(u.id)} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors ${u.is_active ? 'border-red-200 text-red-600 hover:bg-red-50' : 'border-emerald-200 text-emerald-600 hover:bg-emerald-50'}`}>
+                          {u.is_active ? <><UserX size={14} /> Banear</> : <><UserCheck size={14} /> Activar</>}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
