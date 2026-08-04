@@ -1,7 +1,12 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
+from motor.motor_asyncio import AsyncIOMotorDatabase
+from core.database import get_db
 
 router = APIRouter(tags=["meta"])
+
+# Claves legales expuestas públicamente (las páginas /terminos y /privacidad).
+PUBLIC_LEGAL_KEYS = {"terms", "privacy"}
 
 # Categorías fijas del catálogo chileno
 CATEGORIES = [
@@ -74,3 +79,13 @@ async def get_cities():
     for cities in REGIONS_DATA.values():
         flat_cities.extend(cities)
     return {"cities": flat_cities}
+
+
+@router.get("/api/legal/{key}")
+async def get_public_legal(key: str, db: AsyncIOMotorDatabase = Depends(get_db)):
+    """Contenido legal público (términos/privacidad) para las páginas del sitio.
+    Solo expone las claves públicas; la edición sigue siendo admin (PUT /admin/legal)."""
+    if key not in PUBLIC_LEGAL_KEYS:
+        raise HTTPException(status_code=404, detail="Documento no encontrado")
+    doc = await db.legal.find_one({"key": key})
+    return {"key": key, "content": doc["content"] if doc else ""}
