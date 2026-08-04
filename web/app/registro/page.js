@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { apiErrorMessage } from '@/utils/api';
 
 export default function RegisterPage() {
   const [form, setForm] = useState({ name: '', email: '', password: '', confirm: '' });
@@ -28,7 +29,7 @@ export default function RegisterPage() {
       toast.success('¡Cuenta creada! Revisa tu email para verificarla.');
       router.push('/');
     } catch (err) {
-      toast.error(err.response?.data?.detail || 'Error al crear la cuenta');
+      toast.error(apiErrorMessage(err, 'Error al crear la cuenta'));
     } finally {
       setLoading(false);
     }

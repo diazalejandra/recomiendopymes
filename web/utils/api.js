@@ -106,3 +106,16 @@ export const newsApi = {
 };
 
 export default client;
+
+// Extrae un mensaje legible (string) del error de la API. El `detail` de FastAPI puede ser
+// un string (HTTPException) o un ARRAY de errores de validación (422). Nunca devolver un
+// objeto/array a React (causa el error #31 "objects are not valid as a React child").
+export function apiErrorMessage(err, fallback = 'Ocurrió un error. Intenta nuevamente.') {
+  const detail = err?.response?.data?.detail;
+  if (typeof detail === 'string') return detail;
+  if (Array.isArray(detail)) {
+    const msgs = detail.map((e) => (typeof e === 'string' ? e : e?.msg)).filter(Boolean);
+    if (msgs.length) return msgs.join('. ');
+  }
+  return fallback;
+}

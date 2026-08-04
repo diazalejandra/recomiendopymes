@@ -3,11 +3,12 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { toast } from 'sonner';
-import { businessApi, metaApi } from '@/utils/api';
+import { businessApi, metaApi, apiErrorMessage } from '@/utils/api';
 import { useAuth } from '@/hooks/useAuth';
 import CityMapPicker from '@/components/business/CityMapPickerDynamic';
 import CloudinaryUpload from '@/components/business/CloudinaryUpload';
 import AddressAutocomplete from '@/components/business/AddressAutocomplete';
+import { matchRegionCity } from '@/lib/geo';
 
 const BUSINESS_TYPES = [
   { value: 'online', label: 'Solo digital (redes sociales, web)' },
@@ -111,7 +112,7 @@ export default function ListBusinessPage() {
       setSubmitted(true);
       toast.success(authMode === 'register' ? 'Cuenta creada y negocio inscrito' : 'Negocio inscrito exitosamente');
     } catch (err) {
-      toast.error(err.response?.data?.detail || 'Error en el proceso. Revisa tus datos.');
+      toast.error(apiErrorMessage(err, 'Error en el proceso. Revisa tus datos.'));
     } finally {
       setLoading(false);
     }
@@ -247,14 +248,14 @@ export default function ListBusinessPage() {
           <h2 className="text-lg font-semibold">Ubicación</h2>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Región *</label>
-            <select value={form.region} onChange={(e) => { set('region', e.target.value); set('city', ''); }} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+            <select value={form.region} onChange={(e) => { set('region', e.target.value); set('city', ''); set('location', ''); set('coordinates', null); }} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
               <option value="">Selecciona tu región</option>
               {Object.keys(regionsData).map((r) => <option key={r} value={r}>{r}</option>)}
             </select>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Comuna *</label>
-            <select value={form.city} onChange={(e) => set('city', e.target.value)} disabled={!form.region} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:opacity-50">
+            <select value={form.city} onChange={(e) => { set('city', e.target.value); set('location', ''); set('coordinates', null); }} disabled={!form.region} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:opacity-50">
               <option value="">Selecciona tu comuna</option>
               {(regionsData[form.region] || []).map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
@@ -262,7 +263,16 @@ export default function ListBusinessPage() {
           {showMapStep && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Dirección exacta o referencia</label>
-              <AddressAutocomplete value={form.location} onChange={(text) => set('location', text)} onSelect={(coords) => set('coordinates', coords)} />
+              <AddressAutocomplete
+                value={form.location}
+                onChange={(text) => set('location', text)}
+                onSelect={(res) => {
+                  set('coordinates', { lat: res.lat, lng: res.lng, is_exact: true });
+                  const m = matchRegionCity(res.address, res.displayName, regionsData);
+                  if (m?.region) set('region', m.region);
+                  if (m?.city) set('city', m.city);
+                }}
+              />
             </div>
           )}
 
@@ -271,11 +281,13 @@ export default function ListBusinessPage() {
               <p className="text-blue-700 text-sm">Tu negocio es 100% en línea — tu comuna base sirve para resultados locales, pero no aparecerás con pin en el mapa.</p>
             </div>
           ) : !form.city ? (
-            <p className="text-amber-600 text-sm mt-4">Selecciona primero tu comuna para trazar el mapa.</p>
+            <div style={{ height: 300 }} className="mt-4 rounded-xl border border-dashed border-gray-300 bg-gray-50 flex items-center justify-center text-sm text-gray-500 px-4 text-center">
+              Selecciona primero tu comuna para trazar el mapa.
+            </div>
           ) : (
             <div className="mt-4">
               <p className="text-sm font-medium text-gray-700 mb-2">Ajusta el pin en el mapa:</p>
-              <CityMapPicker city={form.city} onCoordinatesChange={(coords) => set('coordinates', coords)} initialCoordinates={form.coordinates} />
+              <CityMapPicker city={form.city} region={form.region} onCoordinatesChange={(coords) => set('coordinates', coords)} initialCoordinates={form.coordinates} />
             </div>
           )}
         </div>

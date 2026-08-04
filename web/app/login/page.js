@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { apiErrorMessage } from '@/utils/api';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -24,7 +25,7 @@ export default function LoginPage() {
       toast.success(`¡Bienvenido, ${user.name}!`);
       router.push(user.role === 'admin' ? '/admin' : '/');
     } catch (err) {
-      toast.error(err.response?.data?.detail || 'Credenciales incorrectas. Verifica tu email y contraseña.');
+      toast.error(apiErrorMessage(err, 'Credenciales incorrectas. Verifica tu email y contraseña.'));
     } finally {
       setLoading(false);
     }

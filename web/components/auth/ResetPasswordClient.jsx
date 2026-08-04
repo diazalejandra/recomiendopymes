@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { authApi } from '@/utils/api';
+import { authApi, apiErrorMessage } from '@/utils/api';
 import { authInput, authButton, authShellStyle, authCardStyle } from '@/components/auth/authStyles';
 
 function Logo() {
@@ -34,7 +34,7 @@ export default function ResetPasswordClient() {
       toast.success('Contraseña actualizada correctamente');
       router.push('/login');
     } catch (err) {
-      toast.error(err.response?.data?.detail || 'Error al restablecer la contraseña');
+      toast.error(apiErrorMessage(err, 'Error al restablecer la contraseña'));
     } finally {
       setLoading(false);
     }
