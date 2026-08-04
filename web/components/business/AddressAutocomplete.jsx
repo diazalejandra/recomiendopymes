@@ -56,7 +56,7 @@ export default function AddressAutocomplete({ value, onChange, onSelect }) {
     // Conservamos el texto que escribió el usuario (con número de calle, que Nominatim
     // suele no tener). La sugerencia solo aporta coordenadas + región/comuna.
     setOpen(false);
-    if (onSelect) onSelect({ lat: parseFloat(item.lat), lng: parseFloat(item.lon), address: item.address });
+    if (onSelect) onSelect({ lat: parseFloat(item.lat), lng: parseFloat(item.lon), address: item.address, displayName: item.display_name });
   };
 
   return (

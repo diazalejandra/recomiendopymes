@@ -268,7 +268,7 @@ export default function ListBusinessPage() {
                 onChange={(text) => set('location', text)}
                 onSelect={(res) => {
                   set('coordinates', { lat: res.lat, lng: res.lng, is_exact: true });
-                  const m = matchRegionCity(res.address, regionsData);
+                  const m = matchRegionCity(res.address, res.displayName, regionsData);
                   if (m?.region) set('region', m.region);
                   if (m?.city) set('city', m.city);
                 }}
