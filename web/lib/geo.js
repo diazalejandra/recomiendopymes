@@ -19,9 +19,6 @@ export function matchRegionCity(address, regionsData) {
   if (!address || !regionsData) return null;
 
   const nState = norm(address.state || address.region || '');
-  const comunaRaw =
-    address.city || address.town || address.municipality || address.county || address.city_district || address.suburb || '';
-  const nComuna = norm(comunaRaw);
 
   // Región: la clave nuestra cuya forma normalizada coincide o está contenida en el `state`.
   let region = '';
@@ -35,14 +32,23 @@ export function matchRegionCity(address, regionsData) {
       '';
   }
 
-  // Comuna: buscar primero dentro de la región resuelta; si no hay región, en todas.
+  // Comuna: Nominatim la reparte en campos distintos. Probamos candidatos del MÁS específico
+  // (municipality/city_district = comuna real) al más amplio (city suele ser el área metro).
+  // Nos quedamos con el primero que sea una comuna de la región resuelta.
+  const candidates = [
+    address.municipality, address.city_district, address.town, address.village,
+    address.hamlet, address.city, address.county, address.suburb,
+  ].filter(Boolean);
+
+  const pool = region ? regionsData[region] || [] : Object.values(regionsData).flat();
   let city = '';
-  if (nComuna) {
-    const pool = region ? regionsData[region] || [] : Object.values(regionsData).flat();
-    city =
-      pool.find((c) => norm(c) === nComuna) ||
-      pool.find((c) => norm(c).includes(nComuna) || nComuna.includes(norm(c))) ||
-      '';
+  for (const cand of candidates) {
+    const nc = norm(cand);
+    const match = pool.find((c) => norm(c) === nc) || pool.find((c) => norm(c).includes(nc) || nc.includes(norm(c)));
+    if (match) {
+      city = match;
+      break;
+    }
   }
 
   // Si encontramos la comuna pero no la región, derivar la región desde la comuna.

@@ -53,8 +53,8 @@ export default function AddressAutocomplete({ value, onChange, onSelect }) {
   };
 
   const handleSelect = (item) => {
-    setQuery(item.display_name);
-    onChange(item.display_name);
+    // Conservamos el texto que escribió el usuario (con número de calle, que Nominatim
+    // suele no tener). La sugerencia solo aporta coordenadas + región/comuna.
     setOpen(false);
     if (onSelect) onSelect({ lat: parseFloat(item.lat), lng: parseFloat(item.lon), address: item.address });
   };
@@ -75,7 +75,7 @@ export default function AddressAutocomplete({ value, onChange, onSelect }) {
       </div>
 
       {open && (
-        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+        <div className="absolute w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto" style={{ zIndex: 1100 }}>
           {loading ? (
             <div className="p-3 text-sm text-gray-500 text-center">Buscando direcciones...</div>
           ) : results.length > 0 ? (
