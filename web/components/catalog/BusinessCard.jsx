@@ -25,11 +25,6 @@ function getCatStyle(cat) {
   return CAT_COLORS[cat] || { bg: 'var(--brand-light)', text: 'var(--brand)' };
 }
 
-function isNew(activatedAt) {
-  if (!activatedAt) return false;
-  return (Date.now() - new Date(activatedAt).getTime()) / 86400000 <= 30;
-}
-
 function placeholder(name, size) {
   return `https://placehold.co/${size}/EFF6FF/2563EB?text=${encodeURIComponent((name || '?')[0])}`;
 }
@@ -82,7 +77,8 @@ function ListCard({ business }) {
 
 function GridCard({ business }) {
   const cs = getCatStyle(business.category);
-  const showNew = isNew(business.activated_at);
+  // is_new lo calcula el backend con boost_days (fuente única: badge y orden usan el mismo umbral)
+  const showNew = business.is_new;
   return (
     <Link href={`/emprendimiento/${business.slug}`} className="group block">
       <article className="biz-grid-card rounded-xl overflow-hidden flex flex-col">

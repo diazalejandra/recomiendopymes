@@ -172,6 +172,7 @@ class BusinessPublic(BaseModel):
     established: Optional[str] = None
     status: str
     activated_at: Optional[datetime] = None
+    is_new: bool = False  # badge "Nuevo": activado dentro de la ventana boost_days (config)
     featured: bool
     is_verified: bool
     rating: float

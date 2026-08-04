@@ -82,7 +82,17 @@ class _InsertResult:
 
 
 class FakeDB:
-    """Imita `db.<colección>` exponiendo FakeCollection por atributo."""
+    """Imita `db.<colección>` exponiendo FakeCollection por atributo.
+
+    Para colecciones no provistas devuelve una FakeCollection vacía (como Mongo,
+    donde acceder a `db.<colección>` inexistente es válido y `find_one` da None).
+    """
     def __init__(self, **collections):
         for name, coll in collections.items():
             setattr(self, name, coll)
+
+    def __getattr__(self, name):
+        # Solo se invoca si el atributo no existe; crea una colección vacía perezosa
+        coll = FakeCollection([])
+        setattr(self, name, coll)
+        return coll

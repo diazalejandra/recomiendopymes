@@ -158,11 +158,13 @@ async def get_config(
     return {"config": [{"key": doc["key"], "value": doc["value"]} async for doc in cursor]}
 
 
-# Claves de configuración permitidas (AD-7: whitelist, no aceptar cualquier clave)
+# Claves de configuración permitidas (AD-7: whitelist, no aceptar cualquier clave).
+# Solo se exponen las claves que el código realmente consume:
+#   - review_rate_limit → detección de reseñas sospechosas (review/service.py)
+#   - boost_days        → ventana del badge "Nuevo" y boost de orden (business/service.py)
 ALLOWED_CONFIG_KEYS = {
-    "review_rate_limit",       # umbral de reseñas sospechosas
-    "review_window_hours",     # ventana de detección (RV-4)
-    "new_business_boost_days", # días de boost de negocios nuevos
+    "review_rate_limit",
+    "boost_days",
 }
 
 

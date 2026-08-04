@@ -5,11 +5,10 @@ import { toast } from 'sonner';
 import { Settings, Save } from 'lucide-react';
 import { adminApi, apiErrorMessage } from '@/utils/api';
 
+// Solo las claves que el backend acepta y el código realmente consume (whitelist en admin/router.py).
 const CONFIG_KEYS = [
-  { key: 'site_name', label: 'Nombre del sitio', type: 'text', desc: 'Aparece en título de páginas y emails.' },
-  { key: 'contact_email', label: 'Email de contacto', type: 'email', desc: 'Email principal para soporte comercial.' },
-  { key: 'max_businesses_free', label: 'Máx. negocios gratuitos', type: 'number', desc: 'Límite de negocios que un usuario puede añadir.' },
-  { key: 'review_boost_days', label: 'Días etiqueta "Nuevo"', type: 'number', desc: 'Duración del destacamento tras activación.' },
+  { key: 'review_rate_limit', label: 'Umbral de reseñas sospechosas', type: 'number', desc: 'Máx. de reseñas por usuario en 24h antes de marcarlo como sospechoso.' },
+  { key: 'boost_days', label: 'Días etiqueta "Nuevo"', type: 'number', desc: 'Ventana en que un negocio recién activado muestra el badge "Nuevo" y sube en el orden.' },
 ];
 
 export default function ConfigPanel() {
