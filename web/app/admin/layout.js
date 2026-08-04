@@ -31,7 +31,7 @@ function AdminShell({ children }) {
   const isActive = (to, exact) => (exact ? pathname === to : pathname === to || pathname.startsWith(`${to}/`));
 
   return (
-    <div className="min-h-screen flex" style={{ background: 'var(--bg)' }}>
+    <div className="h-screen flex overflow-hidden" style={{ background: 'var(--bg)' }}>
       <aside className="w-64 flex flex-col shadow-lg z-10 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #1E40AF 0%, #2563EB 50%, #3B82F6 100%)' }}>
         <div style={{ position: 'absolute', top: '-80px', right: '-80px', width: '200px', height: '200px', borderRadius: '50%', background: 'rgba(255,255,255,0.06)' }} />
         <div style={{ position: 'absolute', bottom: '-40px', left: '-60px', width: '250px', height: '250px', borderRadius: '50%', background: 'rgba(255,255,255,0.04)' }} />

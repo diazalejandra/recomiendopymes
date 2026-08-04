@@ -10,6 +10,8 @@ def _user_public(doc: dict) -> dict:
     d = dict(doc)
     d["id"] = str(d.pop("_id"))
     d.pop("password_hash", None)
+    # El front espera `is_suspicious`; en la DB el flag es `suspicious_activity`.
+    d["is_suspicious"] = bool(doc.get("suspicious_activity"))
     return d
 
 
@@ -108,7 +110,8 @@ class AdminService:
             },
             {
                 "$addFields": {
-                    "business_name": {"$arrayElemAt": ["$business_info.name", 0]}
+                    "business_name": {"$arrayElemAt": ["$business_info.name", 0]},
+                    "business_slug": {"$arrayElemAt": ["$business_info.slug", 0]}
                 }
             },
             {"$project": {"business_info": 0}}
@@ -128,6 +131,20 @@ class AdminService:
         skip = (page - 1) * limit
         cursor = self.db.users.find(query).sort("created_at", -1).skip(skip).limit(limit)
         users = [_user_public(doc) async for doc in cursor]
+
+        # Cantidad de negocios por usuario (una sola agregación para la página).
+        user_oids = [ObjectId(u["id"]) for u in users]
+        counts = {}
+        if user_oids:
+            agg = self.db.businesses.aggregate([
+                {"$match": {"owner_user_id": {"$in": user_oids}}},
+                {"$group": {"_id": "$owner_user_id", "n": {"$sum": 1}}},
+            ])
+            async for row in agg:
+                counts[str(row["_id"])] = row["n"]
+        for u in users:
+            u["business_count"] = counts.get(u["id"], 0)
+
         return {"users": users, "total": total, "page": page, "total_pages": max(1, -(-total // limit))}
 
     async def toggle_user_active(self, user_id: str) -> dict:

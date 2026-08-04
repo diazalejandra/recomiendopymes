@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
+import Link from 'next/link';
 import { toast } from 'sonner';
-import { Search, MessageSquareQuote, Eye, EyeOff, Store } from 'lucide-react';
+import { Search, MessageSquareQuote, Eye, EyeOff, Store, ExternalLink } from 'lucide-react';
 import { adminApi } from '@/utils/api';
 
 const TABS = [
@@ -108,9 +109,16 @@ export default function ReviewsTable() {
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right whitespace-nowrap">
-                      <button onClick={() => toggle(r.id)} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors ml-auto ${r.is_visible ? 'border-red-200 text-red-600 hover:bg-red-50' : 'border-emerald-200 text-emerald-600 hover:bg-emerald-50'}`}>
-                        {r.is_visible ? <><EyeOff size={14} /> Ocultar</> : <><Eye size={14} /> Mostrar</>}
-                      </button>
+                      <div className="flex items-center justify-end gap-2">
+                        {r.business_slug && (
+                          <Link href={`/emprendimiento/${r.business_slug}`} target="_blank" title="Ver emprendimiento" className="p-1.5 text-gray-500 hover:bg-gray-50 rounded-lg transition-colors">
+                            <ExternalLink size={16} />
+                          </Link>
+                        )}
+                        <button onClick={() => toggle(r.id)} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors ${r.is_visible ? 'border-red-200 text-red-600 hover:bg-red-50' : 'border-emerald-200 text-emerald-600 hover:bg-emerald-50'}`}>
+                          {r.is_visible ? <><EyeOff size={14} /> Ocultar</> : <><Eye size={14} /> Mostrar</>}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
