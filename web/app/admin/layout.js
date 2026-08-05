@@ -33,8 +33,8 @@ function AdminShell({ children }) {
   return (
     <div className="h-screen flex overflow-hidden" style={{ background: 'var(--bg)' }}>
       <aside className="w-64 flex flex-col shadow-lg z-10 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #1E40AF 0%, #2563EB 50%, #3B82F6 100%)' }}>
-        <div style={{ position: 'absolute', top: '-80px', right: '-80px', width: '200px', height: '200px', borderRadius: '50%', background: 'rgba(255,255,255,0.06)' }} />
-        <div style={{ position: 'absolute', bottom: '-40px', left: '-60px', width: '250px', height: '250px', borderRadius: '50%', background: 'rgba(255,255,255,0.04)' }} />
+        <div style={{ position: 'absolute', top: '-80px', right: '-80px', width: '200px', height: '200px', borderRadius: '50%', background: 'rgba(255,255,255,0.06)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', bottom: '-40px', left: '-60px', width: '250px', height: '250px', borderRadius: '50%', background: 'rgba(255,255,255,0.04)', pointerEvents: 'none' }} />
 
         <div className="p-6 border-b border-white/10 flex flex-col gap-2 relative z-10">
           <Link href="/admin" className="flex items-center gap-1.5" style={{ textDecoration: 'none' }}>
@@ -62,7 +62,7 @@ function AdminShell({ children }) {
           })}
         </nav>
 
-        <div className="p-4 border-t border-white/10 flex flex-col gap-3">
+        <div className="p-4 border-t border-white/10 flex flex-col gap-3 relative z-10">
           <Link href="/" className="flex items-center gap-2 text-sm text-blue-200/80 hover:text-white transition-colors px-2 py-1.5 rounded-lg hover:bg-white/5">
             <ArrowLeft size={16} />
             Ver sitio público
