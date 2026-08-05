@@ -95,13 +95,20 @@ jobs:
           done
           echo "Backend no respondió"; cat backend.log; exit 1
 
-      # --- Frontend: deps (Playwright levanta el dev server vía webServer) ---
+      # --- Web (Next): deps + build de prod (Playwright levanta `next start`) ---
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
-      - name: Instalar dependencias frontend
-        working-directory: frontend
+      - name: Instalar dependencias web
+        working-directory: web
         run: npm ci
+      - name: Compilar web (prod)
+        working-directory: web
+        # El e2e corre contra el build de prod (next start), nunca next dev.
+        # API_PROXY_TARGET apunta al backend local que arrancamos arriba.
+        env:
+          API_PROXY_TARGET: "http://127.0.0.1:8000"
+        run: npm run build
 
       # --- E2E: instalar y correr ---
       - name: Instalar dependencias e2e
