@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fondo circular para asegurar consistencia en modo claro/oscuro -->
+  <circle cx="128" cy="128" r="128" fill="#F0F9FF"/>
+  <!-- Pin de mapa con estilo similar al Home -->
+  <path d="M128 24C83.817 24 48 59.817 48 104C48 164 128 232 128 232C128 232 208 164 208 104C208 59.817 172.183 24 128 24ZM128 136C110.327 136 96 121.673 96 104C96 86.327 110.327 72 128 72C145.673 72 160 86.327 160 104C160 121.673 145.673 136 128 136Z" fill="#1E40AF"/>
+  <circle cx="128" cy="104" r="32" fill="#3B82F6"/>
+</svg>
