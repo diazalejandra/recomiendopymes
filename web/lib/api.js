@@ -1,8 +1,12 @@
 // Capa de datos para Server Components (fetch nativo, server-side).
 // Para datos PÚBLICOS (catálogo, ficha, noticias) no se necesita sesión, así que
-// llamamos directo al backend FastAPI. En dev apunta a localhost:8000; en prod a
-// NEXT_PUBLIC_API_URL (ej. https://api.recomiendopymes.cl/api).
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+// llamamos directo al backend FastAPI (server→server, sin CORS).
+//
+// Var SERVER-ONLY (no `NEXT_PUBLIC_`, no se filtra al bundle del cliente): en prod
+// (Vercel) se setea `API_INTERNAL_URL=https://api.recomiendopymes.cl/api`. El cliente,
+// en cambio, usa `/api` relativo y el proxy de Next (ver utils/api.js + next.config) →
+// así la cookie de refresh queda en el mismo origen que el front. Fallback dev: localhost.
+const API_BASE = process.env.API_INTERNAL_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
 // Revalidación ISR por defecto (segundos): la página se sirve estática y se regenera
 // cada 5 min. Las acciones de moderación se reflejan al revalidar (o antes con una

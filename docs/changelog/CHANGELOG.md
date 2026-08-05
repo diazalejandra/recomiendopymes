@@ -5,7 +5,19 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ## [Unreleased] - En Desarrollo
 
-_Sin cambios pendientes de liberar._
+### Migración a Next.js (ADR-0001) — cutover
+- Frontend reescrito en **Next.js (App Router)** en `web/`: páginas públicas SSR/ISR
+  (catálogo, ficha con JSON-LD `LocalBusiness`+geo, noticias con `Article`, categoría/ciudad,
+  sitemap/robots, canonical), auth, reseñas, inscripción, dashboard, panel admin y mapa.
+- **Cutover in-place** en Vercel: el proyecto pasa a servir `web/` (Next); el Vite
+  (`frontend/`) queda como **fallback temporal**. Ruteo nativo de Next (sin `vercel.json` de SPA).
+- **API same-origin:** el cliente usa `/api` relativo proxeado por Next (`API_PROXY_TARGET`),
+  preservando la cookie de refresh sin rework de auth. El fetch server-side usa `API_INTERNAL_URL`
+  (server-only). Ver `docs/PRODUCTION_ENV_GUIDE.md`.
+- **Config admin reconciliada:** whitelist reducida a claves reales (`review_rate_limit`,
+  `boost_days`); `boost_days` ahora se consume de verdad (badge "Nuevo" + orden vía `is_new`
+  calculado en backend, fuente única).
+- **e2e** repuntado al build de prod de Next (`web/`), no al Vite dev.
 
 > ⚠️ **Pendiente de producción (no es código):** la entrega de emails de verificación
 > (bug #4 del QA) sigue sin funcionar hasta verificar el dominio `recomiendopymes.cl`

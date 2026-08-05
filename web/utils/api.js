@@ -1,9 +1,12 @@
 import axios from 'axios';
 
-// Cliente para llamadas AUTENTICADAS desde client components. Base relativa '/api':
-// el navegador pega al server Next, que rewrite-ea a /api → backend (mismo origen →
-// las cookies de refresh funcionan). En prod se puede fijar NEXT_PUBLIC_API_URL.
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || '/api';
+// Cliente para llamadas AUTENTICADAS desde client components. Base SIEMPRE relativa
+// '/api': el navegador pega al server Next, que la rewrite-ea al backend (ver
+// next.config `API_PROXY_TARGET`). Al ser mismo origen, la cookie de refresh (httpOnly)
+// queda en el dominio del front y funciona sin CORS. NO usar una URL absoluta acá: pegar
+// directo a api.recomiendopymes.cl sería cross-site y rompería la cookie (requeriría el
+// rework de auth diferido). El fetch server-side va aparte, en lib/api.js.
+const API_BASE = '/api';
 
 const client = axios.create({ baseURL: API_BASE, withCredentials: true });
 

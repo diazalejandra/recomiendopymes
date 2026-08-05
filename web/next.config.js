@@ -1,7 +1,9 @@
 /** @type {import('next').NextConfig} */
 
-// En dev, proxeamos /api → backend FastAPI (equivale al proxy de Vite) para evitar CORS.
-// En prod, NEXT_PUBLIC_API_URL apunta al backend real y el cliente llama directo.
+// Proxy de /api → backend FastAPI, en dev Y en prod: el cliente siempre pega a /api
+// relativo (mismo origen → la cookie de refresh funciona). `API_PROXY_TARGET` es el
+// destino real del backend y se HORNEA en build (cambiarlo exige redeploy).
+// Dev: localhost:8000. Prod (Vercel): https://api.recomiendopymes.cl.
 const API_TARGET = process.env.API_PROXY_TARGET || 'http://localhost:8000';
 
 const nextConfig = {
