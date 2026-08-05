@@ -131,3 +131,4 @@ Usa Leaflet + OpenStreetMap (sin API key) y Nominatim para geocodificar.
 | **MP-10** | Coordenadas en JSON-LD `LocalBusiness` | Bajo | Se implementa en el módulo SEO (cruce) |
 | **MP-11** | Política de tiles OSM: atribución + evaluar caché/proveedor de tiles para prod | Bajo-Medio | Riesgo gemelo de Nominatim (RN-15) |
 | **MP-12** | Exponer/usar el mapeo **comuna→región** para el nivel "tu región" | Bajo | **Reconciliación C5:** `REGIONS_DATA` (región→comunas) **ya existe** en `meta/router.py`; solo falta el inverso (RN-14) |
+| **MP-13** | Al seleccionar una ciudad en el filtro, **volar el mapa** a esa ciudad (`flyTo`/`flyToBounds`) | Bajo | UX: hoy filtrar (ej. Antofagasta estando en Santiago) exige paneo manual. Detectado en QA de `/mapa` (2026-08-04, Next). Reusa el centroide de ciudad ya conocido |
