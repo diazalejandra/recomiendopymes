@@ -1,5 +1,5 @@
 import re
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from typing import Optional
 from fastapi import HTTPException
 from motor.motor_asyncio import AsyncIOMotorDatabase
@@ -12,14 +12,19 @@ from modules.business.models import BusinessCreate, BusinessUpdate, BusinessPubl
 BUSINESS_NOT_FOUND = "Emprendimiento no encontrado"
 
 
-def _doc_to_public(doc: dict) -> dict:
-    """Convierte un documento MongoDB de negocio al formato de respuesta pública."""
+def _doc_to_public(doc: dict, boost_days: int = 30) -> dict:
+    """Convierte un documento MongoDB de negocio al formato de respuesta pública.
+
+    Calcula `is_new` como fuente única de verdad del badge "Nuevo": el negocio es
+    nuevo si se activó dentro de la ventana `boost_days` (configurable vía admin).
+    Así el badge visible y el boost de orden usan el mismo umbral y no divergen.
+    """
     d = dict(doc)
     d["id"] = str(d.pop("_id"))
     if d.get("owner_user_id"):
         d["owner_user_id"] = str(d["owner_user_id"])
-    if d.get("coordinates") and isinstance(d["coordinates"], dict):
-        pass  # ya es dict
+    activated = d.get("activated_at")
+    d["is_new"] = bool(activated) and (datetime.now(timezone.utc) - activated) <= timedelta(days=int(boost_days))
     return d
 
 
@@ -42,6 +47,14 @@ async def _generate_unique_slug(db: AsyncIOMotorDatabase, name: str, exclude_id:
 class BusinessService:
     def __init__(self, db: AsyncIOMotorDatabase):
         self.db = db
+
+    async def _get_boost_days(self) -> int:
+        """Días de la ventana del badge "Nuevo" (config admin, fallback 30)."""
+        cfg = await self.db.config.find_one({"key": "boost_days"})
+        try:
+            return int(cfg["value"]) if cfg else 30
+        except (TypeError, ValueError):
+            return 30
 
     async def get_businesses(
         self,
@@ -85,7 +98,11 @@ class BusinessService:
         total = await self.db.businesses.count_documents(query)
         skip = (page - 1) * limit
 
-        # Ordenamiento: featured desc → boost (nuevos 30d) desc → rating desc → created_at asc
+        # Duración del badge "Nuevo" configurable vía admin (fallback 30 días)
+        boost_days = await self._get_boost_days()
+        boost_ms = boost_days * 24 * 60 * 60 * 1000
+
+        # Ordenamiento: featured desc → boost (nuevos) desc → rating desc → más antiguos
         pipeline = [
             {"$match": query},
             {"$addFields": {
@@ -95,7 +112,7 @@ class BusinessService:
                             {"$ne": ["$activated_at", None]},
                             {"$lte": [
                                 {"$subtract": [datetime.now(timezone.utc), "$activated_at"]},
-                                30 * 24 * 60 * 60 * 1000  # 30 días en ms
+                                boost_ms
                             ]}
                         ]},
                         1, 0
@@ -115,7 +132,7 @@ class BusinessService:
         businesses = []
         async for doc in self.db.businesses.aggregate(pipeline):
             doc.pop("is_new_boost", None)
-            businesses.append(_doc_to_public(doc))
+            businesses.append(_doc_to_public(doc, boost_days))
 
         return {
             "businesses": businesses,
@@ -142,7 +159,7 @@ class BusinessService:
             await self.db.businesses.update_one({"_id": doc["_id"]}, {"$inc": {"view_count": 1}})
             doc["view_count"] = doc.get("view_count", 0) + 1
 
-        return _doc_to_public(doc)
+        return _doc_to_public(doc, await self._get_boost_days())
 
     async def get_by_id(self, business_id: str, current_user: Optional[dict] = None) -> dict:
         doc = await self.db.businesses.find_one({"_id": to_object_id(business_id, BUSINESS_NOT_FOUND)})
@@ -156,12 +173,13 @@ class BusinessService:
             is_admin = current_user.get("role") == "admin"
             if not (is_owner or is_admin):
                 raise HTTPException(status_code=404, detail="Emprendimiento no encontrado")
-                
-        return _doc_to_public(doc)
+
+        return _doc_to_public(doc, await self._get_boost_days())
 
     async def get_mine(self, user_id: str) -> list:
+        boost_days = await self._get_boost_days()
         cursor = self.db.businesses.find({"owner_user_id": ObjectId(user_id)})
-        return [_doc_to_public(doc) async for doc in cursor]
+        return [_doc_to_public(doc, boost_days) async for doc in cursor]
 
     async def create(self, data: BusinessCreate, user_id: str) -> dict:
         doc = {

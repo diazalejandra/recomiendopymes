@@ -98,6 +98,7 @@ y la **decisión central** de este módulo.
 | **SE-6** | Páginas de categoría + categoría/ciudad indexables | Medio | Rutas dinámicas; alto valor SEO local |
 | **SE-7** | `lang=es`, Core Web Vitals, unificar approach de meta | Bajo | Helmet/metadata en todo, no JS crudo |
 | **SE-8** | Paginar el sitemap cuando el catálogo/noticias crezcan | Bajo | Hoy toma noticias con el endpoint público **capado a 50** (negocios ya pagina, cap 500). Con >50 noticias faltarían URLs → endpoint dedicado de slugs o paginación. También fijar `NEXT_PUBLIC_SITE_URL` en Vercel (hoy default `recomiendopymes.cl`) |
+| **SE-9** | Invalidación de caché **on-demand** al moderar/editar | Medio | Hoy las páginas públicas son ISR (revalidate 300s) → aprobar/inactivar/ocultar tarda hasta 5 min en reflejarse. Ideal: `revalidateTag`/`revalidatePath` disparado por el cambio de dato (webhook backend→Next o server actions) para reflejo inmediato sin bajar el ISR global. _(detectado 2026-08-03 en QA del admin)_ |
 
 > Muchos SE-* se vuelven triviales o nativos una vez hecha la migración (SE-1); por eso SE-1
 > es el habilitador y debería ir primero o junto con el resto.

@@ -76,7 +76,7 @@ gobernanza y confianza del sitio.
 | US-4 Moderar reseñas | 🟡 | Ocultar/mostrar ✅ con `business_name`; **sin cola de reportadas/flaggeadas** (AD-4). |
 | US-5 Gestión usuarios | 🟡 | Activar/desactivar (cascada) ✅, promover ✅, limpiar sospechoso ✅; **sin degradar** y **sin guarda de último admin** (AD-2). |
 | US-6 Legales | ✅ | GET/PUT `/legal/{key}`. |
-| US-7 Config | 🟡 | GET/PUT `/config/{key}`; **acepta cualquier clave** (AD-7). |
+| US-7 Config | ✅ | GET/PUT `/config/{key}` con **whitelist** de las 2 claves reales (`review_rate_limit`, `boost_days`); panel de controles específicos; `boost_days` alimenta el badge "Nuevo" + boost de orden como fuente única (AD-7/AD-15, 2026-08-04). |
 | US-8 Categorías | 🟡 | CRUD vive en `meta` (cruce C); proteger borrado en uso (C-4). |
 | RN-6 Auditoría | ❌ | No hay log de acciones de admin (AD-3). |
 
@@ -106,7 +106,7 @@ gobernanza y confianza del sitio.
 | **AD-4** | Cola de reseñas reportadas/sospechosas en el panel | Medio | Cruce RV-8 (reporte de reseñas) |
 | **AD-5** | Completar métricas (reseñas del mes, nuevos usuarios, top categorías) | Bajo-Medio | Ampliar `get_dashboard` |
 | **AD-6** | `reject_business` valida existencia (404) | Bajo | Clase N-11 |
-| **AD-7** | Whitelist de claves válidas en `config` PUT | Bajo | Evita config arbitraria |
+| **AD-7** | ✅ Whitelist de claves válidas en `config` PUT | Bajo | **Hecho (2026-08-04).** Reducida a `review_rate_limit` + `boost_days` (las que el código consume) |
 | **AD-8** | Edición admin de cualquier negocio | Bajo | = N-2 (permiso del `PUT`) |
 | **AD-9** | Cockpit de fundadora: activación, retención, heatmap categoría/ciudad, conversión | Alto | Dashboard estratégico; varias métricas/agregaciones |
 | **AD-10** | Auto-aprobación de bajo riesgo + post-moderación + antigüedad/SLA de pendientes | Medio-Alto | Ataca R4 (cuello de botella); define criterios de "bajo riesgo" |
@@ -114,7 +114,7 @@ gobernanza y confianza del sitio.
 | **AD-12** | Estado "necesita cambios" + mensaje admin→usuario | Medio | Cruce ciclo de vida Negocios + Notificaciones (NT) |
 | **AD-13** | Rol "moderador" (permisos acotados) | Medio | Rompe regla de 2 roles (cruce Auth RN-1) |
 | **AD-14** | 2FA para cuentas admin/moderador | Medio | Cruce Auth (hoy 2FA estaba fuera de alcance) |
-| **AD-15** | Simplificar config a controles específicos (quitar editor genérico) | Bajo | Menos footgun para fundadora no técnica |
+| **AD-15** | ✅ Simplificar config a controles específicos (quitar editor genérico) | Bajo | **Hecho (2026-08-04).** Panel con 2 controles reales; se eliminaron los campos muertos (`site_name`, `contact_email`, `max_businesses_free`) que no se leían ni guardaban |
 | **AD-16** | Repensar editor legal (más amable o fuera del panel) | Bajo | El texto legal cambia rara vez |
 | **AD-17** | Vista "tareas de hoy" (cola accionable) | Medio | Pendientes + reportadas + sospechosos + soporte en un solo lugar |
 | **AD-18** | Export/backup de datos (negocios/usuarios/reseñas) | Bajo-Medio | Red de seguridad en M0 (sin backups gestionados) |

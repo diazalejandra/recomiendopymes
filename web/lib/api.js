@@ -5,8 +5,8 @@
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
 // Revalidación ISR por defecto (segundos): la página se sirve estática y se regenera
-// cada 5 min. Nota: el view_count del backend solo incrementa al regenerar, así que las
-// visitas quedan aproximadas (aceptable; cruza con DE-8 "visitas aprox").
+// cada 5 min. Las acciones de moderación se reflejan al revalidar (o antes con una
+// invalidación on-demand, pendiente en backlog). Nota: el view_count queda aproximado.
 const DEFAULT_REVALIDATE = 300;
 
 async function apiGet(path, { revalidate = DEFAULT_REVALIDATE } = {}) {

@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
-import { HIDE_CHROME_ROUTES } from '@/components/layout/chrome';
+import { shouldHideChrome } from '@/components/layout/chrome';
 
 // Header con estado de sesión real (portado desde AppLayout del SPA).
 export default function Header() {
@@ -15,8 +15,8 @@ export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
 
-  // Las páginas de auth van a pantalla completa (sin header/footer), como en el SPA.
-  if (HIDE_CHROME_ROUTES.includes(pathname)) return null;
+  // Auth y admin van sin el header público (pantalla completa / sidebar propio).
+  if (shouldHideChrome(pathname)) return null;
 
   const navLinks = [
     { href: '/', label: 'Catálogo' },
