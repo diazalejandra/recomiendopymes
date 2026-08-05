@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { MapPin, X, LayoutGrid, List } from 'lucide-react';
+import { MapPin, X, LayoutGrid, List, Map } from 'lucide-react';
 import { getBusinesses, getCategories, getCities } from '@/lib/api';
 import BusinessCard from '@/components/catalog/BusinessCard';
 import CatalogSearch from '@/components/catalog/CatalogSearch';
@@ -204,10 +204,20 @@ export default async function HomePage({ searchParams }) {
                 href={href({ ...base, view: 'list' })}
                 title="Lista"
                 className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium"
-                style={{ background: view === 'list' ? 'var(--brand)' : 'transparent', color: view === 'list' ? '#fff' : 'var(--muted)' }}
+                style={{ background: view === 'list' ? 'var(--brand)' : 'transparent', color: view === 'list' ? '#fff' : 'var(--muted)', borderRight: '1px solid var(--border)' }}
               >
                 <List size={14} />
                 <span className="hidden sm:inline">Lista</span>
+              </NavLink>
+              {/* El mapa vive en su propia ruta (/mapa) desde la migración a Next */}
+              <NavLink
+                href="/mapa"
+                title="Mapa"
+                className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium"
+                style={{ background: 'transparent', color: 'var(--muted)' }}
+              >
+                <Map size={14} />
+                <span className="hidden sm:inline">Mapa</span>
               </NavLink>
             </div>
           </div>
