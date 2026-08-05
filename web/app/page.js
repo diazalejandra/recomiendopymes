@@ -3,6 +3,7 @@ import { MapPin, X, LayoutGrid, List, Map } from 'lucide-react';
 import { getBusinesses, getCategories, getCities } from '@/lib/api';
 import BusinessCard from '@/components/catalog/BusinessCard';
 import CatalogSearch from '@/components/catalog/CatalogSearch';
+import HomeMap from '@/components/catalog/HomeMapDynamic';
 
 // El home lee los filtros de la URL y renderiza el catálogo en el servidor (indexable).
 // Cada filtro es un <Link> → una URL server-rendered distinta. Solo el buscador del hero
@@ -47,7 +48,7 @@ export default async function HomePage({ searchParams }) {
   const search = sp.search || '';
   const city = sp.city || '';
   const category = sp.category || '';
-  const view = sp.view === 'list' ? 'list' : 'grid';
+  const view = sp.view === 'list' ? 'list' : sp.view === 'map' ? 'map' : 'grid';
   const nationwide = sp.nationwide === 'true';
   const page = Math.max(1, parseInt(sp.page || '1', 10) || 1);
 
@@ -67,7 +68,7 @@ export default async function HomePage({ searchParams }) {
     search,
     city,
     category,
-    view: view === 'list' ? 'list' : '',
+    view: view === 'grid' ? '' : view,
     nationwide: nationwide ? 'true' : '',
   };
 
@@ -209,12 +210,11 @@ export default async function HomePage({ searchParams }) {
                 <List size={14} />
                 <span className="hidden sm:inline">Lista</span>
               </NavLink>
-              {/* El mapa vive en su propia ruta (/mapa) desde la migración a Next */}
               <NavLink
-                href="/mapa"
+                href={href({ ...base, view: 'map' })}
                 title="Mapa"
                 className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium"
-                style={{ background: 'transparent', color: 'var(--muted)' }}
+                style={{ background: view === 'map' ? 'var(--brand)' : 'transparent', color: view === 'map' ? '#fff' : 'var(--muted)' }}
               >
                 <Map size={14} />
                 <span className="hidden sm:inline">Mapa</span>
@@ -223,7 +223,9 @@ export default async function HomePage({ searchParams }) {
           </div>
 
           {/* Resultados */}
-          {businesses.length === 0 ? (
+          {view === 'map' ? (
+            <HomeMap search={search} city={city} category={category} nationwide={nationwide} />
+          ) : businesses.length === 0 ? (
             <div className="text-center py-20">
               <p className="text-lg font-semibold mb-2" style={{ color: 'var(--ink)' }}>Sin resultados</p>
               <p className="text-sm mb-4" style={{ color: 'var(--muted)' }}>Prueba con otros filtros o limpia la búsqueda.</p>
