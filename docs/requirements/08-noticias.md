@@ -106,6 +106,7 @@ descubre el catálogo.
 | **NW-16** | Atribución de fuente en referenciados | Bajo | Citar el origen |
 | **NW-17** | Imagen de artículo vía Cloudinary (subir, no pegar URL) | Bajo | Alinear con negocios (`CloudinaryUpload`); hoy es `image_url` pegado |
 | **NW-18** | Preview social de artículos (meta server-side / prerender) | Medio | Hoy los meta se setean por JS → WhatsApp/FB no los leen (mismo bug del `og`); se resuelve en SEO |
+| **NW-19** | Portar la **franja de noticias al pie de la home** (Next) | Bajo | Paridad con Vite: el bloque de últimas noticias del pie de `HomePage` se difirió en la migración. `/noticias` ya está migrado; falta solo esa franja (SSR, tarjetas con link a la nota). _(detectado 2026-08-31 en el smoke test post-cutover)_ |
 
 ## Fuera de alcance (por ahora) / futuro
 
