@@ -71,6 +71,7 @@ servidor, sin que el binario pase por el backend, y entrega optimizada (resize, 
 | **ME-5** | Unificar carga de imágenes de noticias con este uploader | Bajo | = NW-17 |
 | **ME-6** | Exponer uso de Cloudinary en el monitor de cupos | Bajo | = AD-22 |
 | **ME-7** | Reordenar el wizard de `/inscribir`: autenticar **antes** del paso de imágenes | Bajo | Hoy el paso de imágenes (3) va antes del registro/login (4), pero la firma de subida requiere sesión (ME-1) → un invitado que suba imágenes recibe error. Logueado funciona. Mover el paso de auth antes de imágenes (o exigir sesión al entrar al wizard). _(detectado 2026-07-12 en la migración, hito C)_ |
+| **ME-8** | Feedback de validación en el wizard de `/inscribir` (por qué se deshabilita "Siguiente") | Bajo | El botón "Siguiente" queda deshabilitado en silencio cuando un paso no valida (ej. descripción <10 caracteres): el contador muestra "N/1000" pero no el mínimo, y no hay hint. Mostrar el requisito faltante por paso. _(detectado 2026-08-31 en el smoke test post-cutover)_ |
 
 ## Roadmap (futuro)
 
