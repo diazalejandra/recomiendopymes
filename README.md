@@ -2,17 +2,23 @@
 
 Catálogo web de micro-emprendedores chilenos. Permite a emprendedoras registrar su negocio y obtener visibilidad en buscadores; a clientes descubrir emprendimientos por categoría, ciudad o mapa; y a un administrador moderar el directorio.
 
+> **Frontend en Next.js (App Router).** El frontend de producción vive en `web/` (Next.js,
+> server-rendered para SEO — ver [ADR-0001](docs/architecture/decisions/0001-migracion-frontend-nextjs.md)).
+> El SPA original de Vite (`frontend/`) se conserva como **fallback temporal** hasta retirarlo.
+> El backend FastAPI se mantiene como API.
+
 ## Stack
 
 | Capa | Tecnología |
 |---|---|
 | Backend | FastAPI + Motor (async) + Pydantic v2 |
 | Base de datos | MongoDB Atlas |
-| Frontend | React 19 + Vite + TailwindCSS + Shadcn/ui |
-| Mapas | Leaflet / React-Leaflet |
+| Frontend | Next.js 15 (App Router) + React 19 + TailwindCSS + Shadcn/ui |
+| Frontend (legacy) | React 19 + Vite (`frontend/`, fallback temporal) |
+| Mapas | Leaflet / React-Leaflet (`dynamic ssr:false`) |
 | Imágenes | Cloudinary |
 | Emails | Resend |
-| Deploy frontend | Vercel |
+| Deploy frontend | Vercel (Next.js) |
 | Deploy backend | Render |
 
 ---
@@ -80,26 +86,28 @@ python seed_data.py
 
 > El seed también crea un usuario admin. Revisa `seed_data.py` para las credenciales.
 
-### Frontend
+### Frontend (Next.js — `web/`)
 
 ```bash
-cd frontend
+cd web
 npm install
-```
-
-Crea `frontend/.env.local`:
-
-```env
-VITE_API_URL=http://localhost:8000
-```
-
-Inicia el servidor de desarrollo:
-
-```bash
 npm run dev
 ```
 
-El frontend queda en `http://localhost:5173`.
+El frontend queda en `http://localhost:3001`. **No necesita `.env` en local:** Next proxea
+`/api` → `http://localhost:8000` (backend) vía `next.config.js`, y el fetch server-side usa
+ese mismo backend por defecto. Para apuntar a otro backend en dev, `API_PROXY_TARGET` (proxy
+del cliente) e `API_INTERNAL_URL` (fetch server-side).
+
+> **e2e:** la malla Playwright (`e2e/`) corre contra el **build de producción** de Next
+> (`cd web && npm run build`, luego `next start` en :3001), nunca contra `next dev`.
+> Ver `e2e/README.md`.
+
+### Frontend legacy (Vite — `frontend/`, fallback)
+
+Se conserva por si hay rollback. Para levantarlo: `cd frontend && npm install && npm run dev`
+(requiere `frontend/.env.local` con `VITE_API_URL=http://localhost:8000`). Se retirará cuando
+la versión Next esté confirmada estable en producción.
 
 ---
 
@@ -124,13 +132,22 @@ El frontend queda en `http://localhost:5173`.
 
 > **Plan gratuito:** El backend se duerme tras 15 minutos de inactividad. La primera request puede tomar 30–60 segundos.
 
-### Frontend (Vercel)
+### Frontend (Vercel — Next.js)
 
 1. Conecta el repositorio en [vercel.com](https://vercel.com)
-2. Configura el **Root Directory** como `frontend`
-3. Agrega la variable de entorno:
-   - `VITE_API_URL` = URL de tu servicio en Render (sin slash al final)
-4. Vercel detecta Vite automáticamente y configura el build
+2. **Root Directory:** `web`
+3. **Framework Preset:** `Next.js` (imprescindible — si queda en "Other"/Vite, el deploy
+   falla con *"No Output Directory named public"*)
+4. Variables de entorno (Production):
+   | Variable | Valor |
+   |---|---|
+   | `API_PROXY_TARGET` | `https://api.recomiendopymes.cl` (backend; proxy same-origin del cliente) |
+   | `API_INTERNAL_URL` | `https://api.recomiendopymes.cl/api` (fetch server-side, **server-only**) |
+   | `NEXT_PUBLIC_SITE_URL` | `https://recomiendopymes.cl` (sitemap/canonical) |
+
+   > **No** setear `NEXT_PUBLIC_API_URL`: el cliente debe usar `/api` relativo (mismo origen)
+   > para que la cookie de refresh funcione. Detalles y runbook del cutover en
+   > [`docs/PRODUCTION_ENV_GUIDE.md`](docs/PRODUCTION_ENV_GUIDE.md).
 
 ---
 
@@ -151,23 +168,27 @@ recomiendopymes/
 │   ├── server.py       # App factory, CORS, registro de routers
 │   └── seed_data.py    # Script de datos de prueba
 │
-├── frontend/
-│   └── src/
-│       ├── features/
-│       │   ├── catalog/       # HomePage, BusinessCard, MapView
-│       │   ├── business/      # BusinessDetail, ReviewForm, ReviewItem
-│       │   ├── auth/          # Login, Registro, VerifyEmail, ResetPassword
-│       │   ├── entrepreneur/  # Dashboard emprendedor, edición, reseñas
-│       │   ├── admin/         # Panel admin completo
-│       │   └── news/          # NewsGrid, NewsDetail
-│       ├── hooks/             # useAuth, useInfiniteScroll
-│       ├── components/        # AppLayout, ProtectedRoute, Shadcn/ui
-│       └── utils/api.js       # Cliente Axios con interceptores JWT
+├── web/                        # Frontend de PRODUCCIÓN (Next.js, App Router)
+│   ├── app/                    # Rutas: / (catálogo), /emprendimiento/[slug],
+│   │   │                       #   /noticias, /categoria/..., /mapa, /admin/*,
+│   │   │                       #   /mi-negocio/*, auth, sitemap.js, robots.js, icon.svg
+│   ├── components/             # catalog, business, map, layout, news, ui (shadcn)
+│   ├── hooks/useAuth.jsx       # Contexto de sesión (client)
+│   ├── lib/api.js              # Fetch server-side (SSR/ISR) — API_INTERNAL_URL
+│   ├── utils/api.js            # Cliente Axios autenticado — /api relativo (proxy)
+│   └── next.config.js          # Proxy /api → backend (API_PROXY_TARGET)
 │
-└── docs/superpowers/
-    ├── specs/          # Diseño del producto
-    ├── plans/          # Planes de implementación por fase
-    └── qa/             # Plan de pruebas funcionales
+├── frontend/                   # Frontend LEGACY (Vite) — fallback temporal
+│   └── src/                    #   features/, hooks/, components/, utils/api.js
+│
+├── e2e/                        # Malla Playwright (corre contra el build de prod de web/)
+│
+└── docs/
+    ├── PRODUCTION_ENV_GUIDE.md # Env vars de prod + runbook del cutover
+    ├── requirements/           # Specs por módulo (fuente de verdad funcional)
+    ├── architecture/decisions/ # ADRs (ADR-0001: migración a Next.js)
+    ├── changelog/CHANGELOG.md
+    └── superpowers/            # specs (diseño), plans (por fase), qa (pruebas)
 ```
 
 ## Roles y estados clave
