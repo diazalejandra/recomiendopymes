@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { Search, Store, CheckCircle, XCircle, Ban, RotateCcw, ExternalLink } from 'lucide-react';
-import { adminApi } from '@/utils/api';
+import { adminApi, apiErrorMessage } from '@/utils/api';
 
 const TABS = [
   { id: 'all', label: 'Todos' },
@@ -32,11 +32,11 @@ export default function BusinessesTable() {
 
   const approve = async (id) => {
     try { await adminApi.approvesBusiness(id); toast.success('Emprendimiento aprobado'); load(); }
-    catch { toast.error('Error al aprobar'); }
+    catch (e) { toast.error(apiErrorMessage(e, 'Error al aprobar')); }
   };
   const reject = async (id) => {
     try { await adminApi.rejectBusiness(id); toast.success('Emprendimiento rechazado'); load(); }
-    catch { toast.error('Error al rechazar'); }
+    catch (e) { toast.error(apiErrorMessage(e, 'Error al rechazar')); }
   };
 
   const filteredBusinesses = useMemo(() => {

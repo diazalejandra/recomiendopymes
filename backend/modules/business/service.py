@@ -249,6 +249,16 @@ class BusinessService:
             if new_status not in allowed.get(doc["status"], []):
                 raise HTTPException(status_code=400, detail=f"No puedes cambiar de '{doc['status']}' a '{new_status}'")
 
+        # Gate de publicación: ningún negocio pasa a `active` si su dueño no verificó su email
+        # (mismo invariante que approve_business; cubre la reactivación admin inactive→active).
+        if new_status == "active":
+            owner = await self.db.users.find_one({"_id": doc.get("owner_user_id")})
+            if not owner or not owner.get("is_email_verified"):
+                raise HTTPException(
+                    status_code=409,
+                    detail="El dueño aún no ha verificado su email; no se puede activar hasta que lo haga."
+                )
+
         update = {"status": new_status, "updated_at": datetime.now(timezone.utc)}
 
         # Si se activa por primera vez, registrar activated_at para el badge Nuevo

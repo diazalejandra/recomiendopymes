@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { toast } from 'sonner';
-import { businessApi, metaApi, apiErrorMessage } from '@/utils/api';
+import { businessApi, metaApi, authApi, apiErrorMessage } from '@/utils/api';
 import { useAuth } from '@/hooks/useAuth';
 import CityMapPicker from '@/components/business/CityMapPickerDynamic';
 import CloudinaryUpload from '@/components/business/CloudinaryUpload';
@@ -26,8 +26,9 @@ const DELIVERY_CARDS = [
 const STEPS = ['Datos básicos', 'Contacto y redes', 'Ubicación', 'Imágenes', 'Confirmar'];
 
 export default function ListBusinessPage() {
-  const { isLoggedIn, register: registerUser, login: loginUser } = useAuth();
+  const { isLoggedIn, isEmailVerified, register: registerUser, login: loginUser } = useAuth();
   const [step, setStep] = useState(0);
+  const [resending, setResending] = useState(false);
   const [categories, setCategories] = useState([]);
   const [regionsData, setRegionsData] = useState({});
   const [loading, setLoading] = useState(false);
@@ -118,6 +119,18 @@ export default function ListBusinessPage() {
     }
   };
 
+  const handleResend = async () => {
+    setResending(true);
+    try {
+      await authApi.resendVerification();
+      toast.success('Te reenviamos el correo de verificación. Revisa tu bandeja (y spam).');
+    } catch (err) {
+      toast.error(apiErrorMessage(err, 'No pudimos reenviar el correo. Intenta más tarde.'));
+    } finally {
+      setResending(false);
+    }
+  };
+
   if (submitted) {
     return (
       <div className="max-w-lg mx-auto px-4 py-16 text-center">
@@ -127,6 +140,19 @@ export default function ListBusinessPage() {
         <p className="text-gray-500 text-sm mb-6">
           Actualmente se encuentra <span className="font-semibold text-amber-600">pendiente de revisión</span>. Una vez aprobado, aparecerá en el catálogo público.
         </p>
+
+        {isLoggedIn && !isEmailVerified && (
+          <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-xl text-left">
+            <p className="text-sm font-semibold text-amber-900 mb-1">📧 Verifica tu email para publicar</p>
+            <p className="text-sm text-amber-800 mb-3">
+              Guardamos tu negocio, pero <strong>no podremos revisarlo ni publicarlo</strong> hasta que verifiques tu correo. Revisa tu bandeja (y spam) y haz clic en el enlace.
+            </p>
+            <button onClick={handleResend} disabled={resending} className="text-sm font-semibold text-amber-900 underline hover:no-underline disabled:opacity-50">
+              {resending ? 'Reenviando…' : 'Reenviar correo de verificación'}
+            </button>
+          </div>
+        )}
+
         {isLoggedIn && (
           <Link href="/mi-negocio" className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 mr-3 inline-block">Ir a mi panel</Link>
         )}

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Query
 from typing import Optional
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from core.database import get_db
-from modules.auth.dependencies import get_current_user, require_admin, get_current_user_optional, require_verified
+from modules.auth.dependencies import get_current_user, require_admin, get_current_user_optional
 from modules.business.service import BusinessService
 from modules.business.models import BusinessCreate, BusinessUpdate
 from modules.review.service import ReviewService
@@ -54,7 +54,10 @@ async def get_business(
 @router.post("")
 async def create_business(
     data: BusinessCreate,
-    current_user: dict = Depends(require_verified),
+    # No exigimos email verificado para CREAR (el negocio nace `pending`, invisible hasta
+    # aprobación). El gate de verificación vive en la aprobación admin (ver approve_business):
+    # así el emprendedor inscribe en una sola sesión y el email real se exige antes de publicar.
+    current_user: dict = Depends(get_current_user),
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     service = BusinessService(db)
@@ -65,7 +68,9 @@ async def create_business(
 async def update_business(
     business_id: str,
     data: BusinessUpdate,
-    current_user: dict = Depends(require_verified),
+    # Editar tampoco exige verificado: un negocio sin publicar (pending) puede editarse; el
+    # gate de verificación se aplica al activar (approve_business / change_status → active).
+    current_user: dict = Depends(get_current_user),
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     service = BusinessService(db)

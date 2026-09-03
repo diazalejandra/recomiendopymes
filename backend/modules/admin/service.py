@@ -70,6 +70,14 @@ class AdminService:
         doc = await self.db.businesses.find_one({"_id": ObjectId(business_id)})
         if not doc:
             raise HTTPException(status_code=404, detail="Emprendimiento no encontrado")
+        # El gate de email verificado vive en la publicación (no en la creación): un negocio
+        # no puede pasar a `active` si su dueño no verificó su email (garantiza dueño contactable).
+        owner = await self.db.users.find_one({"_id": doc.get("owner_user_id")})
+        if not owner or not owner.get("is_email_verified"):
+            raise HTTPException(
+                status_code=409,
+                detail="El dueño aún no ha verificado su email; no se puede aprobar hasta que lo haga."
+            )
         update = {"status": "active", "updated_at": datetime.now(timezone.utc)}
         if not doc.get("activated_at"):
             update["activated_at"] = datetime.now(timezone.utc)
