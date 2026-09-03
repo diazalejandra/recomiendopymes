@@ -21,12 +21,20 @@ client.interceptors.request.use((config) => {
   return config;
 });
 
+// Endpoints donde un 401 significa "credenciales inválidas" (no "token expirado"):
+// NO debe dispararse el refresh + redirect global; el que llama muestra el error.
+// Si no se excluyen, un login con contraseña equivocada intenta refresh, falla y hace
+// window.location.href='/login' → saca al usuario de donde esté (p.ej. el wizard de
+// /inscribir, perdiendo el formulario). Detectado en el smoke test post-cutover.
+const AUTH_PATHS = ['/auth/login', '/auth/register', '/auth/refresh', '/auth/forgot-password', '/auth/reset-password'];
+
 // Si el access token expiró, intentar refresh una vez.
 client.interceptors.response.use(
   (res) => res,
   async (error) => {
     const original = error.config;
-    if (error.response?.status === 401 && original && !original._retry) {
+    const isAuthPath = original?.url && AUTH_PATHS.some((p) => original.url.includes(p));
+    if (error.response?.status === 401 && original && !original._retry && !isAuthPath) {
       original._retry = true;
       try {
         const res = await axios.post(`${API_BASE}/auth/refresh`, {}, { withCredentials: true });
